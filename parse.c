@@ -1,29 +1,14 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/10 09:31:35 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/10 09:54:41 by haboucha         ###   ########.fr       */
+/*   Created: 2025/06/10 09:31:29 by haboucha          #+#    #+#             */
+/*   Updated: 2025/06/10 09:53:32 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int main()
-{
-    char *input;
-    
-    while(1)
-    {
-        input = readline("Minishell> ");
-        if(input == NULL)
-            break;
-        if(*input)
-            add_history(input);
-    }
-    printf("%s\n",input);
-    // free(input);
-}
