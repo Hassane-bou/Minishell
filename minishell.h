@@ -1,18 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/10 10:58:32 by rmouafik         ###   ########.fr       */
+/*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
+/*   Updated: 2025/06/10 11:06:01 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
+#ifndef MINISHELL_H
+#define MINISHELL_H
 
-int main(int ac, char *av[], char **env)
-{
-	
-}
+#include <stdio.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+
+
+
+#endif
