@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/27 18:06:48 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/11 09:56:11 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/11 11:27:43 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ char	*ft_strchr(const char *s, int c)
 	{
 		if (*s == b)
 		{
-			return ((char *)s + 1);
+			return ((char *)s);
 		}
 		s++;
 	}
