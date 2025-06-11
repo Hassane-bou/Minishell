@@ -1,29 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_lstsize_bonus.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/10 12:29:22 by rmouafik         ###   ########.fr       */
+/*   Created: 2024/11/12 12:19:55 by rmouafik          #+#    #+#             */
+/*   Updated: 2024/11/18 09:26:00 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-#define MINISHELL_H
+#include "libft.h"
 
-# include <stdio.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include "lib/libft.h"
-
-typedef struct s_env
+int	ft_lstsize(t_list *lst)
 {
-	char	*key;
-	char	*value;
-	struct s_env *next;
-} t_env;
+	t_list	*temp;
+	int		count;
 
-
-#endif
+	temp = lst;
+	count = 0;
+	while (temp != NULL)
+	{
+		count++;
+		temp = temp->next;
+	}
+	return (count);
+}

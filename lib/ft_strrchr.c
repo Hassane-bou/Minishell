@@ -1,29 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_strrchr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/10 12:29:22 by rmouafik         ###   ########.fr       */
+/*   Created: 2024/10/28 18:12:25 by rmouafik          #+#    #+#             */
+/*   Updated: 2024/11/18 09:27:58 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-#define MINISHELL_H
+#include "libft.h"
 
-# include <stdio.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include "lib/libft.h"
-
-typedef struct s_env
+char	*ft_strrchr(const char *s, int c)
 {
-	char	*key;
-	char	*value;
-	struct s_env *next;
-} t_env;
+	char		b;
+	const char	*last;
 
-
-#endif
+	last = NULL;
+	b = (char)c;
+	while (*s)
+	{
+		if (*s == b)
+		{
+			last = s;
+		}
+		s++;
+	}
+	if (last)
+	{
+		return ((char *)last);
+	}
+	if (b == '\0')
+	{
+		return ((char *)s);
+	}
+	return (NULL);
+}

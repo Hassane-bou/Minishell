@@ -1,34 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strnstr.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/11 10:42:34 by rmouafik         ###   ########.fr       */
+/*   Created: 2024/10/29 14:51:53 by rmouafik          #+#    #+#             */
+/*   Updated: 2024/11/18 09:27:54 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int main(int ac, char *av[], char **envp)
+char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 {
-	int		i;
-	int		pos;
-	t_env	**env_copy;
+	size_t	i;
 
+	if (!len && !haystack)
+		return (NULL);
+	if (needle[0] == '\0')
+		return ((char *)haystack);
 	i = 0;
-	while (envp[i])
-		i++;
-	env_copy = malloc(sizeof(t_env **) * i);
-	i = 0;
-	while (envp[i])
+	while (haystack[i] && ft_strlen(needle) + i <= len)
 	{
-		env_copy[i]->value = ft_strdup(ft_strchr(envp[i], '=') + 1);
-		pos = env_copy[i]->value - envp[i];
-		env_copy[i]->key = ft_substr(envp[i], 0, pos - 1);
-		printf("%s=%s\n", env_copy[i]->key, env_copy[i]->value);
+		if (haystack[i] == needle[0])
+		{
+			if (ft_strncmp(haystack + i, needle, ft_strlen(needle)) == 0)
+				return ((char *)haystack + i);
+		}
 		i++;
 	}
+	return (NULL);
 }

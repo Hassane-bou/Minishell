@@ -1,34 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_substr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/11 10:42:34 by rmouafik         ###   ########.fr       */
+/*   Created: 2024/10/31 16:43:07 by rmouafik          #+#    #+#             */
+/*   Updated: 2024/11/18 09:28:10 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "libft.h"
 
-int main(int ac, char *av[], char **envp)
+char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	int		i;
-	int		pos;
-	t_env	**env_copy;
+	char	*sub;
+	size_t	i;
 
+	if (!s)
+		return (NULL);
+	if (ft_strlen(s) < start)
+		return (ft_strdup(""));
+	if (ft_strlen(s + start) < len)
+		len = ft_strlen(s + start);
+	sub = (char *)malloc(sizeof(char) * (len + 1));
+	if (!sub)
+		return (NULL);
 	i = 0;
-	while (envp[i])
-		i++;
-	env_copy = malloc(sizeof(t_env **) * i);
-	i = 0;
-	while (envp[i])
+	while (i < len)
 	{
-		env_copy[i]->value = ft_strdup(ft_strchr(envp[i], '=') + 1);
-		pos = env_copy[i]->value - envp[i];
-		env_copy[i]->key = ft_substr(envp[i], 0, pos - 1);
-		printf("%s=%s\n", env_copy[i]->key, env_copy[i]->value);
+		sub[i] = s[start + i];
 		i++;
 	}
+	sub[i] = '\0';
+	return (sub);
 }

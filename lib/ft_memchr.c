@@ -1,29 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_memchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/10 12:29:22 by rmouafik         ###   ########.fr       */
+/*   Created: 2024/10/29 10:48:53 by rmouafik          #+#    #+#             */
+/*   Updated: 2024/11/18 09:26:35 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-#define MINISHELL_H
+#include "libft.h"
 
-# include <stdio.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include "lib/libft.h"
-
-typedef struct s_env
+void	*ft_memchr(const void *s, int c, size_t n)
 {
-	char	*key;
-	char	*value;
-	struct s_env *next;
-} t_env;
+	unsigned char	*b;
+	size_t			i;
 
-
-#endif
+	b = (unsigned char *)s;
+	i = 0;
+	while (i < n)
+	{
+		if (b[i] == (unsigned char)c)
+		{
+			return (&b[i]);
+		}
+		i++;
+	}
+	return (NULL);
+}

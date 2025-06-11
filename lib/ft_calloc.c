@@ -1,29 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_calloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/10 12:29:22 by rmouafik         ###   ########.fr       */
+/*   Created: 2024/10/31 08:39:48 by rmouafik          #+#    #+#             */
+/*   Updated: 2024/11/18 09:24:51 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-#define MINISHELL_H
+#include "libft.h"
 
-# include <stdio.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include "lib/libft.h"
-
-typedef struct s_env
+void	*ft_calloc(size_t count, size_t size)
 {
-	char	*key;
-	char	*value;
-	struct s_env *next;
-} t_env;
+	void	*arr;
+	size_t	total_size;
 
-
-#endif
+	total_size = count * size;
+	if (size && count > total_size / size)
+		return (NULL);
+	arr = (void *)malloc(total_size);
+	if (arr == NULL)
+		return (NULL);
+	ft_bzero(arr, total_size);
+	return (arr);
+}

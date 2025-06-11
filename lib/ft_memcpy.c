@@ -1,29 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_memcpy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/10 12:29:22 by rmouafik         ###   ########.fr       */
+/*   Created: 2024/10/25 17:20:12 by rmouafik          #+#    #+#             */
+/*   Updated: 2024/11/17 15:39:34 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-#define MINISHELL_H
+#include "libft.h"
 
-# include <stdio.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include "lib/libft.h"
-
-typedef struct s_env
+void	*ft_memcpy(void *dst, const void *src, size_t n)
 {
-	char	*key;
-	char	*value;
-	struct s_env *next;
-} t_env;
+	char	*dest;
+	char	*source;
+	size_t	i;
 
-
-#endif
+	dest = (char *)dst;
+	source = (char *)src;
+	if (dest == source)
+		return (dst);
+	else
+	{
+		i = 0;
+		while (i < n)
+		{
+			dest[i] = source[i];
+			i++;
+		}
+	}
+	return (dest);
+}

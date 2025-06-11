@@ -1,29 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   ft_memset.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/10 12:29:22 by rmouafik         ###   ########.fr       */
+/*   Created: 2024/10/25 09:24:45 by rmouafik          #+#    #+#             */
+/*   Updated: 2024/11/17 14:56:29 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-#define MINISHELL_H
+#include "libft.h"
 
-# include <stdio.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include "lib/libft.h"
-
-typedef struct s_env
+void	*ft_memset(void	*b, int c, size_t	len)
 {
-	char	*key;
-	char	*value;
-	struct s_env *next;
-} t_env;
+	char			*ptr;
+	size_t			i;
 
-
-#endif
+	ptr = (char *)b;
+	i = 0;
+	while (i < len)
+	{
+		ptr[i] = (char)c;
+		i++;
+	}
+	return (b);
+}
