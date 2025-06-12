@@ -1,6 +1,6 @@
 NAME = minishell
 
-SRC = main.c
+SRC = env/shelvl.c main.c env/env_copy.c 
 CC = cc
 # CFLAGS = -Wall -Wextra -Werror
 OBJ = $(SRC:.c=.o)
