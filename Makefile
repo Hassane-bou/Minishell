@@ -1,6 +1,6 @@
 CC = cc 
 CFLAGS = -Wall -Wextra -Werror
-SRCS = main.c
+SRCS = main.c utils.c ft_split.c ft_substr.c parse.c tokens.c ft_strdup.c
 LIBS = -lreadline
 
 OBJE = $(SRCS:.c=.o)
@@ -10,7 +10,7 @@ NAME = parse
 all: $(NAME)
 
 $(NAME):$(OBJE)
-		$(CC) $(CFLAGS) $(SRCS) -o $(NAME) $(LIBS)
+		$(CC) $(CFLAGS) $(SRCS) $(LIBS) -o $(NAME) 
 
 %.o:%.c
 	$(CC) $(CFLAGS) -c $< -o $@ 
