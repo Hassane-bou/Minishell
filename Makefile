@@ -1,6 +1,6 @@
 NAME = minishell
 
-SRC = env/shelvl.c main.c env/env_copy.c 
+SRC = env/shelvl.c main.c env/env_copy.c builtins/ft_env.c builtins/ft_pwd.c builtins/ft_cd.c
 CC = cc
 # CFLAGS = -Wall -Wextra -Werror
 OBJ = $(SRC:.c=.o)
@@ -9,10 +9,10 @@ LIB = lib/libft.a
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(CFLhhAGS) $(OBJ) $(LIB) -o $(NAME)
+	$(CC) $(CFLhhAGS) $(OBJ) $(LIB) -lreadline -o $(NAME) ;make clean;./minishell
 
 %.o: %.c minishell.h
-	$(CC) $(CFLhhAGS) -c $< -o $@
+	$(CC) $(CFLhhAGS) -c $< -o $@ 
 
 clean:
 	rm -f $(OBJ)
