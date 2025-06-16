@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:31:35 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/14 13:11:03 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/06/16 11:01:44 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,23 @@ int main()
                 handle_end();
             if(*input)
                 add_history(input);
+            if(check_quotes(input))
+            {
+                free(input);
+                break;
+            }
+            if(check_pipe_syntaxe(input))
+            {
+                printf("erreur pipe\n");
+                free(input);
+                break;
+            }
+            if(check_redirection_syntaxe(input))
+            {
+                printf("erreur redirection\n");
+                free(input);
+                break;
+            }
             result = tokenize(input);
             print_token(result);
             free(input);
