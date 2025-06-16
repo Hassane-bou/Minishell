@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/14 12:24:56 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/16 12:43:20 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ int	ft_strcmp(char *s1, char *s2)
 	int	i;
 
 	i = 0;
+	if (!s1 || !s2)
+		return 1;
 	while (s1[i] && s2[i])
 	{
 		if ((unsigned char)s1[i] != (unsigned char)s2[i])
@@ -36,7 +38,7 @@ int	is_builtin(char *input, char *option, t_env **env_copy)
 		return (ft_cd(option, env_copy));
 	return 0;
 }
-#include <stdlib.h>
+
 int main(int ac, char *av[], char **envp)
 {
     char 	*input;
