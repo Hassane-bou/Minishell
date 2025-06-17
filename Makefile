@@ -1,6 +1,7 @@
 NAME = minishell
 
-SRC = env/shelvl.c main.c env/env_copy.c builtins/ft_env.c builtins/ft_pwd.c builtins/ft_cd.c
+SRC = env/shelvl.c main.c env/env_copy.c builtins/ft_env.c builtins/ft_pwd.c \
+	 builtins/ft_cd.c builtins/ft_echo.c builtins/ft_unset.c
 CC = cc
 # CFLAGS = -Wall -Wextra -Werror
 OBJ = $(SRC:.c=.o)

@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/16 12:43:20 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/17 12:56:08 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	ft_strcmp(char *s1, char *s2)
 	return (s1[i] - s2[i]);
 }
 
-int	is_builtin(char *input, char *option, t_env **env_copy)
+int	is_builtin(char **res, char *input, char *option, t_env **env_copy)
 {
 	if (!ft_strcmp(input, "env"))
 		return (ft_env(*env_copy));
@@ -36,6 +36,10 @@ int	is_builtin(char *input, char *option, t_env **env_copy)
 		return (ft_pwd(*env_copy));
 	if (!ft_strcmp(input, "cd"))
 		return (ft_cd(option, env_copy));
+	if (!ft_strcmp(input, "echo"))
+		return (ft_echo(res, *env_copy));
+	if (!ft_strcmp(input, "unset"))
+		return (ft_unset(res, env_copy));
 	return 0;
 }
 
@@ -48,12 +52,12 @@ int main(int ac, char *av[], char **envp)
 	env_copy(envp, &env_head);
     while(1)
     {
-        input = readline("Minishell> ");
+        input = readline("Minishell$> ");
         if(input == NULL)
             break ;
         if(*input)
             add_history(input);
 		res = ft_split(input, ' ');
-		is_builtin(res[0], res[1], &env_head);
+		is_builtin(res, res[0], res[1], &env_head);
     }
 }
