@@ -6,22 +6,30 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 10:37:35 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/17 13:20:51 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/19 10:48:13 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../minishell.h"
 
-int	is_valid(char *str)
+void	remove_env(char *key, t_env	**env_copy)
 {
-	int	i = 0;
-	while (str[i])
+	t_env *current;
+	t_env *previous;
+
+	current = *env_copy;
+	previous = *env_copy;
+	while (current)
 	{
-		if (!ft_isalpha(str[i]))
-			return 1;
-		i++;
+		if (!ft_strcmp(current->key, key))
+		{
+			free(current->value);
+			free(current->key);
+			free(current);
+			return ;
+		}
+		current = current->next;
 	}
-	return 0;
 }
 
 int	check_valid(char *str)
@@ -31,10 +39,10 @@ int	check_valid(char *str)
 	i = 0;
 	while (str[i])
 	{
-		if (i == 0 && !ft_isdigit(str[i]) && ft_isalpha(str[i]))
+		if (i == 0 && (!ft_isalpha(str[i]) && str[i] != '_'))
 			return 1;
-		// if (!ft_isdigit(str[i]) || !ft_isalpha(str[i]))
-		// 	return 1;
+		else if (i != 0 && (!ft_isalnum(str[i]) && str[i] != '_'))
+			return 1;
 		i++;
 	}
 	return 0;
@@ -45,8 +53,10 @@ int	ft_unset(char **arr, t_env **env_copy)
 	int i = 1;
 	while (arr[i])
 	{
+		if (check_valid(arr[i]) || arr[i] == NULL)
+			printf("minishell: unset: `%s': not a valid identifier\n", arr[i]);
 		if (!check_valid(arr[i]))
-			return (printf("minishell: unset: `%s': not a valid identifier\n", arr[i]), 1);
+			remove_env(arr[i], env_copy);
 		i++;
 	}
 	return 0;

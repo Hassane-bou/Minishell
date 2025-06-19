@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/17 12:56:08 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/19 10:46:26 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,13 @@ int	ft_strcmp(char *s1, char *s2)
 
 int	is_builtin(char **res, char *input, char *option, t_env **env_copy)
 {
-	if (!ft_strcmp(input, "env"))
+	if (!ft_strcmp(input, "env") || !ft_strcmp(input, "ENV"))
 		return (ft_env(*env_copy));
-	if (!ft_strcmp(input, "pwd"))
+	if (!ft_strcmp(input, "pwd") || !ft_strcmp(input, "PWD"))
 		return (ft_pwd(*env_copy));
 	if (!ft_strcmp(input, "cd"))
 		return (ft_cd(option, env_copy));
-	if (!ft_strcmp(input, "echo"))
+	if (!ft_strcmp(input, "echo") || !ft_strcmp(input, "ECHO"))
 		return (ft_echo(res, *env_copy));
 	if (!ft_strcmp(input, "unset"))
 		return (ft_unset(res, env_copy));
