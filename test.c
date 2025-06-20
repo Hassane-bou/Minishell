@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 12:55:51 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/16 10:16:20 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/06/20 10:04:31 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,27 +17,56 @@
 #include  <readline/readline.h>
 #include  <readline/history.h>
 
+typedef enum s_type
+{
+    WORD,
+    PIPE,
+    red_in,
+    red_out,
+    heredoc,
+    append,
+}t_type;
+
 
 typedef struct s_token
 {
     char *value;
+    t_type type;
     struct s_token *next;
 }t_token;
 
-int ft_isspace(int c)
+typedef struct s_cmd
 {
-    return((c == 32) || (c >= 9 && c <= 13));
-}
-t_token *create_token(char *value)
-{
-    t_token *token;
-    token = malloc(sizeof(t_token));
-    if(!token)
-        return NULL;
-    token->value=strdup(value);
-    token->next=NULL;
+    char **args;
+    char *infile;
+    char *outfile;
+    int append;
+    struct s_cmd *next;
+}t_cmd;
 
-    return (token);
+// void initialisation(t_cmd *cmd)
+// {
+//     cmd->append = NULL;
+//     cmd->args =NULL;
+//     cmd->infile = NULL;
+//     cmd->outfile = NULL;
+// }
+
+
+/***************ARGS**********************/
+
+//void add_to_args(char **args,char *word);
+int count_word_in_tokens(t_token *token)
+{
+    int count = 0;
+    while(token && token->type != PIPE)
+    {
+        if(token->type == WORD)
+            count++;
+        token = token->next;
+    }
+    printf(">count : %d<\n",count);
+    return(count);
 }
 int ft_strlen(char *s)
 {
@@ -66,6 +95,99 @@ char	*ft_strdup(char *s1)
 	p[i] = '\0';
 	return (p);
 }
+
+t_cmd *new_args(t_token *token)
+{
+    t_cmd *cmd;
+    cmd = malloc(sizeof(t_cmd));
+    if(!cmd)
+        return NULL;
+    // initialisation(cmd);
+    int i =0;
+    int nbr_args = count_word_in_tokens(token);
+    cmd->args = malloc(sizeof(char *) * (nbr_args + 1));
+    if(!cmd->args)
+        return(free(cmd),NULL);
+    while(token && token->type != PIPE)
+    {
+        if(token->type == WORD)
+        {
+            cmd->args[i] = ft_strdup(token->value);
+            i++;
+        }   
+        else if(token->type == red_in)
+            cmd->infile = ft_strdup(token->value);
+        else if(token->type ==  red_out)
+            cmd->outfile = ft_strdup(token->value);
+        token = token->next;
+    }
+    cmd->args[i] = NULL;
+    cmd->next = NULL; 
+    return(cmd);
+}
+
+t_cmd  *add_cmd_back(t_cmd **lst,t_cmd  *new_cmd)
+{
+    t_cmd *tmp;
+    if(!*lst)
+        *lst = new_cmd;
+    else
+    {
+        tmp = *lst;
+        while(tmp->next != NULL)
+        {
+            tmp = tmp->next;
+        }
+        tmp->next = new_cmd;
+        new_cmd->next = NULL;
+    }
+    return(new_cmd);
+}
+t_cmd *parse_toking(t_token *tokens)
+{
+    t_cmd *head = NULL;
+    while(tokens)
+    {
+        t_cmd *cmd = new_args(tokens);
+        add_cmd_back(&head,cmd);
+        while(tokens && tokens->type != PIPE)
+            tokens = tokens->next;
+        if(tokens && tokens->type == PIPE)
+            tokens = tokens->next;
+    }
+    return (head);
+}
+
+void print_cmd(t_cmd *command)
+{
+    int i = 0;
+    while(command)
+    {
+        printf("-> %s\n",command->args[i++]);
+        command = command->next;
+    }
+}
+
+ /****************tokenize simple*************************/
+int ft_isspace(int c)
+{
+    return((c == 32) || (c >= 9 && c <= 13));
+}
+t_token *create_token(char *value,t_type type)
+{
+    t_token *token;
+    token = malloc(sizeof(t_token));
+    if(!token)
+        return NULL;
+    token->value=strdup(value);
+    token->type=-1;
+    token->next=NULL;
+
+    return (token);
+}
+
+
+
 char *substr(char *s,unsigned int start, size_t len)
 {
     char *p;
@@ -126,7 +248,7 @@ t_token *tokenize(char *input)
             while(input[i] && input[i] != quote_char)
                 i++;
             word =substr(input,start,i - start);
-            new = create_token(word);
+            new = create_token(word,WORD);
             append_token(&head,new);
             if(input[i] == quote_char)
                 i++;
@@ -134,19 +256,19 @@ t_token *tokenize(char *input)
         
         else if(input[i] == '|')
         {
-            new = create_token("|");
+            new = create_token("|",PIPE);
             append_token(&head,new);
             i++;
         }
         else if(input[i] == '>')
         {
-            new = create_token(">");
+            new = create_token(">",red_out);
             append_token(&head,new);
             i++;
         }
         else if(input[i] == '<')
         {
-            new = create_token("<");
+            new = create_token("<",red_in);
             append_token(&head,new);
             i++;
         }
@@ -156,7 +278,7 @@ t_token *tokenize(char *input)
             while(input[i] && !ft_isspace(input[i]) && input[i] != '|' && input[i] != '>' && input[i] != '<')
                 i++;
             word =substr(input,start,i - start);
-            new = create_token(word);
+            new = create_token(word,WORD);
             append_token(&head,new);
         }
     }
@@ -178,7 +300,8 @@ void print_tokens(t_token *token)
 {
     while(token)
     {
-        printf("->[%s]\n",token->value);
+        printf("->[%s]",token->value);
+        printf(" -- [%d]\n",token->type);
         token = token->next;
     }
 }
@@ -187,6 +310,7 @@ int main()
 {
     char *input;
     t_token *res = NULL;
+    t_cmd *parse = NULL;
     while(1)
     {
         input = readline("Minishell> ");
@@ -195,8 +319,11 @@ int main()
         if(*input)
             add_history(input);
         res = tokenize(input);
+        parse = parse_toking(res);
         print_tokens(res);
-        free(input);
+        printf("\n-----------\n");
+        print_cmd(parse);
+        // free(input);
     }
     free_token_list(res);
 }

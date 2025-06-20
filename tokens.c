@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 12:38:01 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/16 15:52:43 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/06/20 11:42:27 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ int check_quotes(char *input)
         i++;
     }
     if(quote_char)
-        return (printf("errur"),1);
+        return (1);
     else 
         return 0;
 }
@@ -62,6 +62,7 @@ int check_pipe_syntaxe(char *input)
     int i =0;
     int len = ft_strlen(input) ;
     int end_input = len - 1;
+    char quote = 0;
     while(ft_isspace(input[i]))
         i++;
     if(input[i] == '|')
@@ -72,17 +73,22 @@ int check_pipe_syntaxe(char *input)
         return 1;
     while(input[i])
     {
-        while(ft_isspace(input[i]))
-            i++;
-        if(input[i] == '|' && input[i+1] && input[i+1]=='|')
-            return 1;
-        if(input[i] == '|')
+         if ((input[i] == '\'' || input[i] == '"') && !quote)
+            quote = input[i];
+        else if (input[i] == quote)
+            quote = 0;
+        if(!quote)
         {
-            int j = i + 1;
-            while (ft_isspace(input[j]))
-                j++;
-            if(input[j] == '|')
-                return 1;  
+            if(input[i] == '|' && input[i+1] && input[i+1]=='|')
+                return 1;
+            if(input[i] == '|')
+            {
+                int j = i + 1;
+                while (ft_isspace(input[j]))
+                    j++;
+                if(input[j] == '|')
+                    return 1;  
+            }
         }
         i++;    
     }
@@ -95,8 +101,20 @@ int check_redirection_syntaxe(char *input)
     int i = 0;
     char redirect;
     int count;
+    char quote = 0;
     while(input[i])
     {
+        if ((input[i] == '"' || input[i] == '\'') && !quote)
+        {
+            quote = input[i];
+            i++;
+            while (input[i] && input[i] != quote)
+                i++;
+            if (input[i] == quote)
+                quote = 0;
+            i++;
+            continue;
+        }
         if(input[i]== '>' || input[i] == '<')
         {
             redirect = input[i];
@@ -118,27 +136,49 @@ int check_redirection_syntaxe(char *input)
         }
    return 0;
 }
-
-/****************HANDLE TOKEN****************/
-int handle_quotes(char *input,int i,t_token **head)
+/********************check all syntaxe**************/
+int check_all_syntaxe(char *input)
 {
-    char quote_char;
-    int start;
-    t_token *new_token = NULL;
-    char *word;
-
-    quote_char=input[i];
-    i++;
-    start = i;
-    while(input[i] && input[i] != quote_char)
-        i++;
-    word = ft_substr(input,start,i - start);
-    new_token = cretae_token(word,WORD);
-    append_token(head,new_token);
-    if(input[i] == quote_char)
-        i++;
-    return i;
+    if(check_pipe_syntaxe(input))
+    {
+        printf("erreur pipe\n");
+        return 1;
+    }
+    if(check_quotes(input))
+    {
+        printf("erreur quotes\n");
+        return 1;
+    }
+    if(check_redirection_syntaxe(input))
+    {
+        printf("erreur redirection\n");
+        return 1;
+    }
+    return 0;
 }
+
+
+
+/****************HANDLE QUtes****************/
+// int handle_quotes(char *input,int i,t_token **head)
+// {
+//     char quote_char;
+//     int start;
+//     t_token *new_token = NULL;
+//     char *word;
+
+//     quote_char=input[i];
+//     i++;
+//     start = i;
+//     while(input[i] && input[i] != quote_char)
+//         i++;
+//     word = ft_substr(input,start,i - start);
+//     new_token = cretae_token(word,WORD);
+//     append_token(head,new_token);
+//     if(input[i] == quote_char)
+//         i++;
+//     return i;
+// }
 /*******************HANDLE APPEND************************/
 int handle_APPEND(char *input,int i,t_token **head)
 {
@@ -205,13 +245,24 @@ int handle_word(char *input, int i, t_token **head)
     int start ;
     char *word;
     t_token *new;
+    char quotes;
     start = i;
-    while(input[i] && (!ft_isspace(input[i]) && input[i] != '>' && input[i] != '<' && input[i] != '|'))
-        i++;
+     while (input[i] && (!ft_isspace(input[i]) && input[i] != '>' && input[i] != '<' && input[i] != '|'))
+    {
+        if (input[i] == '"' || input[i] == '\'')
+        {
+            char q = input[i++];
+            while (input[i] && input[i] != q)
+                i++;
+            if (input[i] == q)
+                i++;
+        }
+        else
+            i++;
+    }
     word = ft_substr(input,start,i - start);
     new = cretae_token(word,WORD);
     append_token(head,new);
-    i++;
     return(i);
 }
 
@@ -223,8 +274,8 @@ t_token *tokenize(char *input)
     {
         if(ft_isspace(input[i]))
             i++;
-        else if(input[i]=='"' || input[i] == '\'')
-            i = handle_quotes(input,i,&head);
+        // else if(input[i]=='"' || input[i] == '\'')
+        //     i = handle_quotes(input,i,&head);
         else if(input[i] == '>' && input[i + 1] =='>')
             i = handle_APPEND(input,i,&head);
         else if(input[i] == '<' && input[i + 1] == '<')

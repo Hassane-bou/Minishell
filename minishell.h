@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/16 11:01:04 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/06/16 16:31:20 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,4 +59,5 @@ int ft_strlen(char *s);
 int check_quotes(char *input);
 int check_pipe_syntaxe(char *input);
 int check_redirection_syntaxe(char *input);
+int check_all_syntaxe(char *input);
 #endif
