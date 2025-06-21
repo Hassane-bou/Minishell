@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 12:55:51 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/20 10:04:31 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/06/21 12:33:52 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef struct s_token
 
 typedef struct s_cmd
 {
+    char *cmd;
     char **args;
     char *infile;
     char *outfile;
@@ -44,30 +45,8 @@ typedef struct s_cmd
     struct s_cmd *next;
 }t_cmd;
 
-// void initialisation(t_cmd *cmd)
-// {
-//     cmd->append = NULL;
-//     cmd->args =NULL;
-//     cmd->infile = NULL;
-//     cmd->outfile = NULL;
-// }
 
-
-/***************ARGS**********************/
-
-//void add_to_args(char **args,char *word);
-int count_word_in_tokens(t_token *token)
-{
-    int count = 0;
-    while(token && token->type != PIPE)
-    {
-        if(token->type == WORD)
-            count++;
-        token = token->next;
-    }
-    printf(">count : %d<\n",count);
-    return(count);
-}
+/*****************************UTILIS**************************************/
 int ft_strlen(char *s)
 {
     int i = 0;
@@ -96,97 +75,10 @@ char	*ft_strdup(char *s1)
 	return (p);
 }
 
-t_cmd *new_args(t_token *token)
-{
-    t_cmd *cmd;
-    cmd = malloc(sizeof(t_cmd));
-    if(!cmd)
-        return NULL;
-    // initialisation(cmd);
-    int i =0;
-    int nbr_args = count_word_in_tokens(token);
-    cmd->args = malloc(sizeof(char *) * (nbr_args + 1));
-    if(!cmd->args)
-        return(free(cmd),NULL);
-    while(token && token->type != PIPE)
-    {
-        if(token->type == WORD)
-        {
-            cmd->args[i] = ft_strdup(token->value);
-            i++;
-        }   
-        else if(token->type == red_in)
-            cmd->infile = ft_strdup(token->value);
-        else if(token->type ==  red_out)
-            cmd->outfile = ft_strdup(token->value);
-        token = token->next;
-    }
-    cmd->args[i] = NULL;
-    cmd->next = NULL; 
-    return(cmd);
-}
-
-t_cmd  *add_cmd_back(t_cmd **lst,t_cmd  *new_cmd)
-{
-    t_cmd *tmp;
-    if(!*lst)
-        *lst = new_cmd;
-    else
-    {
-        tmp = *lst;
-        while(tmp->next != NULL)
-        {
-            tmp = tmp->next;
-        }
-        tmp->next = new_cmd;
-        new_cmd->next = NULL;
-    }
-    return(new_cmd);
-}
-t_cmd *parse_toking(t_token *tokens)
-{
-    t_cmd *head = NULL;
-    while(tokens)
-    {
-        t_cmd *cmd = new_args(tokens);
-        add_cmd_back(&head,cmd);
-        while(tokens && tokens->type != PIPE)
-            tokens = tokens->next;
-        if(tokens && tokens->type == PIPE)
-            tokens = tokens->next;
-    }
-    return (head);
-}
-
-void print_cmd(t_cmd *command)
-{
-    int i = 0;
-    while(command)
-    {
-        printf("-> %s\n",command->args[i++]);
-        command = command->next;
-    }
-}
-
- /****************tokenize simple*************************/
 int ft_isspace(int c)
 {
     return((c == 32) || (c >= 9 && c <= 13));
 }
-t_token *create_token(char *value,t_type type)
-{
-    t_token *token;
-    token = malloc(sizeof(t_token));
-    if(!token)
-        return NULL;
-    token->value=strdup(value);
-    token->type=-1;
-    token->next=NULL;
-
-    return (token);
-}
-
-
 
 char *substr(char *s,unsigned int start, size_t len)
 {
@@ -211,6 +103,23 @@ char *substr(char *s,unsigned int start, size_t len)
     p[i]='\0';
     return p;
         
+}
+/*****************************UTILIS*******************************/
+
+
+
+/****************TOKINES SIMPLE*************************/
+t_token *create_token(char *value,t_type type)
+{
+    t_token *token;
+    token = malloc(sizeof(t_token));
+    if(!token)
+        return NULL;
+    token->value=strdup(value);
+    token->type =type;
+    token->next=NULL;
+
+    return (token);
 }
 
 void append_token(t_token **head, t_token *new)
@@ -305,6 +214,129 @@ void print_tokens(t_token *token)
         token = token->next;
     }
 }
+/****************TOKINES SIMPLE*************************/
+
+/****************TOKINES ARGS*************************/
+
+//void add_to_args(char **args,char *word);
+int count_word_in_tokens(t_token *token)
+{
+    int count = 0;
+    int first_word = 0;
+    while(token && token->type != PIPE)
+    {
+        if(token->type == WORD)
+        {
+            if(!first_word)
+                first_word = 0;
+            count++;
+        }
+    token = token->next;
+    }
+    printf(">count : %d<\n",count);
+    return(count);
+}
+
+void initialisation(t_cmd *cmd)
+{
+    cmd->cmd = NULL;
+    cmd->args =NULL;
+    cmd->infile = NULL;
+    cmd->append = 0;
+    cmd->outfile = NULL;
+}
+
+t_cmd *new_args(t_token *token)
+{
+    t_cmd *cmd;
+    cmd = malloc(sizeof(t_cmd));
+    if(!cmd)
+        return NULL;
+    initialisation(cmd);
+    int i =0;
+    int nbr_args = count_word_in_tokens(token);
+    cmd->args = malloc(sizeof(char *) * (nbr_args + 1));
+    if(!cmd->args)
+        return(free(cmd),NULL);
+    while(token && token->type != PIPE)
+    {
+        if(token->type == WORD)
+        {
+            if(cmd->cmd == NULL)
+                cmd->cmd = ft_strdup(token->value);
+            else
+                cmd->args[i++] = ft_strdup(token->value);
+        }
+        else if(token->type == red_out)
+        {
+            if(token->next)
+                cmd->outfile = ft_strdup(token->next->value);
+            token =token->next;
+        }
+        else if(token->type ==  red_in)
+        {
+            if(token->next)
+                cmd->infile = ft_strdup(token->next->value);
+            token =token->next;
+
+        }
+        token = token->next;
+    }
+    cmd->args[i]=NULL;
+    return cmd;
+}
+
+t_cmd  *add_cmd_back(t_cmd **lst,t_cmd  *new_cmd)
+{
+    t_cmd *tmp;
+    if(!*lst)
+        *lst = new_cmd;
+    else
+    {
+        tmp = *lst;
+        while(tmp->next != NULL)
+        {
+            tmp = tmp->next;
+        }
+        tmp->next = new_cmd;
+        new_cmd->next = NULL;
+    }
+    return(new_cmd);
+}
+t_cmd *parse_toking(t_token *tokens)
+{
+    t_cmd *head = NULL;
+    while(tokens)
+    {
+        t_cmd *cmd = new_args(tokens);
+        add_cmd_back(&head,cmd);
+        while(tokens && tokens->type != PIPE)
+            tokens = tokens->next;
+        if(tokens && tokens->type == PIPE)
+            tokens = tokens->next;
+    }
+    return (head);
+}
+/**************print cmd******************/
+void print_cmd(t_cmd *command)
+{
+    int i = 0;
+    while(command)
+    {
+        i = 0;
+        printf("cmd: %s\n",command->cmd);
+        while(command->args[i])
+        {
+            printf("args[%d]: %s\n",i,command->args[i]);
+            i++;
+        }
+        printf("outfile:  %s\n",command->outfile);
+        printf("infile: %s\n",command->infile);
+        command = command->next;
+    }
+}
+/****************TOKINES ARGS*************************/
+
 
 int main()
 {
@@ -319,9 +351,8 @@ int main()
         if(*input)
             add_history(input);
         res = tokenize(input);
+        // print_tokens(res);
         parse = parse_toking(res);
-        print_tokens(res);
-        printf("\n-----------\n");
         print_cmd(parse);
         // free(input);
     }
