@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 11:02:54 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/19 13:28:57 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/21 12:54:21 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ int	ft_cd(char *path, t_env **env_copy)
 	if (old_path == NULL)
 		add_update_env(env_copy, "OLDPWD", old_path);
 	add_update_env(env_copy, "OLDPWD", pwd);
-	add_update_env(env_copy, "PWD", getcwd(NULL, 0));
+	if (get_env_value(env_copy, "PWD") != NULL)
+		add_update_env(env_copy, "PWD", getcwd(NULL, 0));
 	return 0;
 }

@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/19 13:29:16 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/21 12:34:37 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,11 @@ int	is_builtin(char **res, char *input, char *option, t_env **env_copy)
 		return (ft_unset(res, env_copy));
 	return 0;
 }
+
+// void	ff(void)
+// {
+// 	system("leaks minishell");
+// }
 
 int main(int ac, char *av[], char **envp)
 {

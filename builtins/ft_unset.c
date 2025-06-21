@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 10:37:35 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/19 13:30:19 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/21 10:38:19 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,7 @@ int	ft_unset(char **arr, t_env **env_copy)
 	{
 		if (check_valid(arr[i]) || arr[i] == NULL)
 			printf("minishell: unset: `%s': not a valid identifier\n", arr[i]);
-		// if (!check_valid(arr[i]))
-			remove_env(arr[i], env_copy);
+		remove_env(arr[i], env_copy);
 		i++;
 	}
 	return 0;

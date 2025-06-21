@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/19 13:30:35 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/21 10:40:06 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,10 @@ typedef struct s_env
 	struct s_env *next;
 } t_env;
 
+typedef struct s_var
+{
+	int	set;
+} t_var;
 void	env_add_back(t_env **env_list, t_env *new_node);
 void	env_copy(char **envp, t_env	**env_head);
 void	ft_update_shelvl(t_env *env_list);
