@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:31:35 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/20 10:09:15 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/06/22 17:49:11 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int main()
   
         char *input;
         t_token *result;
+        t_cmd *cmd;
         setup_signals();
         while(1)
         {
@@ -37,7 +38,10 @@ int main()
             if(check_all_syntaxe(input))
                 continue;
             result = tokenize(input);
-            print_token(result);
+            cmd = parse_cmd(result);
+            // print_token(result);
+            // printf("-------------------\n");
+            print_cmd(cmd);
             free(input);
         }
 }

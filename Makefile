@@ -1,6 +1,8 @@
 CC = cc 
-# CFLAGS = -Wall -Wextra -Werror
-SRCS = main.c utils.c ft_split.c ft_substr.c parse.c tokens.c ft_strdup.c
+CFLAGS = -Wall -Wextra -Werror
+SRCS = main.c utils.c ft_split.c ft_substr.c parse.c tokens.c ft_strdup.c\
+		check_syntaxe.c
+
 LIBS = -lreadline
 
 OBJE = $(SRCS:.c=.o)
