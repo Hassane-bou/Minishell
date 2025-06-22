@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 11:02:54 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/21 12:54:21 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/22 10:59:25 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,9 @@ char	*get_env_value(t_env **env_copy, char *key)
 	return (NULL);
 }
 
-void	add_update_env(t_env **env_copy, char *key, char *value)
+void	update_env(t_env **env_copy, char *key, char *value)
 {
 	t_env *head;
-	t_env *new_node;
 
 	head = *env_copy;
 	while (head)
@@ -42,6 +41,11 @@ void	add_update_env(t_env **env_copy, char *key, char *value)
 		}
 		head = head->next;
 	}
+}
+void	add_env(t_env **env_copy, char *key, char *value)
+{
+	t_env *new_node;
+
 	new_node = *env_copy;
 	new_node = malloc(sizeof(t_env));
 	new_node->key = ft_strdup(key);
@@ -72,16 +76,15 @@ int	ft_cd(char *path, t_env **env_copy)
 		old_path = get_env_value(env_copy, "OLDPWD");
 		pwd = getcwd(NULL, 0);
 		if (chdir(old_path) == 0)
-		{
 			printf("%s\n", old_path);
-		}
 	}
 	if (chdir(path) != 0 && ft_strcmp(path, "-") && ft_strcmp(path, "~") && path != NULL)
 		return (printf("minishell: cd: %s: No such file or directory\n", path), 1);
-	if (old_path == NULL)
-		add_update_env(env_copy, "OLDPWD", old_path);
-	add_update_env(env_copy, "OLDPWD", pwd);
+	if (get_env_value(env_copy, "OLDPWD") == NULL)
+		add_env(env_copy, "OLDPWD", pwd);
+	if (get_env_value(env_copy, "OLDPWD") != NULL)
+		update_env(env_copy, "OLDPWD", pwd);
 	if (get_env_value(env_copy, "PWD") != NULL)
-		add_update_env(env_copy, "PWD", getcwd(NULL, 0));
+		update_env(env_copy, "PWD", getcwd(NULL, 0));
 	return 0;
 }

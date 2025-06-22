@@ -6,7 +6,13 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 11:02:49 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/12 11:02:50 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/22 11:11:53 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+# include "../minishell.h"
+
+int ft_exit(char **arr, t_env **env_copy)
+{
+	
+}
