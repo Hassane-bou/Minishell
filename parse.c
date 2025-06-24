@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 12:50:48 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/22 17:50:03 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/06/24 11:05:50 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,26 @@ int count_word_in_token(t_token *token)
         }
         token = token->next;
     }
-    return(count);
+    return(count);  
 }
+int count_redirect_in_token(t_token *token)
+{
+    int count = 0;
+    while(token && token->type != PIPE)
+    {
+        if(token->type == REDIR_OUT)
+            count++;
+        token = token->next;
+    }
+    // printf("count: %d\n",count);
+    return (count);
+}
+
 
 void print_cmd(t_cmd *cmd)
 {
     int i;
+    // int j;
     while(cmd)
     {
         i = 0;
@@ -50,7 +64,15 @@ void print_cmd(t_cmd *cmd)
                 i++;
             }
         }
-        printf("outfil: %s\n",cmd->outfile);
+        int j = 0;
+        if(cmd->outfile)
+        {
+            while(cmd->outfile[j])
+            {
+                printf("outfil[%d]: %s\n",j,cmd->outfile[j]);
+                j++;
+            }
+        }
         printf("infile: %s\n",cmd->infile);
         printf("herdoc: %s\n",cmd->heredoc);
         cmd = cmd->next;
@@ -83,9 +105,14 @@ t_cmd *new_cmd(t_token *token)
         return NULL;
     initilisation(cmd);
     int nbr_args = count_word_in_token(token);
+    int nbr_red = count_redirect_in_token(token);
     cmd->args = malloc(sizeof(char *) * (nbr_args + 1));
     if(!cmd->args)
         return(free(cmd),NULL);
+    cmd->outfile = malloc(sizeof(char *) * (nbr_red + 1));
+    if(!cmd->outfile)
+        return(free(cmd),free(cmd->args),NULL);
+    int j= 0;
     int i= 0;
     while(token && token->type != PIPE)
     {
@@ -101,10 +128,14 @@ t_cmd *new_cmd(t_token *token)
         }
         else if(token->type == REDIR_OUT || token->type == APPEND)
         {
+            
             if(token->type == APPEND)
-                cmd->append =1;
+                cmd->append = 1;
             if(token->next)
-                cmd->outfile = ft_strdup(token->next->value);
+            {
+                cmd->outfile[j] =  ft_strdup(token->next->value);
+                j++;
+            }
             token = token->next;
         }
         else if(token->type == REDIR_IN)
@@ -121,6 +152,7 @@ t_cmd *new_cmd(t_token *token)
         }
         token = token->next;
     }
+    cmd->outfile[j]=NULL;
     cmd->args[i] = NULL;
     return(cmd);
 }
