@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/30 22:40:51 by rmouafik          #+#    #+#             */
-/*   Updated: 2024/11/18 09:28:51 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/24 12:54:35 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	ft_atoi(const char *str)
 		if (result > 9223372036854775807 && sign > 0)
 			return (-1);
 		if (result > 9223372036854775807 && sign < 0)
-			return (0);
+			return (-1);
 	}
 	return (result * sign);
 }

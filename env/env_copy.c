@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 10:52:52 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/12 12:45:23 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/23 12:20:23 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	empty_env(t_env *env_node, t_env **env_head)
 	env_add_back(env_head, env_node);
 	env_node = malloc(sizeof(t_env));
 	env_node->key = ft_strdup("_");
-	env_node->value = ft_strdup("/usr/bin/env");
+	env_node->value = ft_strdup("./minishell");
 	env_node->next = NULL;
 	env_add_back(env_head, env_node);
 }
