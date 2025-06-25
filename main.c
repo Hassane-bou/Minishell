@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/25 09:28:02 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/25 11:33:34 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ int	is_builtin(char **res, char *input, char *option, t_env **env_copy)
 		return (ft_unset(res, env_copy));
 	if (!ft_strcmp(input, "exit"))
 		return (ft_exit(res, env_copy));
+	if (!ft_strcmp(input, "export"))
+		return (ft_export(res, env_copy));
 	return 0;
 }
 

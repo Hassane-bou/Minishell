@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/25 10:33:16 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/25 11:35:56 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ int		ft_strcmp(char *s1, char *s2);
 int		ft_echo(char **arr, t_env *env_copy);
 int		ft_unset(char **arr, t_env **env_copy);
 int 	ft_exit(char **arr, t_env **env_copy);
+int		ft_export(char **arr, t_env **env_copy);
 
 #endif
 
