@@ -6,19 +6,41 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 11:02:49 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/24 13:32:30 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/25 11:04:48 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "../minishell.h"
-# include <limits.h>
 
-int	check_args(char **arr)
+int	check_digit(char *str)
+{
+	int i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[0] == '-')
+			i++;
+		if (!ft_isdigit(str[i]))
+			return 1;
+		i++;
+	}
+	return 0;
+}
+
+int	check_num(char **arr)
 {
 	int	i;
 	int	j;
 
 	i = 1;
+	if (check_digit(arr[1]))
+	{
+		ft_putstr_fd("minishell: exit: ", 2);
+		ft_putstr_fd(arr[1], 2);
+		ft_putstr_fd(": numeric argument required\n", 2);
+		exit(255);
+	}
 	while (arr[i])
 	{
 		j = 0;
@@ -67,14 +89,25 @@ int ft_exit(char **arr, t_env **env_copy)
 
 	i = 1;
 	printf("exit\n");
-	if (check_args(arr) != 1)
-		return (printf("minishell: exit: too many arguments\n"), 1);
+	if (check_num(arr) != 1)
+		return (ft_putstr_fd(ERROR_ARG, 2), 1);
 	if (arr[1] == NULL)
 		exit(0);
 	else if (arr[1] != NULL)
 	{
+		if (check_digit(arr[1]))
+		{
+			ft_putstr_fd("minishell: exit: ", 2);
+			ft_putstr_fd(arr[1], 2);
+			ft_putstr_fd(": numeric argument required\n", 2);
+			exit(255);
+		}
 		if (!check_long(arr[1]))
-			printf("minishell: exit: %s: numeric argument required\n", arr[1]);
+		{
+			ft_putstr_fd("minishell: exit: ", 2);
+			ft_putstr_fd(arr[1], 2);
+			ft_putstr_fd(": numeric argument required\n", 2);
+		}
 		exit(ft_atoi(arr[1]));
 	}
 	return 0;
