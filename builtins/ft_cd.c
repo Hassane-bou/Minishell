@@ -6,16 +6,16 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 11:02:54 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/22 10:59:25 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/26 10:23:36 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../minishell.h"
+#include "../minishell.h"
 
 char	*get_env_value(t_env **env_copy, char *key)
 {
 	t_env	*head;
-	
+
 	head = *env_copy;
 	while (head)
 	{
@@ -28,7 +28,7 @@ char	*get_env_value(t_env **env_copy, char *key)
 
 void	update_env(t_env **env_copy, char *key, char *value)
 {
-	t_env *head;
+	t_env	*head;
 
 	head = *env_copy;
 	while (head)
@@ -42,9 +42,10 @@ void	update_env(t_env **env_copy, char *key, char *value)
 		head = head->next;
 	}
 }
+
 void	add_env(t_env **env_copy, char *key, char *value)
 {
-	t_env *new_node;
+	t_env	*new_node;
 
 	new_node = *env_copy;
 	new_node = malloc(sizeof(t_env));
@@ -56,9 +57,9 @@ void	add_env(t_env **env_copy, char *key, char *value)
 
 int	ft_cd(char *path, t_env **env_copy)
 {
-	char *old_path;
-	char *pwd;
-	char *home;
+	char	*old_path;
+	char	*pwd;
+	char	*home;
 
 	pwd = getcwd(NULL, 0);
 	home = get_env_value(env_copy, "HOME");
@@ -78,13 +79,19 @@ int	ft_cd(char *path, t_env **env_copy)
 		if (chdir(old_path) == 0)
 			printf("%s\n", old_path);
 	}
-	if (chdir(path) != 0 && ft_strcmp(path, "-") && ft_strcmp(path, "~") && path != NULL)
-		return (printf("minishell: cd: %s: No such file or directory\n", path), 1);
+	if (chdir(path) != 0 && ft_strcmp(path, "-") 
+		&& ft_strcmp(path, "~") && path != NULL)
+	{
+		ft_putstr_fd("minishell: cd: ", 2);
+		ft_putstr_fd(path, 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+		return (1);
+	}
 	if (get_env_value(env_copy, "OLDPWD") == NULL)
 		add_env(env_copy, "OLDPWD", pwd);
 	if (get_env_value(env_copy, "OLDPWD") != NULL)
 		update_env(env_copy, "OLDPWD", pwd);
 	if (get_env_value(env_copy, "PWD") != NULL)
 		update_env(env_copy, "PWD", getcwd(NULL, 0));
-	return 0;
+	return (0);
 }

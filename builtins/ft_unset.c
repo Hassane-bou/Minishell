@@ -6,16 +6,16 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 10:37:35 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/25 12:30:20 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/26 10:36:25 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../minishell.h"
+#include "../minishell.h"
 
 void	remove_env(char *key, t_env	**env_copy)
 {
-	t_env *current;
-	t_env *previous;
+	t_env	*current;
+	t_env	*previous;
 
 	current = *env_copy;
 	previous = NULL;
@@ -50,17 +50,19 @@ int	check_valid(char *str)
 	while (str[i])
 	{
 		if (i == 0 && (!ft_isalpha(str[i]) && str[i] != '_'))
-			return 1;
+			return (1);
 		else if (i != 0 && (!ft_isalnum(str[i]) && str[i] != '_'))
-			return 1;
+			return (1);
 		i++;
 	}
-	return 0;
+	return (0);
 }
 
 int	ft_unset(char **arr, t_env **env_copy)
 {
-	int i = 1;
+	int	i;
+
+	i = 1;
 	while (arr[i])
 	{
 		if (check_valid(arr[i]) || arr[i] == NULL)
@@ -68,10 +70,10 @@ int	ft_unset(char **arr, t_env **env_copy)
 			ft_putstr_fd("minishell: unset: `", 2);
 			ft_putstr_fd(arr[i], 2);
 			ft_putstr_fd("': not a valid identifier\n", 2);
-			return 1;
+			return (1);
 		}
 		remove_env(arr[i], env_copy);
 		i++;
 	}
-	return 0;
+	return (0);
 }

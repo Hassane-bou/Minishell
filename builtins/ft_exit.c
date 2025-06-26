@@ -6,15 +6,15 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 11:02:49 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/25 11:04:48 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/26 10:29:30 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../minishell.h"
+#include "../minishell.h"
 
 int	check_digit(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i])
@@ -22,10 +22,10 @@ int	check_digit(char *str)
 		if (str[0] == '-')
 			i++;
 		if (!ft_isdigit(str[i]))
-			return 1;
+			return (1);
 		i++;
 	}
-	return 0;
+	return (0);
 }
 
 int	check_num(char **arr)
@@ -83,7 +83,7 @@ int	check_long(const char *str)
 	return (1);
 }
 
-int ft_exit(char **arr, t_env **env_copy)
+int	ft_exit(char **arr, t_env **env_copy)
 {
 	int	i;
 
@@ -110,5 +110,5 @@ int ft_exit(char **arr, t_env **env_copy)
 		}
 		exit(ft_atoi(arr[1]));
 	}
-	return 0;
+	return (0);
 }
