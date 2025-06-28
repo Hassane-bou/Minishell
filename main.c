@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/28 09:46:59 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/28 13:21:19 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,23 @@ int	is_builtin(t_cmd *cmd, t_env **env_copy)
 	return 0;
 }
 
+char **env_to_arr(t_env *env_head)
+{
+	char	**env_arr;
+
+	int	i = 0;
+	env_arr = malloc(sizeof(char **) * 1337);
+	while (env_head)
+	{
+		char *tmp = ft_strjoin(env_head->key, "=");
+		env_arr[i] = ft_strjoin(tmp, env_head->value);
+		free(tmp);
+		i++;
+		env_head = env_head->next;
+	}
+	return (env_arr);
+}
+
 // void	ff(void)
 // {
 // 	system("leaks minishell");
@@ -55,6 +72,7 @@ int	is_builtin(t_cmd *cmd, t_env **env_copy)
 int main(int ac, char *av[], char **envp)
 {
     char 	*input;
+	char	**env_arr;
 	t_token *res;
     t_cmd	*cmd;
     t_env	*env_head;
@@ -69,7 +87,7 @@ int main(int ac, char *av[], char **envp)
             add_history(input);
 		res = tokenize(input);
         cmd = parse_cmd(res);
-		// char **res = ft_split(input, ' ');
-		is_builtin(cmd, &env_head);
+		env_arr = env_to_arr(env_head);
+		ft_execute(cmd, );
     }
 }
