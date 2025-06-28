@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 11:02:51 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/26 10:26:45 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/28 09:57:38 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,10 @@ int	ft_echo(char **arr, t_env *env_copy)
 {
 	int	i;
 
-	i = 1;
+	i = 0;
 	while (arr[i])
 	{
-		if (i == 1 && !ft_strcmp(arr[i], "-n"))
+		if (i == 0 && !ft_strcmp(arr[i], "-n"))
 			i++;
 		if (arr[i])
 			printf("%s", arr[i]);
@@ -27,7 +27,7 @@ int	ft_echo(char **arr, t_env *env_copy)
 			printf(" ");
 		i++;
 	}
-	if (ft_strcmp(arr[1], "-n"))
+	if (ft_strcmp(arr[0], "-n"))
 		printf("\n");
 	return (0);
 }

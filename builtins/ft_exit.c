@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 11:02:49 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/26 10:29:30 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/28 10:05:13 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,11 @@ int	check_num(char **arr)
 	int	i;
 	int	j;
 
-	i = 1;
-	if (check_digit(arr[1]))
+	i = 0;
+	if (check_digit(arr[0]))
 	{
 		ft_putstr_fd("minishell: exit: ", 2);
-		ft_putstr_fd(arr[1], 2);
+		ft_putstr_fd(arr[0], 2);
 		ft_putstr_fd(": numeric argument required\n", 2);
 		exit(255);
 	}
@@ -48,7 +48,7 @@ int	check_num(char **arr)
 			j++;
 		i++;
 	}
-	return (i - 1);
+	return (i);
 }
 
 int	check_long(const char *str)
@@ -87,28 +87,28 @@ int	ft_exit(char **arr, t_env **env_copy)
 {
 	int	i;
 
-	i = 1;
+	i = 0;
 	printf("exit\n");
 	if (check_num(arr) != 1)
 		return (ft_putstr_fd(ERROR_ARG, 2), 1);
-	if (arr[1] == NULL)
-		exit(0);
-	else if (arr[1] != NULL)
+	if (arr[0] == NULL)
+		exit(0); // i will update this to be the last status (signals)
+	else if (arr[0] != NULL)
 	{
-		if (check_digit(arr[1]))
+		if (check_digit(arr[0]))
 		{
 			ft_putstr_fd("minishell: exit: ", 2);
-			ft_putstr_fd(arr[1], 2);
+			ft_putstr_fd(arr[0], 2);
 			ft_putstr_fd(": numeric argument required\n", 2);
 			exit(255);
 		}
-		if (!check_long(arr[1]))
+		if (!check_long(arr[0]))
 		{
 			ft_putstr_fd("minishell: exit: ", 2);
-			ft_putstr_fd(arr[1], 2);
+			ft_putstr_fd(arr[0], 2);
 			ft_putstr_fd(": numeric argument required\n", 2);
 		}
-		exit(ft_atoi(arr[1]));
+		exit(ft_atoi(arr[0]));
 	}
 	return (0);
 }

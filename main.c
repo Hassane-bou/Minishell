@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/25 11:33:34 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/28 09:46:59 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,22 +28,22 @@ int	ft_strcmp(char *s1, char *s2)
 	return (s1[i] - s2[i]);
 }
 
-int	is_builtin(char **res, char *input, char *option, t_env **env_copy)
+int	is_builtin(t_cmd *cmd, t_env **env_copy)
 {
-	if (!ft_strcmp(input, "env") || !ft_strcmp(input, "ENV"))
+	if (!ft_strcmp(cmd->cmd, "env") || !ft_strcmp(cmd->cmd, "ENV"))
 		return (ft_env(*env_copy));
-	if (!ft_strcmp(input, "pwd") || !ft_strcmp(input, "PWD"))
+	if (!ft_strcmp(cmd->cmd, "pwd") || !ft_strcmp(cmd->cmd, "PWD"))
 		return (ft_pwd(*env_copy));
-	if (!ft_strcmp(input, "cd"))
-		return (ft_cd(option, env_copy));
-	if (!ft_strcmp(input, "echo") || !ft_strcmp(input, "ECHO"))
-		return (ft_echo(res, *env_copy));
-	if (!ft_strcmp(input, "unset"))
-		return (ft_unset(res, env_copy));
-	if (!ft_strcmp(input, "exit"))
-		return (ft_exit(res, env_copy));
-	if (!ft_strcmp(input, "export"))
-		return (ft_export(res, env_copy));
+	if (!ft_strcmp(cmd->cmd, "cd"))
+		return (ft_cd(cmd->args[0], env_copy));
+	if (!ft_strcmp(cmd->cmd, "echo") || !ft_strcmp(cmd->cmd, "ECHO"))
+		return (ft_echo(cmd->args, *env_copy));
+	if (!ft_strcmp(cmd->cmd, "unset"))
+		return (ft_unset(cmd->args, env_copy));
+	if (!ft_strcmp(cmd->cmd, "exit"))
+		return (ft_exit(cmd->args, env_copy));
+	if (!ft_strcmp(cmd->cmd, "export"))
+		return (ft_export(cmd->args, env_copy));
 	return 0;
 }
 
@@ -55,7 +55,8 @@ int	is_builtin(char **res, char *input, char *option, t_env **env_copy)
 int main(int ac, char *av[], char **envp)
 {
     char 	*input;
-	char	**res;
+	t_token *res;
+    t_cmd	*cmd;
     t_env	*env_head;
 
 	env_copy(envp, &env_head);
@@ -66,7 +67,9 @@ int main(int ac, char *av[], char **envp)
             break ;
         if(*input)
             add_history(input);
-		res = ft_split(input, ' ');
-		is_builtin(res, res[0], res[1], &env_head);
+		res = tokenize(input);
+        cmd = parse_cmd(res);
+		// char **res = ft_split(input, ' ');
+		is_builtin(cmd, &env_head);
     }
 }

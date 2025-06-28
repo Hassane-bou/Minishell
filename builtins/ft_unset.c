@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 10:37:35 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/26 10:36:25 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/28 09:59:35 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int	ft_unset(char **arr, t_env **env_copy)
 {
 	int	i;
 
-	i = 1;
+	i = 0;
 	while (arr[i])
 	{
 		if (check_valid(arr[i]) || arr[i] == NULL)

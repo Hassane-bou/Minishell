@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/25 11:35:56 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/28 08:31:41 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,47 @@
 # include <unistd.h>
 # include <limits.h>
 
-#define ERROR_ARG "minishell: exit: too many arguments\n"
+// ------------ parsing -----------------
+
+typedef enum e_type {
+    WORD,
+    PIPE,
+    REDIR_IN,
+    REDIR_OUT,
+    APPEND,
+    HEREDOC,
+}t_type;
+
+typedef struct s_token
+{
+    char *value;
+    t_type type;
+    struct s_token *next;
+} t_token;
+
+typedef struct s_cmd
+{
+    char *cmd;
+    char **args;
+    char **outfile;
+    char *infile;
+    int append;
+    char *heredoc;
+    struct s_cmd *next;
+} t_cmd;
+
+t_token *cretae_token(char *value, t_type type);
+void append_token(t_token **head,t_token *new);
+int handle_APPEND(char *input,int i,t_token **head);
+int handle_herdoc(char *input,int i,t_token **head);
+int handle_outfile(char *input,int i,t_token **head);
+int handle_intfile(char *input,int i,t_token **head);
+int handle_pipe(char *input,int i,t_token **head);
+int handle_word(char *input, int i, t_token **head);
+t_token *tokenize(char *input);
+t_cmd *parse_cmd(t_token *token);
+
+// -------------- builtins ----------------
 
 typedef struct s_env
 {
@@ -28,8 +68,6 @@ typedef struct s_env
 	char	*value;
 	struct s_env *next;
 } t_env;
-
-// -------------- builtins ----------------
 
 void	env_add_back(t_env **env_list, t_env *new_node);
 void	env_copy(char **envp, t_env	**env_head);
@@ -43,5 +81,6 @@ int		ft_unset(char **arr, t_env **env_copy);
 int 	ft_exit(char **arr, t_env **env_copy);
 int		ft_export(char **arr, t_env **env_copy);
 
-#endif
+#define ERROR_ARG "minishell: exit: too many arguments\n"
 
+#endif
