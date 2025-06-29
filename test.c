@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 12:55:51 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/22 17:13:27 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/06/29 11:55:34 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,8 @@ char	*ft_strdup(char *s1)
 	char	*p;
 	int		n;
 	int		i;
-
+    if(!s1)
+        return NULL;
 	p = (char *)s1;
 	n = ft_strlen(s1) + 1;
 	i = 0;
@@ -73,6 +74,33 @@ char	*ft_strdup(char *s1)
 	}
 	p[i] = '\0';
 	return (p);
+}
+
+char *ft_strjoin(char *s1,char *s2)
+{
+    if(!s1 || !s2)
+        return NULL;
+    int i = 0;
+    int j = 0;
+    int len = ft_strlen(s1) + ft_strlen(s2);
+    char *p = malloc(len + 1);
+    if(!p)
+        return NULL;
+    while(s1[i])
+    {
+        p[j] = s1[i];
+        i++;
+        j++;
+    }
+    i=0;
+    while(s2[i])
+    {
+        p[j] = s2[i];
+        j++;
+        i++;
+    }
+    p[i] = '\0';
+    return (NULL);
 }
 
 int ft_isspace(int c)
@@ -233,7 +261,6 @@ int count_word_in_tokens(t_token *token)
         }
     token = token->next;
     }
-    printf(">count : %d<\n",count);
     return(count);
 }
 
@@ -263,7 +290,10 @@ t_cmd *new_args(t_token *token)
         if(token->type == WORD)
         {
             if(cmd->cmd == NULL)
+            {
                 cmd->cmd = ft_strdup(token->value);
+                
+            }
             else
                 cmd->args[i++] = ft_strdup(token->value);
         }
@@ -305,6 +335,7 @@ t_cmd  *add_cmd_back(t_cmd **lst,t_cmd  *new_cmd)
 }
 t_cmd *parse_toking(t_token *tokens)
 {
+      
     t_cmd *head = NULL;
     while(tokens)
     {
@@ -336,13 +367,173 @@ void print_cmd(t_cmd *command)
     }
 }
 /****************TOKINES ARGS*************************/
+// int count_word(char *str)
+// {
+//     int i= 0;
+//     int count = 0;
+//     while(ft_isspace(str[i]))
+//         i++;
+//     while(str[i])
+//     {
+//         if(ft_isspace(str[i]) || str[i+1] == '\0')
+//             count++;
+//         i++;
+//     }
+//     return(count);
+// }
+
+// char **split(char *str,int c)
+// {
+//     int i = 0;
+//     int len = count_word(str);
+//     char **cpy =(char *)malloc(sizeof(char *) * (len + 1));
+//     if(!cpy)
+//         return(NULL);
+    
+// }
+
+int count_len(int num)
+{
+    int len = 0;
+    if(num == 0)
+        return 1;
+    if(num < 0)
+        len = 1;
+    while(num != 0)
+    {
+        num/=10;
+        len++;
+    }
+    return len;
+}
+
+char *itoa(int n)
+{
+    char *str;
+    int i;
+    int len;
+    long j;
+
+    j = n;
+    len = count_len(n);
+    str = malloc(len + 1);
+    if(!str)
+        return NULL;
+    if(j < 0)
+    {
+        str[0] ='-';
+        j*=-1;
+    }
+    i = len - 1;
+    if(j == 0)
+        str[0] ='0';
+    while(j > 0)
+    {
+        str[i] = (j % 10) + '0';
+        j = j / 10;
+        i--;
+    }
+    str[len] = '\0';
+    return(str);
+
+}
+
+char *get_env_value(char *name,char **envp)
+{
+    int i = 0;
+    int len = strlen(name);
+    while(envp[i])
+    {
+        if(strncmp(envp[i],name,len) == 0 && envp[i][len] == '=')
+            return strdup(envp[i] + len + 1);
+        i++;
+    }
+    return strdup("");
+}
+char *expand_variable(char *input,int *i,char **envp)
+{
+    int start = *i + 1;
+    int len = 0;
+    if(input[start] == '?' || input[start] == '\0')
+    {
+        (*i)++;
+        return itoa(0);
+    }
+
+    while(input[start + len] && ((input[start + len] >= 'A' && input[start + len] <= 'Z') ||
+            (input[start + len] >= 'a' && input[start + len] <= 'z') || 
+            (input[start + len] >= '0' && input[start + len] <= '9') || input[start + len] == '-'))
+    {
+        len++;
+    }
+    char *var = strndup(input + start ,len);
+    char *value = get_env_value(var,envp);
+    free(var);
+    *i = start + len - 1;
+    printf("expand_variable: %.*s → %s\n", len, input + start, value);
+    return value; 
+}
+
+char *expand_string(char *input,char **envp)
+{
+    if(!input)
+        return NULL;
+    char *res = ft_strdup("");
+    char quote = 0;
+    char *tmp;
+    int i = 0;
+    while(input[i])
+    {
+        if(input[i] == '\'' && quote == 0)
+            quote = 1;
+        else if(input[i] == '\'' && quote == 1)
+            quote = 0;
+        else if(input[i] == '"' && quote == 0)
+            quote = 2;
+        else if(input[i] == '"' && quote == 2)
+            quote =0;
+        else if(input[i] == '$' && quote != 1)
+        {
+            tmp = expand_variable(input,&i,envp);
+            if(tmp)
+            {
+                char *tmp1 =  ft_strjoin(res, tmp);
+                free(res);
+                res = tmp1;
+
+            }
+            continue;
+        }
+        char c[2] = {input [i],'\0'};
+        char *tmp1 = ft_strjoin(res,c);
+        free(res);
+        res = tmp1;
+        i++;
+    }
+    return (res);
+}
 
 
-int main()
+t_token *expand_word(t_token *tokens,char **envp)
+{
+    t_token *head = tokens;
+    
+    while(tokens)
+    {
+        if(tokens->type == WORD)
+            tokens->value = expand_string(tokens->value,envp);
+        tokens = tokens->next;
+    }
+    return(head);
+}
+
+
+int main(int argc,char **av,char **envp )
 {
     char *input;
     t_token *res = NULL;
     t_cmd *parse = NULL;
+    t_token *tmp =NULL;
     while(1)
     {
         input = readline("Minishell> ");
@@ -351,10 +542,14 @@ int main()
         if(*input)
             add_history(input);
         res = tokenize(input);
-        // print_tokens(res);
-        parse = parse_toking(res);
-        print_cmd(parse);
-        // free(input);
+        res = expand_word(res,envp);
+        // tmp = tokenize(input);
+        // tmp = expand_word(tmp,envp);
+        // // print_tokens(res);
+        // free(tmp);
+        // parse = parse_toking(res);
+        // print_cmd(parse);
+        free(input);
     }
     free_token_list(res);
 }
