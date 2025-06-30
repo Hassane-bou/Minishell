@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 12:37:38 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/28 13:18:52 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/30 11:17:41 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ char	**get_path(char **envp, char *cmd)
 	j = 0;
 	while (envp[i])
 	{
+		
 		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
 		{
 			str = envp[i] + 5;
@@ -54,7 +55,11 @@ char	*check_path(char **path)
 	return (NULL);
 }
 
-void	ft_execute(t_cmd *cmd, t_env **env_copy)
+int	ft_execute(t_cmd *cmd, t_env **env_copy, char *input)
 {
-	
+	if (is_builtin(cmd, env_copy))
+		run_builtin(cmd, env_copy);
+	else
+		return (printf("minishell: %s: command not found\n", input), 127);
+	return 0;
 }

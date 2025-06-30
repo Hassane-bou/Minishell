@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/28 11:32:02 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/29 10:44:06 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,9 @@ int		ft_unset(char **arr, t_env **env_copy);
 int 	ft_exit(char **arr, t_env **env_copy);
 int		ft_export(char **arr, t_env **env_copy);
 char	*get_env_value(t_env **env_copy, char *key);
+int     is_builtin(t_cmd *cmd, t_env **env_copy);
+void	run_builtin(t_cmd *cmd, t_env **env_copy);
+int     ft_execute(t_cmd *cmd, t_env **env_copy, char *input);
 
 #define ERROR_ARG "minishell: exit: too many arguments\n"
 

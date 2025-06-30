@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/28 13:21:19 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/06/29 10:43:15 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,20 +31,37 @@ int	ft_strcmp(char *s1, char *s2)
 int	is_builtin(t_cmd *cmd, t_env **env_copy)
 {
 	if (!ft_strcmp(cmd->cmd, "env") || !ft_strcmp(cmd->cmd, "ENV"))
-		return (ft_env(*env_copy));
+		return (1);
 	if (!ft_strcmp(cmd->cmd, "pwd") || !ft_strcmp(cmd->cmd, "PWD"))
-		return (ft_pwd(*env_copy));
+		return (1);
 	if (!ft_strcmp(cmd->cmd, "cd"))
-		return (ft_cd(cmd->args[0], env_copy));
+		return (1);
 	if (!ft_strcmp(cmd->cmd, "echo") || !ft_strcmp(cmd->cmd, "ECHO"))
-		return (ft_echo(cmd->args, *env_copy));
+		return (1);
 	if (!ft_strcmp(cmd->cmd, "unset"))
-		return (ft_unset(cmd->args, env_copy));
+		return (1);
 	if (!ft_strcmp(cmd->cmd, "exit"))
-		return (ft_exit(cmd->args, env_copy));
+		return (1);
 	if (!ft_strcmp(cmd->cmd, "export"))
-		return (ft_export(cmd->args, env_copy));
+		return (1);
 	return 0;
+}
+void	run_builtin(t_cmd *cmd, t_env **env_copy)
+{
+	if (!ft_strcmp(cmd->cmd, "env") || !ft_strcmp(cmd->cmd, "ENV"))
+		ft_env(*env_copy);
+	if (!ft_strcmp(cmd->cmd, "pwd") || !ft_strcmp(cmd->cmd, "PWD"))
+		ft_pwd(*env_copy);
+	if (!ft_strcmp(cmd->cmd, "cd"))
+		ft_cd(cmd->args[0], env_copy);
+	if (!ft_strcmp(cmd->cmd, "echo") || !ft_strcmp(cmd->cmd, "ECHO"))
+		ft_echo(cmd->args, *env_copy);
+	if (!ft_strcmp(cmd->cmd, "unset"))
+		ft_unset(cmd->args, env_copy);
+	if (!ft_strcmp(cmd->cmd, "exit"))
+		ft_exit(cmd->args, env_copy);
+	if (!ft_strcmp(cmd->cmd, "export"))
+		ft_export(cmd->args, env_copy);
 }
 
 char **env_to_arr(t_env *env_head)
@@ -88,6 +105,10 @@ int main(int ac, char *av[], char **envp)
 		res = tokenize(input);
         cmd = parse_cmd(res);
 		env_arr = env_to_arr(env_head);
-		ft_execute(cmd, );
+		if (fork() == 0)
+		{
+			ft_execute(cmd, &env_head, input);
+		}
+		wait(NULL);
     }
 }
