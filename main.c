@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:31:35 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/22 17:49:11 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/06/30 10:25:59 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ int main()
             // print_token(result);
             // printf("-------------------\n");
             print_cmd(cmd);
+            
             free(input);
         }
 }

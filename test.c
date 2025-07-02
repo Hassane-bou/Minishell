@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 12:55:51 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/29 11:55:34 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/07/02 10:42:59 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,6 @@ typedef struct s_cmd
     struct s_cmd *next;
 }t_cmd;
 
-
-/*****************************UTILIS**************************************/
 int ft_strlen(char *s)
 {
     int i = 0;
@@ -54,6 +52,8 @@ int ft_strlen(char *s)
         i++;
     return(i);
 }
+
+/*****************************UTILIS**************************************/
 char	*ft_strdup(char *s1)
 {
 	char	*p;
@@ -367,31 +367,10 @@ void print_cmd(t_cmd *command)
     }
 }
 /****************TOKINES ARGS*************************/
-// int count_word(char *str)
-// {
-//     int i= 0;
-//     int count = 0;
-//     while(ft_isspace(str[i]))
-//         i++;
-//     while(str[i])
-//     {
-//         if(ft_isspace(str[i]) || str[i+1] == '\0')
-//             count++;
-//         i++;
-//     }
-//     return(count);
-// }
 
-// char **split(char *str,int c)
-// {
-//     int i = 0;
-//     int len = count_word(str);
-//     char **cpy =(char *)malloc(sizeof(char *) * (len + 1));
-//     if(!cpy)
-//         return(NULL);
-    
-// }
 
+
+/********************Expands*************************************/
 int count_len(int num)
 {
     int len = 0;
@@ -437,103 +416,131 @@ char *itoa(int n)
     return(str);
 
 }
+ int ft_strncmp(char *s1,  char *s2, int n)
+ {
+    int i = 0;
+    while(s1[i] && s2[i] && i < n)
+    {
+        if(s1[i] > s2[i])
+            return 1;
+        else if(s1[i] < s2[i])
+            return -1;
+        i++; 
+    }
+    if(i < n)
+    {
+         if(s1[i] > s2[i])
+            return 1;
+        else if(s1[i] < s2[i])
+            return -1;
+    }
+    return 0;
+ }
 
-char *get_env_value(char *name,char **envp)
+char *get_env_value(char *var,char **envp)
 {
     int i = 0;
-    int len = strlen(name);
+    int len = ft_strlen(var);
     while(envp[i])
     {
-        if(strncmp(envp[i],name,len) == 0 && envp[i][len] == '=')
-            return strdup(envp[i] + len + 1);
+        if(ft_strncmp(envp[i],var,len) == 0 && envp[i][len] == '=')
+            return (envp[i] + len + 1);
         i++;
     }
-    return strdup("");
+    return("");
 }
-char *expand_variable(char *input,int *i,char **envp)
+int is_valid_env_char(char c)
 {
-    int start = *i + 1;
-    int len = 0;
-    if(input[start] == '?' || input[start] == '\0')
-    {
-        (*i)++;
-        return itoa(0);
-    }
-
-    while(input[start + len] && ((input[start + len] >= 'A' && input[start + len] <= 'Z') ||
-            (input[start + len] >= 'a' && input[start + len] <= 'z') || 
-            (input[start + len] >= '0' && input[start + len] <= '9') || input[start + len] == '-'))
-    {
-        len++;
-    }
-    char *var = strndup(input + start ,len);
-    char *value = get_env_value(var,envp);
-    free(var);
-    *i = start + len - 1;
-    printf("expand_variable: %.*s → %s\n", len, input + start, value);
-    return value; 
+    return((c >= 'A' && c <= 'Z')||(c >= 'a' && c <= 'z')||(c >= '0' && c <= '9') || c == '_');
 }
 
-char *expand_string(char *input,char **envp)
+
+char *expand_word(char *word,char **envp)
 {
-    if(!input)
-        return NULL;
-    char *res = ft_strdup("");
-    char quote = 0;
-    char *tmp;
-    int i = 0;
-    while(input[i])
+    if(!word || word[0] != '$')
+        return (ft_strdup(word));
+    // if(word[0] == '?')
+    //     return (itoa(last_exit_code));
+    int i = 1;
+    while(word[i] && is_valid_env_char(word[i]))
+        i++;
+    if(i == 1)
+        return ft_strdup("$");
+    char *var_name = substr(word,1,i-1);
+    char *value = get_env_value(var_name,envp);
+    free(var_name);
+    return(ft_strdup(value));   
+}
+
+void expand_token_list(t_token *head,char **envp)
+{
+    t_token *tmp = head;
+    while(tmp)
     {
-        if(input[i] == '\'' && quote == 0)
-            quote = 1;
-        else if(input[i] == '\'' && quote == 1)
-            quote = 0;
-        else if(input[i] == '"' && quote == 0)
-            quote = 2;
-        else if(input[i] == '"' && quote == 2)
-            quote =0;
-        else if(input[i] == '$' && quote != 1)
+        if(tmp->type == WORD && tmp->value && tmp->value[0] == '$')
         {
-            tmp = expand_variable(input,&i,envp);
-            if(tmp)
-            {
-                char *tmp1 =  ft_strjoin(res, tmp);
-                free(res);
-                res = tmp1;
-
-            }
-            continue;
+            char *expanded = expand_word(tmp->value,envp);
+            free(tmp->value);
+            tmp->value = expanded;
         }
-        char c[2] = {input [i],'\0'};
-        char *tmp1 = ft_strjoin(res,c);
-        free(res);
-        res = tmp1;
+        tmp = tmp->next;
+    }
+}
+char *ft_strjoin_char(char *s1,char c)
+{
+    int i = 0;
+    int len = ft_strlen(s1) + 1;
+    char *p = malloc(len + 1);
+    if(!p)
+        return NULL;
+    while(s1[i])
+    {
+        p[i] = s1[i];
         i++;
     }
-    return (res);
+    p[i] = c;
+    i++;
+    p[i] ='\0';
+    return p;
 }
 
 
-t_token *expand_word(t_token *tokens,char **envp)
+char *expand_string(char *str, char **envp)
 {
-    t_token *head = tokens;
+    int i = 0;
+    int quote = 0;
+    char *result = ft_strdup("");
     
-    while(tokens)
+    while(str[i])
     {
-        if(tokens->type == WORD)
-            tokens->value = expand_string(tokens->value,envp);
-        tokens = tokens->next;
+        if(str[i] == '\'' || str[i] =='"')
+        {
+            if(str[i] == '\'' && quote == 0)
+                quote = '\'';
+            else if(str[i] == '\'' && quote == '\'')
+                quote = 0;
+            else if(str[i] == '"' &&  quote == 0)
+                quote = '"';
+            else if(str[i] == '"' && quote == '"')
+                quote = 0;
+        }
+        if(str[i] == '$' && quote != '\'')
+        {
+            
+        }
+        result =ft_strjoin_char(result,str[i]);
+        i++;
+        continue;
     }
-    return(head);
+    return(result);
 }
-
 
 int main(int argc,char **av,char **envp )
 {
     char *input;
     t_token *res = NULL;
     t_cmd *parse = NULL;
-    t_token *tmp =NULL;
+    char *expand;
     while(1)
     {
         input = readline("Minishell> ");
@@ -541,14 +548,13 @@ int main(int argc,char **av,char **envp )
            break;
         if(*input)
             add_history(input);
+        expand  = expand_string(input,envp);
         res = tokenize(input);
-        res = expand_word(res,envp);
-        // tmp = tokenize(input);
-        // tmp = expand_word(tmp,envp);
-        // // print_tokens(res);
+        expand_token_list(res,envp);
+        // print_tokens(res);
         // free(tmp);
-        // parse = parse_toking(res);
-        // print_cmd(parse);
+        parse = parse_toking(res);
+        print_cmd(parse);
         free(input);
     }
     free_token_list(res);

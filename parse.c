@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 12:50:48 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/24 11:05:50 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/07/02 11:20:20 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void initilisation(t_cmd *cmd)
     cmd->infile =NULL;
     cmd->outfile = NULL;
     cmd->append = 0;
+    cmd->pipecount = 0;
 }
 
 int count_word_in_token(t_token *token)
@@ -43,7 +44,6 @@ int count_redirect_in_token(t_token *token)
             count++;
         token = token->next;
     }
-    // printf("count: %d\n",count);
     return (count);
 }
 
@@ -96,6 +96,18 @@ t_cmd *add_back_cmd(t_cmd **cmd,t_cmd *new_cmd)
     }
     return(new_cmd);
 }
+int count_pipe(t_token *token)
+{
+    int i = 0;
+    while(token)
+    {
+        if(token->type == PIPE)
+            i++;
+        token = token->next;
+    }
+    return i;
+}
+
 
 t_cmd *new_cmd(t_token *token)
 {
@@ -106,7 +118,7 @@ t_cmd *new_cmd(t_token *token)
     initilisation(cmd);
     int nbr_args = count_word_in_token(token);
     int nbr_red = count_redirect_in_token(token);
-    cmd->args = malloc(sizeof(char *) * (nbr_args + 1));
+    cmd->args = malloc(sizeof(char *) * (nbr_args + 2));
     if(!cmd->args)
         return(free(cmd),NULL);
     cmd->outfile = malloc(sizeof(char *) * (nbr_red + 1));
@@ -114,12 +126,17 @@ t_cmd *new_cmd(t_token *token)
         return(free(cmd),free(cmd->args),NULL);
     int j= 0;
     int i= 0;
+
     while(token && token->type != PIPE)
     {
         if(token->type == WORD)
         {
             if(cmd->cmd == NULL)
+            {
                 cmd->cmd=ft_strdup(token->value);
+                cmd->args[0] = ft_strdup(token->value);
+                i = 1;
+            }
             else
             {
                 cmd->args[i] = ft_strdup(token->value);
@@ -152,6 +169,7 @@ t_cmd *new_cmd(t_token *token)
         }
         token = token->next;
     }
+    cmd->pipecount = count_pipe(token); 
     cmd->outfile[j]=NULL;
     cmd->args[i] = NULL;
     return(cmd);
