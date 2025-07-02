@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 12:55:51 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/02 10:42:59 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/07/02 17:05:42 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ typedef struct s_token
 {
     char *value;
     t_type type;
+    char quote_type;
     struct s_token *next;
 }t_token;
 
@@ -99,8 +100,8 @@ char *ft_strjoin(char *s1,char *s2)
         j++;
         i++;
     }
-    p[i] = '\0';
-    return (NULL);
+    p[j] = '\0';
+    return (p);
 }
 
 int ft_isspace(int c)
@@ -186,6 +187,7 @@ t_token *tokenize(char *input)
                 i++;
             word =substr(input,start,i - start);
             new = create_token(word,WORD);
+            new->quote_type = quote_char;
             append_token(&head,new);
             if(input[i] == quote_char)
                 i++;
@@ -453,39 +455,6 @@ int is_valid_env_char(char c)
 {
     return((c >= 'A' && c <= 'Z')||(c >= 'a' && c <= 'z')||(c >= '0' && c <= '9') || c == '_');
 }
-
-
-char *expand_word(char *word,char **envp)
-{
-    if(!word || word[0] != '$')
-        return (ft_strdup(word));
-    // if(word[0] == '?')
-    //     return (itoa(last_exit_code));
-    int i = 1;
-    while(word[i] && is_valid_env_char(word[i]))
-        i++;
-    if(i == 1)
-        return ft_strdup("$");
-    char *var_name = substr(word,1,i-1);
-    char *value = get_env_value(var_name,envp);
-    free(var_name);
-    return(ft_strdup(value));   
-}
-
-void expand_token_list(t_token *head,char **envp)
-{
-    t_token *tmp = head;
-    while(tmp)
-    {
-        if(tmp->type == WORD && tmp->value && tmp->value[0] == '$')
-        {
-            char *expanded = expand_word(tmp->value,envp);
-            free(tmp->value);
-            tmp->value = expanded;
-        }
-        tmp = tmp->next;
-    }
-}
 char *ft_strjoin_char(char *s1,char c)
 {
     int i = 0;
@@ -503,38 +472,58 @@ char *ft_strjoin_char(char *s1,char c)
     p[i] ='\0';
     return p;
 }
-
-
-char *expand_string(char *str, char **envp)
+char *expand_string(char *word,char **envp)
 {
     int i = 0;
-    int quote = 0;
+    int start = 0;
+    char *var_name;
+    char *value;
+    char *tmp;
+    char quote = 0;
     char *result = ft_strdup("");
-    
-    while(str[i])
+    if(!word)
+        return (ft_strdup(""));
+    while(word[i])
     {
-        if(str[i] == '\'' || str[i] =='"')
-        {
-            if(str[i] == '\'' && quote == 0)
-                quote = '\'';
-            else if(str[i] == '\'' && quote == '\'')
-                quote = 0;
-            else if(str[i] == '"' &&  quote == 0)
-                quote = '"';
-            else if(str[i] == '"' && quote == '"')
-                quote = 0;
-        }
-        if(str[i] == '$' && quote != '\'')
-        {
-            
-        }
-        result =ft_strjoin_char(result,str[i]);
-        i++;
-        continue;
+            if(word[i] == '$')
+            {
+                i++;
+                start = i;
+                while(word[i] && is_valid_env_char(word[i]))
+                    i++;
+                var_name = substr(word,start,i - start);
+                value = get_env_value(var_name,envp);
+                free(var_name);
+
+                tmp = ft_strjoin(result,value);
+                free(result);
+                result = tmp;
+            }
+            else
+            {
+                tmp = ft_strjoin_char(result,word[i]);
+                free(result);
+                result = tmp;
+                i++;
+            }
     }
-    return(result);
+    return (result);
 }
 
+void expand_token_list(t_token *head,char **envp)
+{
+    t_token *tmp = head;
+    while(tmp)
+    {
+        if(tmp->type == WORD && tmp->value && tmp->quote_type != '\'')
+        {
+            char *expanded = expand_string(tmp->value,envp);
+            free(tmp->value);
+            tmp->value = expanded;
+        }
+        tmp = tmp->next;
+    }
+}
 int main(int argc,char **av,char **envp )
 {
     char *input;
@@ -548,14 +537,16 @@ int main(int argc,char **av,char **envp )
            break;
         if(*input)
             add_history(input);
-        expand  = expand_string(input,envp);
         res = tokenize(input);
         expand_token_list(res,envp);
-        // print_tokens(res);
+        // expand  = expand_string(input,envp);
+        // free(expand);
+        print_tokens(res);
         // free(tmp);
-        parse = parse_toking(res);
-        print_cmd(parse);
+        // parse = parse_toking(res);
+        // print_cmd(parse);
         free(input);
     }
     free_token_list(res);
+    return 0;
 }
