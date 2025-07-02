@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 12:50:48 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/28 08:32:35 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/07/02 10:42:04 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,36 +106,35 @@ t_cmd *new_cmd(t_token *token)
     initilisation(cmd);
     int nbr_args = count_word_in_token(token);
     int nbr_red = count_redirect_in_token(token);
-    cmd->args = malloc(sizeof(char *) * (nbr_args + 1));
+    cmd->args = malloc(sizeof(char *) * (nbr_args + 2));
     if(!cmd->args)
         return(free(cmd),NULL);
     cmd->outfile = malloc(sizeof(char *) * (nbr_red + 1));
     if(!cmd->outfile)
-        return(free(cmd),free(cmd->args),NULL);
-    int j= 0;
-    int i= 0;
+        return(free(cmd->args), free(cmd), NULL);
+
+    int i = 0, j = 0;
     while(token && token->type != PIPE)
     {
         if(token->type == WORD)
         {
             if(cmd->cmd == NULL)
-                cmd->cmd=ft_strdup(token->value);
+            {
+                cmd->cmd = ft_strdup(token->value);
+                cmd->args[0] = ft_strdup(token->value);
+                i = 1;
+            }
             else
             {
-                cmd->args[i] = ft_strdup(token->value);
-                i++;
+                cmd->args[i++] = ft_strdup(token->value);
             }
         }
         else if(token->type == REDIR_OUT || token->type == APPEND)
         {
-            
             if(token->type == APPEND)
                 cmd->append = 1;
             if(token->next)
-            {
-                cmd->outfile[j] =  ft_strdup(token->next->value);
-                j++;
-            }
+                cmd->outfile[j++] = ft_strdup(token->next->value);
             token = token->next;
         }
         else if(token->type == REDIR_IN)
@@ -152,8 +151,8 @@ t_cmd *new_cmd(t_token *token)
         }
         token = token->next;
     }
-    cmd->outfile[j]=NULL;
     cmd->args[i] = NULL;
+    cmd->outfile[j] = NULL;
     return(cmd);
 }
 t_cmd *parse_cmd(t_token *token)

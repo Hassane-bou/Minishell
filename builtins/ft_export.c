@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 11:03:15 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/28 11:34:22 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/07/02 11:00:39 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,8 +94,8 @@ int	ft_export(char **arr, t_env **env_copy)
 	int		pos;
 	int		i;
 
-	i = 0;
-	if (arr[0] == NULL)
+	i = 1;
+	if (arr[1] == NULL)
 		print_export(env_copy);
 	while (arr[i])
 	{

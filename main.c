@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/29 10:43:15 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/07/02 11:10:52 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	run_builtin(t_cmd *cmd, t_env **env_copy)
 	if (!ft_strcmp(cmd->cmd, "pwd") || !ft_strcmp(cmd->cmd, "PWD"))
 		ft_pwd(*env_copy);
 	if (!ft_strcmp(cmd->cmd, "cd"))
-		ft_cd(cmd->args[0], env_copy);
+		ft_cd(cmd->args[1], env_copy);
 	if (!ft_strcmp(cmd->cmd, "echo") || !ft_strcmp(cmd->cmd, "ECHO"))
 		ft_echo(cmd->args, *env_copy);
 	if (!ft_strcmp(cmd->cmd, "unset"))
@@ -105,10 +105,8 @@ int main(int ac, char *av[], char **envp)
 		res = tokenize(input);
         cmd = parse_cmd(res);
 		env_arr = env_to_arr(env_head);
-		if (fork() == 0)
-		{
+		// ft_update_shelvl(env_head);
+		if (cmd->cmd)
 			ft_execute(cmd, &env_head, input);
-		}
-		wait(NULL);
     }
 }
