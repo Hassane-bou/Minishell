@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/02 10:04:40 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/07/03 10:15:09 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ typedef struct s_env
 {
 	char	*key;
 	char	*value;
+    int     status;
 	struct s_env *next;
 } t_env;
 

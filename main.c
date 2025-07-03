@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/07/02 11:10:52 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/07/03 10:12:30 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ int main(int ac, char *av[], char **envp)
     t_env	*env_head;
 
 	env_copy(envp, &env_head);
+	ft_update_shelvl(env_head);
     while(1)
     {
         input = readline("Minishell$> ");
@@ -105,7 +106,6 @@ int main(int ac, char *av[], char **envp)
 		res = tokenize(input);
         cmd = parse_cmd(res);
 		env_arr = env_to_arr(env_head);
-		// ft_update_shelvl(env_head);
 		if (cmd->cmd)
 			ft_execute(cmd, &env_head, input);
     }
