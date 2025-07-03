@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 12:55:51 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/02 17:05:42 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/07/03 20:53:42 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -485,7 +485,7 @@ char *expand_string(char *word,char **envp)
         return (ft_strdup(""));
     while(word[i])
     {
-            if(word[i] == '$')
+            if(word[i] == '$' && quote !='\'')
             {
                 i++;
                 start = i;
@@ -524,6 +524,63 @@ void expand_token_list(t_token *head,char **envp)
         tmp = tmp->next;
     }
 }
+char *remove_quotes(char *input)
+{
+    char *result = malloc(ft_strlen(input) + 1);
+    if(!result)
+        return NULL;
+    int i = 0;
+    int j = 0;
+    char quote  = 0;
+    while(input[i])
+    {
+        if(quote == 0)
+        {
+            if(input[i] == '\'' || input[i] == '"')
+            {
+                quote = input[i];
+                i++;
+            }
+            else
+            {
+                result[j] = input[i];
+                j++;    
+                i++;
+            }
+        }
+        else
+        {
+            if(input[i] == quote)
+            {
+                quote = 0;
+                i++;
+            }
+            else
+            {
+                result[j]=input[i];
+                i++;
+                j++;
+            }
+        }
+    }
+    result[j]='\0';
+    return result;
+}
+void remove_quotes_from_tokens(t_token *tokens)
+{
+    while(tokens)
+    {
+        if(tokens->value)
+        {
+            char *tmp = tokens->value;
+            tokens->value = remove_quotes(tokens->value);
+            free(tmp);
+        }
+        tokens = tokens->next;
+    }
+}
+
+
 int main(int argc,char **av,char **envp )
 {
     char *input;
@@ -541,10 +598,11 @@ int main(int argc,char **av,char **envp )
         expand_token_list(res,envp);
         // expand  = expand_string(input,envp);
         // free(expand);
-        print_tokens(res);
+        // print_tokens(res);
         // free(tmp);
-        // parse = parse_toking(res);
-        // print_cmd(parse);
+        // remove_quotes_from_tokens(res);
+        parse = parse_toking(res);
+        print_cmd(parse);
         free(input);
     }
     free_token_list(res);
