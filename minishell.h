@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/30 10:05:43 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/07/04 18:37:21 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ typedef struct s_token
 {
     char *value;
     t_type type;
+    char new_quote;
     struct s_token *next;
 }t_token;
 
@@ -41,7 +42,6 @@ typedef struct s_token
 
 typedef struct s_cmd
 {
-    int pipecount;
     char *cmd;
     char **args;
     char **outfile;
@@ -82,6 +82,17 @@ int ft_isspace(int c);
 char	*ft_strdup( char *s1);
 char	*ft_substr(char *s, int start, int len);
 int ft_strlen(char *s);
+
+
+
+
+void expand_token_list(t_token *head,char **envp);
+char *expand_string(char *word,char **envp);
+char *ft_strjoin(char *s1,char *s2);
+char *get_env_value(char *var,char **envp);
+int ft_stncmp(char *s1,char *s2,int n);
+int is_valid_env_char(char c);
+
 
 
 

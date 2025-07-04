@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 12:55:51 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/03 20:53:42 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/07/04 16:42:14 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -485,7 +485,27 @@ char *expand_string(char *word,char **envp)
         return (ft_strdup(""));
     while(word[i])
     {
-            if(word[i] == '$' && quote !='\'')
+            if(word[i] == '\'' && quote == 0)
+            {
+               quote = '\'';
+                i++;
+            }
+            else if(word[i] == '\'' && quote == '\'')
+            {
+                quote = 0;
+                i++;
+            }
+            else if(word[i] == '"' && quote == 0)
+            {
+                quote =  '"' ;
+                i++;
+            }
+            else if(word[i] == '"' && quote ==  '"')
+            {
+                quote =0;
+                i++;
+            }
+            else if(word[i] == '$' && quote != '\'')
             {
                 i++;
                 start = i;

@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:31:35 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/30 10:25:59 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/07/04 16:38:07 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,28 +21,31 @@ void print_token(t_token *token)
         token=token->next;
     }
 }
-int main()
+int main(int argc,char **argv,char **envp)
 {
-  
-        char *input;
-        t_token *result;
-        t_cmd *cmd;
-        setup_signals();
-        while(1)
-        {
-            input = readline("Minishell> ");
-            if(input == NULL)
-                handle_end();
-            if(*input)
-                add_history(input);
-            if(check_all_syntaxe(input))
-                continue;
-            result = tokenize(input);
-            cmd = parse_cmd(result);
-            // print_token(result);
-            // printf("-------------------\n");
-            print_cmd(cmd);
-            
-            free(input);
-        }
+    if(argc != 1)
+        return 1;
+    (void)argv;
+    char *input;
+    t_token *result = NULL;
+    t_cmd *cmd = NULL;
+    setup_signals();
+    while(1)
+    {
+        input = readline("Minishell> ");
+        if(input == NULL)
+            handle_end();
+        if(*input)
+        add_history(input);
+        if(check_all_syntaxe(input))
+             continue;
+        result = tokenize(input);
+        expand_token_list(result,envp);
+        cmd = parse_cmd(result);
+        // print_token(result);
+        // printf("-------------------\n");
+        print_cmd(cmd);       
+        free(input);
+    }
+    return 0;
 }

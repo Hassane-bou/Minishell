@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 12:50:48 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/02 11:20:20 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/07/04 18:52:43 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ void initilisation(t_cmd *cmd)
     cmd->args = NULL;
     cmd->infile =NULL;
     cmd->outfile = NULL;
+    cmd->heredoc = NULL;
     cmd->append = 0;
-    cmd->pipecount = 0;
 }
 
 int count_word_in_token(t_token *token)
@@ -62,6 +62,7 @@ void print_cmd(t_cmd *cmd)
             {
                 printf("args[%d]: %s\n",i,cmd->args[i]);
                 i++;
+                
             }
         }
         int j = 0;
@@ -71,6 +72,7 @@ void print_cmd(t_cmd *cmd)
             {
                 printf("outfil[%d]: %s\n",j,cmd->outfile[j]);
                 j++;
+
             }
         }
         printf("infile: %s\n",cmd->infile);
@@ -81,18 +83,18 @@ void print_cmd(t_cmd *cmd)
 
 t_cmd *add_back_cmd(t_cmd **cmd,t_cmd *new_cmd)
 {
-
+    t_cmd *tmp;
+    if(!cmd || !new_cmd)
+        return NULL;
     if(!*cmd)
         *cmd = new_cmd;
     else
     {
-        t_cmd *tmp = *cmd;
-        while(tmp->next != NULL)
-        {
+        tmp = *cmd;
+        while(tmp->next)
             tmp= tmp->next;
-        }
         tmp->next = new_cmd;
-        new_cmd->next=NULL;
+
     }
     return(new_cmd);
 }
@@ -169,9 +171,9 @@ t_cmd *new_cmd(t_token *token)
         }
         token = token->next;
     }
-    cmd->pipecount = count_pipe(token); 
     cmd->outfile[j]=NULL;
     cmd->args[i] = NULL;
+    cmd->next =NULL;
     return(cmd);
 }
 t_cmd *parse_cmd(t_token *token)

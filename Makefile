@@ -1,7 +1,7 @@
 CC = cc 
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror #-fsanitize=address -g
 SRCS = main.c utils.c ft_split.c ft_substr.c parse.c tokens.c ft_strdup.c\
-		check_syntaxe.c
+		check_syntaxe.c expand.c
 
 LIBS = -lreadline
 
