@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:58:54 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/05 10:58:20 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/07/05 17:17:31 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ char *expand_string(char *word,char **envp)
             quote = 0;
             i++;
         }
-        else if(word[i] == '$' && quote !='\'')
+        else if(word[i] == '$' && quote !='\'' )
         {
             i++;
             start = i;
@@ -148,12 +148,21 @@ char *expand_string(char *word,char **envp)
     }
     return(resulat);
 }
+
+int herdoc_quoted(t_token *token)
+{
+    if(!token || !token->value ||!token->type == HEREDOC)
+        return 0;
+    int len = ft_strlen(token->value);
+    if(token->value[0] == '\'' || token->value[0] == '"' || token->value[len - 1] == '\''
+        || token->value[len -1] == '"')
+}
 void expand_token_list(t_token *head,char **envp)
 {
     t_token *tmp = head;
     while(tmp)
     {
-        if(tmp->type == WORD && tmp->value && tmp->new_quote != '\'')
+        if(tmp->type == WORD && tmp->value && tmp->new_quote != '\'' && !herdoc_quoted(head))
         {
             char *expanded = expand_string(tmp->value,envp);
             free(tmp->value);

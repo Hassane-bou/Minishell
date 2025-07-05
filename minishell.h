@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/04 18:37:21 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/07/05 17:07:41 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,9 @@ typedef struct s_cmd
     char *infile;
     int append;
     char *heredoc;
+    int herdoc_quoted;
+    // int no_expand
+
     struct s_cmd *next;
 }t_cmd;
 
