@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 12:50:48 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/02 10:42:04 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/07/05 14:29:21 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void initilisation(t_cmd *cmd)
     cmd->infile =NULL;
     cmd->outfile = NULL;
     cmd->append = 0;
+    cmd->heredoc = NULL;
 }
 
 int count_word_in_token(t_token *token)

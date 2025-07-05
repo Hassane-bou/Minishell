@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 12:37:38 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/07/05 12:20:29 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/07/05 14:41:03 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,14 +96,15 @@ void out_redirect(t_cmd *cmd)
 		}
 		if (cmd->append)
 		{
-			fd = open(cmd->outfile[i], O_CREAT | O_RDONLY | O_APPEND, 0777);
+			printf("hh\n");
+			fd = open(cmd->outfile[i], O_RDONLY | O_APPEND, 0777);
 			if (fd < 0)
 			{
 				perror("outfile error");
 				exit(1);
 			}
 		}
-		if (cmd->outfile[i++] == NULL)
+		if (cmd->outfile[i + 1] == NULL)
 		{
 			fd = open(cmd->outfile[i], O_CREAT | O_RDONLY | O_TRUNC, 0777);
 			if (fd < 0)
@@ -118,7 +119,6 @@ void out_redirect(t_cmd *cmd)
 			}
 			close(fd);
 		}
-		i++;
 	}
 }
 
