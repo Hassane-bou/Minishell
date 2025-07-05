@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 12:50:48 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/05 17:08:08 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/07/05 18:31:12 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,16 @@ void print_cmd(t_cmd *cmd)
 
             }
         }
+        int k = 0;
+        if(cmd->heredoc)
+        {
+            while(cmd->heredoc[k])
+            {
+                printf("herdoc[%d]: %s\n",k,cmd->heredoc[k]);
+                k++;
+            }
+        }
         printf("infile: %s\n",cmd->infile);
-        printf("herdoc: %s\n",cmd->heredoc);
         cmd = cmd->next;
     }
 }
@@ -126,9 +134,12 @@ t_cmd *new_cmd(t_token *token)
     cmd->outfile = malloc(sizeof(char *) * (nbr_red + 1));
     if(!cmd->outfile)
         return(free(cmd),free(cmd->args),NULL);
+    cmd->heredoc = malloc(sizeof(char *) * (nbr_red + 1));
+    if(!cmd->outfile)
+        return(free(cmd),free(cmd->args),NULL);
     int j= 0;
     int i= 0;
-
+    int h= 0;
     while(token && token->type != PIPE)
     {
         if(token->type == WORD)
@@ -166,11 +177,15 @@ t_cmd *new_cmd(t_token *token)
         else if(token->type == HEREDOC)
         {
             if(token->next)
-                cmd->heredoc = ft_strdup(token->next->value);
+            {
+                cmd->heredoc[h] = ft_strdup(token->next->value);
+                h++;
+            }
             token = token->next;
         }
         token = token->next;
     }
+    cmd->heredoc[h] = NULL;
     cmd->outfile[j]=NULL;
     cmd->args[i] = NULL;
     cmd->next =NULL;
