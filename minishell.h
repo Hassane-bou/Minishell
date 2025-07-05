@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/03 10:15:09 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/07/05 12:06:41 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include "lib/libft.h"
 # include <unistd.h>
 # include <limits.h>
+# include <fcntl.h>
 
 // ------------ parsing -----------------
 

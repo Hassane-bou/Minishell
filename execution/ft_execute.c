@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 12:37:38 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/07/03 10:33:51 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/07/05 12:20:29 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,95 @@ char	*check_path(char **path)
 	return (NULL);
 }
 
+void in_redirect(t_cmd *cmd)
+{
+	int fd;
+
+	fd = open(cmd->infile, O_RDONLY, 0777);
+	if (fd < 0)
+		perror("infile error!");
+	if (dup2(fd, 0) == -1)
+	{
+		perror("dup failed!");
+		exit(1);
+	}
+	close(fd);
+}
+
+void out_redirect(t_cmd *cmd)
+{
+	int fd;
+	int	i;
+
+	i = 0;
+	while (cmd->outfile[i])
+	{
+		fd = open(cmd->outfile[i], O_CREAT | O_RDONLY, 0777);
+		if (fd < 0)
+		{
+			perror("outfile error");
+			exit(1);
+		}
+		if (cmd->append)
+		{
+			fd = open(cmd->outfile[i], O_CREAT | O_RDONLY | O_APPEND, 0777);
+			if (fd < 0)
+			{
+				perror("outfile error");
+				exit(1);
+			}
+		}
+		if (cmd->outfile[i++] == NULL)
+		{
+			fd = open(cmd->outfile[i], O_CREAT | O_RDONLY | O_TRUNC, 0777);
+			if (fd < 0)
+			{
+				perror("outfile error");
+				exit(1);
+			}
+			if (dup2(fd, 1) == -1)
+			{
+				perror("dup failed!");
+				exit(1);
+			}
+			close(fd);
+		}
+		i++;
+	}
+}
+
+void child_process(t_cmd *cmd, char **env_arr)
+{
+	char	*exact_path;
+	char	**paths;
+
+	if (cmd->infile)
+		in_redirect(cmd);
+	if (cmd->outfile)
+		out_redirect(cmd);
+	if (!cmd->cmd || !cmd->args)
+		exit(0);
+	paths = get_path(env_arr, cmd->cmd);
+	exact_path = check_path(paths);
+	if (is_contain_slash(cmd->cmd))
+	{
+		execve(cmd->cmd, cmd->args, env_arr);
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(cmd->cmd, 2);
+		ft_putstr_fd(": command not found\n", 2);
+		exit(127);
+	}
+	execve(exact_path, cmd->args, env_arr);
+	ft_putstr_fd("minishell: ", 2);
+	ft_putstr_fd(cmd->cmd, 2);
+	ft_putstr_fd(": command not found\n", 2);
+	exit(127);
+}
+
 void execute_one(t_cmd *cmd, t_env **env_copy)
 {
 	pid_t	pid;
-	char	*exact_path;
-	char	**paths;
+
 	char	**env_arr;
 	int		status;
 
@@ -80,23 +164,7 @@ void execute_one(t_cmd *cmd, t_env **env_copy)
 	{
 		pid = fork();
 		if (pid == 0)
-		{
-			paths = get_path(env_arr, cmd->cmd);
-			exact_path = check_path(paths);
-			if (is_contain_slash(cmd->cmd))
-			{
-				execve(cmd->cmd, cmd->args, env_arr);
-				ft_putstr_fd("minishell: ", 2);
-				ft_putstr_fd(cmd->cmd, 2);
-				ft_putstr_fd(": command not found\n", 2);
-				exit(127);
-			}
-			execve(exact_path, cmd->args, env_arr);
-			ft_putstr_fd("minishell: ", 2);
-			ft_putstr_fd(cmd->cmd, 2);
-			ft_putstr_fd(": command not found\n", 2);
-			exit(127);
-		}
+			child_process(cmd, env_arr);
 		waitpid(pid, &status, 0);
 	}
 	if (WIFEXITED(status))
