@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:58:54 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/06 11:36:16 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/07/06 13:29:11 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,6 +173,7 @@ void expand_token_list(t_token *head,char **envp)
             else
                 tmp = tmp->next;
             continue;
+            
         }
         if(tmp->type == WORD && tmp->value && tmp->new_quote != '\'')
         {

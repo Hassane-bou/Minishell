@@ -6,13 +6,13 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 12:50:48 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/06 11:54:36 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/07/06 14:50:28 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void initilisation(t_cmd *cmd)
+void initilisation(t_cmd *cmd,t_heredoc *heredoc)
 {
     cmd->cmd = NULL;
     cmd->args = NULL;
@@ -20,6 +20,9 @@ void initilisation(t_cmd *cmd)
     cmd->outfile = NULL;
     cmd->heredoc = NULL;
     cmd->append = 0;
+    heredoc->delimiter = NULL;
+    heredoc->quoted =0;
+    
 }
 
 int count_word_in_token(t_token *token)
@@ -139,10 +142,14 @@ char *remove_quotes(char *str)
 t_cmd *new_cmd(t_token *token)
 {
     t_cmd *cmd;
+    t_heredoc *heredoc;
     cmd = malloc(sizeof(t_cmd));
     if(!cmd)
         return NULL;
-    initilisation(cmd);
+    heredoc = malloc(sizeof(t_heredoc));
+    if(!heredoc)
+        return(free(cmd),NULL);
+    initilisation(cmd,heredoc);
     int nbr_args = count_word_in_token(token);
     int nbr_red = count_redirect_in_token(token);
     cmd->args = malloc(sizeof(char *) * (nbr_args + 2));

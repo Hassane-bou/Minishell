@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:31:35 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/05 18:27:55 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/07/06 13:29:34 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ int main(int argc,char **argv,char **envp)
         result = tokenize(input);
         // print_token(result);
         expand_token_list(result,envp);
+        // printf("--------\n");
         cmd = parse_cmd(result);
         print_cmd(cmd);       
         free(input);
