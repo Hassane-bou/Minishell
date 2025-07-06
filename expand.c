@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:58:54 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/05 19:25:40 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/07/06 11:36:16 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,22 +149,31 @@ char *expand_string(char *word,char **envp)
     return(resulat);
 }
 
-int herdoc_quoted(t_token *token)
-{
-    if(!token || !token->value || token->type != HEREDOC)
-        return 0;
-    int len = ft_strlen(token->value);
-    if(token->value[0] == '\'' || token->value[0] == '"' || token->value[len - 1] == '\''
-        || token->value[len -1] == '"')
-        return 1;
-    return 0;
-}
+// int has_quotes(char *s)
+// {
+//     int i = 0;
+//     while(s[i])
+//     {
+//         if(s[i] == '\'' || s[i] == '"')
+//             return 1;
+//         i++;
+//     }
+//     return 0;
+// }
 
 void expand_token_list(t_token *head,char **envp)
 {
     t_token *tmp = head;
     while(tmp)
     {
+        if(tmp->type == HEREDOC)
+        {
+            if(tmp->next)
+                tmp=tmp->next->next;
+            else
+                tmp = tmp->next;
+            continue;
+        }
         if(tmp->type == WORD && tmp->value && tmp->new_quote != '\'')
         {
             char *expanded = expand_string(tmp->value,envp);
