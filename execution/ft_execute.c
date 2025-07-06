@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 12:37:38 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/07/05 14:41:03 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/07/06 11:48:44 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,37 +88,31 @@ void out_redirect(t_cmd *cmd)
 	i = 0;
 	while (cmd->outfile[i])
 	{
-		fd = open(cmd->outfile[i], O_CREAT | O_RDONLY, 0777);
+		fd = open(cmd->outfile[i], O_CREAT | O_RDWR | O_TRUNC, 0777);
 		if (fd < 0)
 		{
 			perror("outfile error");
 			exit(1);
 		}
-		if (cmd->append)
-		{
-			printf("hh\n");
-			fd = open(cmd->outfile[i], O_RDONLY | O_APPEND, 0777);
-			if (fd < 0)
-			{
-				perror("outfile error");
-				exit(1);
-			}
-		}
 		if (cmd->outfile[i + 1] == NULL)
 		{
-			fd = open(cmd->outfile[i], O_CREAT | O_RDONLY | O_TRUNC, 0777);
+			if (!cmd->append)
+				fd = open(cmd->outfile[i], O_CREAT | O_RDWR | O_TRUNC, 0777);
+			else
+				fd = open(cmd->outfile[i], O_CREAT | O_RDWR | O_APPEND, 0777);
 			if (fd < 0)
 			{
 				perror("outfile error");
 				exit(1);
 			}
-			if (dup2(fd, 1) == -1)
+			if (dup2(fd, STDOUT_FILENO) == -1)
 			{
 				perror("dup failed!");
 				exit(1);
 			}
 			close(fd);
 		}
+		i++;
 	}
 }
 
@@ -159,14 +153,11 @@ void execute_one(t_cmd *cmd, t_env **env_copy)
 
 	env_arr = env_to_arr(*env_copy);
 	if (is_builtin(cmd, env_copy))
-		run_builtin(cmd, env_copy);
-	else
-	{
-		pid = fork();
-		if (pid == 0)
-			child_process(cmd, env_arr);
-		waitpid(pid, &status, 0);
-	}
+		return (run_builtin(cmd, env_copy));
+	pid = fork();
+	if (pid == 0)
+		child_process(cmd, env_arr);
+	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		(*env_copy)->status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status) && WIFEXITED(status))
