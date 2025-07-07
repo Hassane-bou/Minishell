@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 12:37:38 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/07/07 12:23:34 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/07/07 13:24:16 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,21 +119,21 @@ void child_process(t_cmd *cmd, char **env_arr)
 		in_redirect(cmd);
 	if (cmd->outfile)
 		out_redirect(cmd);
-	if (!cmd->cmd || !cmd->args)
-		exit(0);
-	paths = get_path(env_arr, cmd->cmd);
+	// if (!cmd->args[0] || !cmd->args)
+	// 	exit(0);
+	paths = get_path(env_arr, cmd->args[0]);
 	exact_path = check_path(paths);
-	if (is_contain_slash(cmd->cmd))
+	if (is_contain_slash(cmd->args[0]))
 	{
-		execve(cmd->cmd, cmd->args, env_arr);
+		execve(cmd->args[0], cmd->args, env_arr);
 		ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd(cmd->cmd, 2);
+		ft_putstr_fd(cmd->args[0], 2);
 		ft_putstr_fd(": command not found\n", 2);
 		exit(127);
 	}
 	execve(exact_path, cmd->args, env_arr);
 	ft_putstr_fd("minishell: ", 2);
-	ft_putstr_fd(cmd->cmd, 2);
+	ft_putstr_fd(cmd->args[0], 2);
 	ft_putstr_fd(": command not found\n", 2);
 	exit(127);
 }

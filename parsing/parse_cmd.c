@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 12:50:48 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/07 12:30:34 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/07/07 13:23:28 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,9 +119,9 @@ t_cmd *new_cmd(t_token *token)
     {
         if(token->type == WORD)
         {
-            if(cmd->cmd == NULL)
+            if(cmd->args[0] == NULL)
             {
-                cmd->cmd = ft_strdup(token->value);
+                // cmd->cmd = ft_strdup(token->value);
                 cmd->args[0] = ft_strdup(token->value);
                 i = 1;
             }
