@@ -6,13 +6,13 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 12:50:48 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/06 14:50:28 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/07/07 13:07:04 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void initilisation(t_cmd *cmd,t_heredoc *heredoc)
+void initilisation(t_cmd *cmd)
 {
     cmd->cmd = NULL;
     cmd->args = NULL;
@@ -20,8 +20,8 @@ void initilisation(t_cmd *cmd,t_heredoc *heredoc)
     cmd->outfile = NULL;
     cmd->heredoc = NULL;
     cmd->append = 0;
-    heredoc->delimiter = NULL;
-    heredoc->quoted =0;
+    // heredoc->delimiter = NULL;
+    // heredoc->quoted =0;
     
 }
 
@@ -49,7 +49,17 @@ int count_redirect_in_token(t_token *token)
     }
     return (count);
 }
-
+int count_heredoc_in_token(t_token *token)
+{
+    int count = 0;
+    while(token && token->type != PIPE)
+    {
+        if(token->type == HEREDOC)
+            count++;
+        token = token->next;
+    }
+    return(count);
+}
 
 void print_cmd(t_cmd *cmd)
 {
@@ -81,9 +91,9 @@ void print_cmd(t_cmd *cmd)
         int k = 0;
         if(cmd->heredoc)
         {
-            while(cmd->heredoc[k].delimiter)
+            while(cmd->heredoc[k])
             {
-                printf("herdoc[%d]: %s\n",k,cmd->heredoc[k].delimiter);
+                printf("herdoc[%d]: %s\n",k,cmd->heredoc[k]);
                 k++;
             }
         }
@@ -142,25 +152,22 @@ char *remove_quotes(char *str)
 t_cmd *new_cmd(t_token *token)
 {
     t_cmd *cmd;
-    t_heredoc *heredoc;
     cmd = malloc(sizeof(t_cmd));
     if(!cmd)
         return NULL;
-    heredoc = malloc(sizeof(t_heredoc));
-    if(!heredoc)
-        return(free(cmd),NULL);
-    initilisation(cmd,heredoc);
+    initilisation(cmd);
     int nbr_args = count_word_in_token(token);
     int nbr_red = count_redirect_in_token(token);
+    int nbr_here= count_heredoc_in_token(token);
     cmd->args = malloc(sizeof(char *) * (nbr_args + 2));
     if(!cmd->args)
         return(free(cmd),NULL);
     cmd->outfile = malloc(sizeof(char *) * (nbr_red + 1));
     if(!cmd->outfile)
         return(free(cmd),free(cmd->args),NULL);
-    cmd->heredoc = malloc(sizeof(t_heredoc) * (nbr_red + 1));
-    if(!cmd->outfile)
-        return(free(cmd),free(cmd->args),NULL);
+    cmd->heredoc = malloc(sizeof(char *) * (nbr_here + 1));
+    if(!cmd->heredoc)
+        return(free(cmd),free(cmd->args),free(cmd->outfile),NULL);
     int j= 0;
     int i= 0;
     int h= 0;
@@ -179,6 +186,7 @@ t_cmd *new_cmd(t_token *token)
                 cmd->args[i] = ft_strdup(token->value);
                 i++;
             }
+            token = token->next;
         }
         else if(token->type == REDIR_OUT || token->type == APPEND)
         {
@@ -202,16 +210,15 @@ t_cmd *new_cmd(t_token *token)
         {
             if(token->next)
             {
-                char *clean_delim = remove_quotes(token->next->value);
-                cmd->heredoc[h].delimiter = clean_delim;
-                cmd->heredoc[h].quoted = (token->next->new_quote != 0);
+                cmd->heredoc[h] = ft_strdup(token->next->value);
                 h++;
             }
-            token = token->next;
+            token=token->next;
         }
-        token = token->next;
+        else
+            token = token->next;
     }
-    cmd->heredoc[h].delimiter = NULL;
+    cmd->heredoc[h] = NULL;
     cmd->outfile[j]=NULL;
     cmd->args[i] = NULL;
     cmd->next =NULL;
