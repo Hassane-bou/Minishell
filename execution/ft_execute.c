@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 12:37:38 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/07/06 11:48:44 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/07/07 12:23:34 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,10 @@ void out_redirect(t_cmd *cmd)
 	i = 0;
 	while (cmd->outfile[i])
 	{
-		fd = open(cmd->outfile[i], O_CREAT | O_RDWR | O_TRUNC, 0777);
+		if (cmd->append)
+			fd = open(cmd->outfile[i], O_CREAT | O_RDWR | O_APPEND, 0777);
+		else
+			fd = open(cmd->outfile[i], O_CREAT | O_RDWR | O_TRUNC, 0777);
 		if (fd < 0)
 		{
 			perror("outfile error");
@@ -96,15 +99,6 @@ void out_redirect(t_cmd *cmd)
 		}
 		if (cmd->outfile[i + 1] == NULL)
 		{
-			if (!cmd->append)
-				fd = open(cmd->outfile[i], O_CREAT | O_RDWR | O_TRUNC, 0777);
-			else
-				fd = open(cmd->outfile[i], O_CREAT | O_RDWR | O_APPEND, 0777);
-			if (fd < 0)
-			{
-				perror("outfile error");
-				exit(1);
-			}
 			if (dup2(fd, STDOUT_FILENO) == -1)
 			{
 				perror("dup failed!");
