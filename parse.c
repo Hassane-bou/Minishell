@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 12:50:48 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/07 13:07:04 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/07/07 13:27:59 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,7 +193,7 @@ t_cmd *new_cmd(t_token *token)
             
             if(token->type == APPEND)
                 cmd->append = 1;
-            if(token->next)
+            if(token->next && token->type != APPEND)
             {
                 cmd->outfile[j] =  ft_strdup(token->next->value);
                 j++;
