@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/05 12:06:41 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/07/09 11:35:03 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ int handle_pipe(char *input,int i,t_token **head);
 int handle_word(char *input, int i, t_token **head);
 t_token *tokenize(char *input);
 t_cmd *parse_cmd(t_token *token);
+void print_cmd(t_cmd *cmd);
 
 // -------------- builtins ----------------
 

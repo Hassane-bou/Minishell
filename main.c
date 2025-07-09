@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/07/07 13:17:48 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/07/09 11:34:43 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,37 +30,37 @@ int	ft_strcmp(char *s1, char *s2)
 
 int	is_builtin(t_cmd *cmd, t_env **env_copy)
 {
-	if (!ft_strcmp(cmd->cmd, "env") || !ft_strcmp(cmd->cmd, "ENV"))
+	if (!ft_strcmp(cmd->args[0], "env") || !ft_strcmp(cmd->args[0], "ENV"))
 		return (1);
-	if (!ft_strcmp(cmd->cmd, "pwd") || !ft_strcmp(cmd->cmd, "PWD"))
+	if (!ft_strcmp(cmd->args[0], "pwd") || !ft_strcmp(cmd->args[0], "PWD"))
 		return (1);
-	if (!ft_strcmp(cmd->cmd, "cd"))
+	if (!ft_strcmp(cmd->args[0], "cd"))
 		return (1);
-	if (!ft_strcmp(cmd->cmd, "echo") || !ft_strcmp(cmd->cmd, "ECHO"))
+	if (!ft_strcmp(cmd->args[0], "echo") || !ft_strcmp(cmd->args[0], "ECHO"))
 		return (1);
-	if (!ft_strcmp(cmd->cmd, "unset"))
+	if (!ft_strcmp(cmd->args[0], "unset"))
 		return (1);
-	if (!ft_strcmp(cmd->cmd, "exit"))
+	if (!ft_strcmp(cmd->args[0], "exit"))
 		return (1);
-	if (!ft_strcmp(cmd->cmd, "export"))
+	if (!ft_strcmp(cmd->args[0], "export"))
 		return (1);
 	return 0;
 }
 void	run_builtin(t_cmd *cmd, t_env **env_copy)
 {
-	if (!ft_strcmp(cmd->cmd, "env") || !ft_strcmp(cmd->cmd, "ENV"))
+	if (!ft_strcmp(cmd->args[0], "env") || !ft_strcmp(cmd->args[0], "ENV"))
 		ft_env(*env_copy);
-	if (!ft_strcmp(cmd->cmd, "pwd") || !ft_strcmp(cmd->cmd, "PWD"))
+	if (!ft_strcmp(cmd->args[0], "pwd") || !ft_strcmp(cmd->args[0], "PWD"))
 		ft_pwd(*env_copy);
-	if (!ft_strcmp(cmd->cmd, "cd"))
+	if (!ft_strcmp(cmd->args[0], "cd"))
 		ft_cd(cmd->args[1], env_copy);
-	if (!ft_strcmp(cmd->cmd, "echo") || !ft_strcmp(cmd->cmd, "ECHO"))
+	if (!ft_strcmp(cmd->args[0], "echo") || !ft_strcmp(cmd->args[0], "ECHO"))
 		ft_echo(cmd->args, *env_copy);
-	if (!ft_strcmp(cmd->cmd, "unset"))
+	if (!ft_strcmp(cmd->args[0], "unset"))
 		ft_unset(cmd->args, env_copy);
-	if (!ft_strcmp(cmd->cmd, "exit"))
+	if (!ft_strcmp(cmd->args[0], "exit"))
 		ft_exit(cmd->args, env_copy);
-	if (!ft_strcmp(cmd->cmd, "export"))
+	if (!ft_strcmp(cmd->args[0], "export"))
 		ft_export(cmd->args, env_copy);
 }
 
@@ -80,11 +80,6 @@ char **env_to_arr(t_env *env_head)
 	}
 	return (env_arr);
 }
-
-// void	ff(void)
-// {
-// 	system("leaks minishell");
-// }
 
 int main(int ac, char *av[], char **envp)
 {
@@ -106,7 +101,8 @@ int main(int ac, char *av[], char **envp)
 		res = tokenize(input);
         cmd = parse_cmd(res);
 		env_arr = env_to_arr(env_head);
-		if (cmd->args[0])
-			ft_execute(cmd, &env_head, input);
+		// if (cmd->args[0])
+		// 	ft_execute(cmd, &env_head, input);
+		print_cmd(cmd);
     }
 }

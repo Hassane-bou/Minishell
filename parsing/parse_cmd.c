@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 12:50:48 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/07 13:23:28 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/07/09 11:34:21 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,36 +49,36 @@ int count_redirect_in_token(t_token *token)
 }
 
 
-// void print_cmd(t_cmd *cmd)
-// {
-//     int i;
-//     // int j;
-//     while(cmd)
-//     {
-//         i = 0;
-//         printf("cmd: %s\n",cmd->cmd);
-//         if(cmd->args)
-//         {
-//             while(cmd->args[i])
-//             {
-//                 printf("args[%d]: %s\n",i,cmd->args[i]);
-//                 i++;
-//             }
-//         }
-//         int j = 0;
-//         if(cmd->outfile)
-//         {
-//             while(cmd->outfile[j])
-//             {
-//                 printf("outfil[%d]: %s\n",j,cmd->outfile[j]);
-//                 j++;
-//             }
-//         }
-//         printf("infile: %s\n",cmd->infile);
-//         printf("herdoc: %s\n",cmd->heredoc);
-//         cmd = cmd->next;
-//     }
-// }
+void print_cmd(t_cmd *cmd)
+{
+    int i;
+    // int j;
+    while(cmd)
+    {
+        i = 0;
+        printf("cmd: %s\n",cmd->cmd);
+        if(cmd->args)
+        {
+            while(cmd->args[i])
+            {
+                printf("args[%d]: %s\n",i,cmd->args[i]);
+                i++;
+            }
+        }
+        int j = 0;
+        if(cmd->outfile)
+        {
+            while(cmd->outfile[j])
+            {
+                printf("outfil[%d]: %s\n",j,cmd->outfile[j]);
+                j++;
+            }
+        }
+        printf("infile: %s\n",cmd->infile);
+        printf("herdoc: %s\n",cmd->heredoc);
+        cmd = cmd->next;
+    }
+}
 
 t_cmd *add_back_cmd(t_cmd **cmd,t_cmd *new_cmd)
 {
@@ -121,7 +121,7 @@ t_cmd *new_cmd(t_token *token)
         {
             if(cmd->args[0] == NULL)
             {
-                // cmd->cmd = ft_strdup(token->value);
+                cmd->cmd = ft_strdup(token->value);
                 cmd->args[0] = ft_strdup(token->value);
                 i = 1;
             }

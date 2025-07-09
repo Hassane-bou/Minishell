@@ -1,0 +1,12 @@
+Makefile
+builtins
+env
+execution
+hh
+kk
+lib
+main.c
+minishell
+minishell.h
+out
+parsing

@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 12:37:38 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/07/07 13:24:16 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/07/09 11:34:03 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ void out_redirect(t_cmd *cmd)
 	i = 0;
 	while (cmd->outfile[i])
 	{
+
 		if (cmd->append)
 			fd = open(cmd->outfile[i], O_CREAT | O_RDWR | O_APPEND, 0777);
 		else
@@ -119,9 +120,15 @@ void child_process(t_cmd *cmd, char **env_arr)
 		in_redirect(cmd);
 	if (cmd->outfile)
 		out_redirect(cmd);
-	// if (!cmd->args[0] || !cmd->args)
-	// 	exit(0);
+	if (!cmd->args[0] || !cmd->args)
+		exit(0);
 	paths = get_path(env_arr, cmd->args[0]);
+	if (!paths)
+	{
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(cmd->args[0], 2);
+		ft_putstr_fd(": No such file or directory\n", 2);
+	}
 	exact_path = check_path(paths);
 	if (is_contain_slash(cmd->args[0]))
 	{
