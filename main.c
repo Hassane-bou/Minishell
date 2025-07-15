@@ -30,6 +30,7 @@ int main(int argc,char **argv)
     t_token *result = NULL;
     t_cmd *cmd = NULL;
     setup_signals();
+    printf("hello\n-------");
     while(1)
     {
         input = readline("Minishell> ");
@@ -43,7 +44,7 @@ int main(int argc,char **argv)
         // print_token(result);
         // expand_token_list(result,envp);
         cmd = parse_cmd(result);
-       
+        
         print_cmd(cmd);       
         free(input);
     }

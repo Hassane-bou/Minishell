@@ -58,31 +58,31 @@ char	*allocate_word(char **pr, int i, int j, int k)
 	return (pr[k]);
 }
 
-char	**ft_split(char *str, char c)
-{
-	int		i;
-	int		j;
-	int		k;
-	char	**pr;
+// char	**ft_split(char *str, char c)
+// {
+// 	int		i;
+// 	int		j;
+// 	int		k;
+// 	char	**pr;
 
-	i = ((j = (k = 0), 0), 0);
-	pr = (char **)malloc(sizeof(char *) * (ft_count(str, c) + 1));
-	if (!pr)
-		return (NULL);
-	i = 0;
-	while (str[i])
-	{
-		while (str[i] && str[i] == c)
-			i++;
-		j = i;
-		while (str[i] && str[i] != c)
-			i++;
-		if (i > j)
-		{
-			allocate_word(pr, i, j, k);
-			ft_strncpy(pr[k++], &str[j], i - j);
-			j++;
-		}
-	}
-	return (pr[k] = NULL, pr);
-}
+// 	i = ((j = (k = 0), 0), 0);
+// 	pr = (char **)malloc(sizeof(char *) * (ft_count(str, c) + 1));
+// 	if (!pr)
+// 		return (NULL);
+// 	i = 0;
+// 	while (str[i])
+// 	{
+// 		while (str[i] && str[i] == c)
+// 			i++;
+// 		j = i;
+// 		while (str[i] && str[i] != c)
+// 			i++;
+// 		if (i > j)
+// 		{
+// 			allocate_word(pr, i, j, k);
+// 			ft_strncpy(pr[k++], &str[j], i - j);
+// 			j++;
+// 		}
+// 	}
+// 	return (pr[k] = NULL, pr);
+// }
