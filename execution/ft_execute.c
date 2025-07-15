@@ -159,12 +159,12 @@ void execute_one(t_cmd *cmd, t_env **env_copy)
 	if (pid == 0)
 		child_process(cmd, env_arr);
 	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
-		(*env_copy)->status = WEXITSTATUS(status);
-	else if (WIFSIGNALED(status) && WIFEXITED(status))
-	{
-		(*env_copy)->status = WTERMSIG(status) + 128;
-	}
+	// if (WIFEXITED(status))
+	// 	(*env_copy)->status = WEXITSTATUS(status);
+	// else if (WIFSIGNALED(status) && WIFEXITED(status))
+	// {
+	// 	(*env_copy)->status = WTERMSIG(status) + 128;
+	// }
 }
 
 int	ft_execute(t_cmd *cmd, t_env **env_copy, char *input)

@@ -101,8 +101,8 @@ int main(int ac, char *av[], char **envp)
 		res = tokenize(input);
         cmd = parse_cmd(res);
 		env_arr = env_to_arr(env_head);
-		// if (cmd->args[0])
-		// 	ft_execute(cmd, &env_head, input);
-		print_cmd(cmd);
+		if (cmd->args[0])
+			ft_execute(cmd, &env_head, input);
+		// print_cmd(cmd);
     }
 }

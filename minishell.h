@@ -20,6 +20,7 @@
 # include <unistd.h>
 # include <limits.h>
 # include <fcntl.h>
+# include <sys/wait.h>
 
 // ------------ parsing -----------------
 
