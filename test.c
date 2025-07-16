@@ -21,12 +21,23 @@ typedef enum s_type
 {
     WORD,
     PIPE,
+}t_type;
+
+typedef enum s_redirect_type
+{
     red_in,
     red_out,
     heredoc,
     append,
-}t_type;
+}t_redirect_type;
 
+typedef struct s_redirect
+{
+    t_redirect_type type;
+    char *file_or_delim;
+    struct s_redirect *next;
+
+}t_redirect;
 
 typedef struct s_token
 {
@@ -40,9 +51,7 @@ typedef struct s_cmd
 {
     char *cmd;
     char **args;
-    char *infile;
-    char *outfile;
-    int append;
+    t_redirect *redirection;
     struct s_cmd *next;
 }t_cmd;
 
@@ -57,20 +66,20 @@ int ft_strlen(char *s)
 /*****************************UTILIS**************************************/
 char	*ft_strdup(char *s1)
 {
-	char	*p;
+    char	*p;
 	int		n;
 	int		i;
     if(!s1)
-        return NULL;
+    return NULL;
 	p = (char *)s1;
 	n = ft_strlen(s1) + 1;
 	i = 0;
 	p = (char *)malloc(n * sizeof(char));
 	if (p == NULL)
-		return (NULL);
+    return (NULL);
 	while (s1[i])
 	{
-		p[i] = (char)s1[i];
+        p[i] = (char)s1[i];
 		i++;
 	}
 	p[i] = '\0';
@@ -80,13 +89,13 @@ char	*ft_strdup(char *s1)
 char *ft_strjoin(char *s1,char *s2)
 {
     if(!s1 || !s2)
-        return NULL;
+    return NULL;
     int i = 0;
     int j = 0;
     int len = ft_strlen(s1) + ft_strlen(s2);
     char *p = malloc(len + 1);
     if(!p)
-        return NULL;
+    return NULL;
     while(s1[i])
     {
         p[j] = s1[i];
@@ -113,11 +122,11 @@ char *substr(char *s,unsigned int start, size_t len)
 {
     char *p;
     size_t i;
-
+    
     if(!s)
-        return NULL;
+    return NULL;
     if(start >= ft_strlen(s))
-        return(ft_strdup(""));
+    return(ft_strdup(""));
     if(start + len > ft_strlen(s))
         len = ft_strlen(s) - start;
     p = malloc((len + 1) * sizeof(char));
@@ -131,9 +140,32 @@ char *substr(char *s,unsigned int start, size_t len)
     }
     p[i]='\0';
     return p;
-        
+    
 }
 /*****************************UTILIS*******************************/
+/**********************new redirection***********************/
+t_redirect *new_red(t_redirect_type type,char *file)
+{
+    t_redirect *node = malloc(sizeof(t_redirect));
+    node->type=type;
+    node->file_or_delim = ft_strdup(file);
+    node->next = NULL;
+    return node;    
+}
+
+void add_redir(t_cmd *cmd,t_redirect_type type,char *file)
+{
+    t_redirect *redir = new_red(type,file);
+    if(!cmd->redirection)
+        cmd->redirection = redir;
+    else{
+        t_redirect *tmp;
+        tmp = cmd->redirection;
+        while(tmp->next)
+            tmp= tmp->next;
+        tmp->next = redir;
+    }
+}
 
 
 
@@ -270,9 +302,7 @@ void initialisation(t_cmd *cmd)
 {
     cmd->cmd = NULL;
     cmd->args =NULL;
-    cmd->infile = NULL;
-    cmd->append = 0;
-    cmd->outfile = NULL;
+    cmd->redirection=NULL;
 }
 
 t_cmd *new_args(t_token *token)
@@ -297,20 +327,21 @@ t_cmd *new_args(t_token *token)
                 
             }
             else
-                cmd->args[i++] = ft_strdup(token->value);
+            cmd->args[i++] = ft_strdup(token->value);
         }
         else if(token->type == red_out)
         {
             if(token->next)
-                cmd->outfile = ft_strdup(token->next->value);
+            {
+                add_redir(cmd,red_out,token->next->value);
+            }
             token =token->next;
         }
         else if(token->type ==  red_in)
         {
             if(token->next)
-                cmd->infile = ft_strdup(token->next->value);
+                add_redir(cmd,red_in,token->next->value);
             token =token->next;
-
         }
         token = token->next;
     }
@@ -337,7 +368,6 @@ t_cmd  *add_cmd_back(t_cmd **lst,t_cmd  *new_cmd)
 }
 t_cmd *parse_toking(t_token *tokens)
 {
-      
     t_cmd *head = NULL;
     while(tokens)
     {
@@ -363,8 +393,12 @@ void print_cmd(t_cmd *command)
             printf("args[%d]: %s\n",i,command->args[i]);
             i++;
         }
-        printf("outfile:  %s\n",command->outfile);
-        printf("infile: %s\n",command->infile);
+        t_redirect *r = command->redirection;
+        while(r)
+        {
+            printf("redirection: type=%d, file=%s\n",r->type,r->file_or_delim);
+            r = r->next;
+        }
         command = command->next;
     }
 }

@@ -16,10 +16,8 @@ void initilisation(t_cmd *cmd)
 {
     cmd->cmd = NULL;
     cmd->args = NULL;
-    cmd->infile =NULL;
-    cmd->outfile = NULL;
-    cmd->heredoc = NULL;
-    cmd->append = 0;
+    // cmd->append = 0;
+    cmd->red =NULL;
     // heredoc->delimiter = NULL;
     // heredoc->quoted =0;
     
@@ -78,26 +76,12 @@ void print_cmd(t_cmd *cmd)
                 
             }
         }
-        int j = 0;
-        if(cmd->outfile)
+        t_redriection *red = cmd->red;
+        while(red)
         {
-            while(cmd->outfile[j])
-            {
-                printf("outfil[%d]: %s\n",j,cmd->outfile[j]);
-                j++;
-
-            }
+            printf("redirection: type = %d file=%s\n",red->type,red->file_or_delim);
+            red = red->next;
         }
-        int k = 0;
-        if(cmd->heredoc)
-        {
-            while(cmd->heredoc[k])
-            {
-                printf("herdoc[%d]: %s\n",k,cmd->heredoc[k]);
-                k++;
-            }
-        }
-        printf("infile: %s\n",cmd->infile);
         cmd = cmd->next;
     }
 }
@@ -149,81 +133,73 @@ char *remove_quotes(char *str)
     return res;
 }
 
+t_redriection *new_red(t_type type,char *file)
+{
+    t_redriection *red = malloc(sizeof(t_redriection));
+    if(!red)
+        return(NULL);
+    red->file_or_delim = ft_strdup(file);
+    red->type = type;
+    red->next = NULL;
+    return red;
+}
+
+void add_red(t_type type, t_cmd *cmd,char *file)
+{
+    t_redriection *red = new_red(type,file);
+    if(!cmd->red)
+        cmd->red = red;
+    else
+    {
+        t_redriection *tmp =cmd->red;
+        while(tmp->next)
+            tmp = tmp->next;
+        tmp->next = red;
+    }
+}
+
+
 t_cmd *new_cmd(t_token *token)
 {
     t_cmd *cmd;
+    t_redriection *red;
     cmd = malloc(sizeof(t_cmd));
     if(!cmd)
         return NULL;
     initilisation(cmd);
+    red = malloc(sizeof(t_redriection));
+    if(!red)
+        return(free(cmd),NULL);
     int nbr_args = count_word_in_token(token);
-    int nbr_red = count_redirect_in_token(token);
-    int nbr_here= count_heredoc_in_token(token);
+    //int nbr_red = count_redirect_in_token(token);
+   // int nbr_here= count_heredoc_in_token(token);
     cmd->args = malloc(sizeof(char *) * (nbr_args + 2));
     if(!cmd->args)
         return(free(cmd),NULL);
-    cmd->outfile = malloc(sizeof(char *) * (nbr_red + 1));
-    if(!cmd->outfile)
-        return(free(cmd),free(cmd->args),NULL);
-    cmd->heredoc = malloc(sizeof(char *) * (nbr_here + 1));
-    if(!cmd->heredoc)
-        return(free(cmd),free(cmd->args),free(cmd->outfile),NULL);
-    int j= 0;
     int i= 0;
-    int h= 0;
     while(token && token->type != PIPE)
     {
         if(token->type == WORD)
         {
-            if(cmd->cmd == NULL)
-            {
+            cmd->args[i]= ft_strdup(token->value);
+            if(!cmd->cmd)
                 cmd->cmd=ft_strdup(token->value);
-                cmd->args[0] = ft_strdup(token->value);
-                i = 1;
-            }
-            else
-            {
-                cmd->args[i] = ft_strdup(token->value);
-                i++;
-            }
-            token = token->next;
+            i++;
         }
-        else if(token->type == REDIR_OUT || token->type == APPEND)
-        {
-            
-            if(token->type == APPEND)
-                cmd->append = 1;
-            if(token->next && token->type != APPEND)
-            {
-                cmd->outfile[j] =  ft_strdup(token->next->value);
-                j++;
-            }
-            token = token->next;
-        }
-        else if(token->type == REDIR_IN)
+        else if(token->type == REDIR_OUT || token->type == APPEND || token->type == REDIR_IN 
+                || token->type == HEREDOC)
         {
             if(token->next)
-                cmd->infile = ft_strdup(token->next->value);
-            token = token->next;
-        }
-        else if(token->type == HEREDOC)
-        {
-            if(token->next)
-            {
-                cmd->heredoc[h] = ft_strdup(token->next->value);
-                h++;
-            }
+                add_red(token->type,cmd,token->next->value);
             token=token->next;
         }
-        else
-            token = token->next;
+        token = token->next;
     }
-    cmd->heredoc[h] = NULL;
-    cmd->outfile[j]=NULL;
     cmd->args[i] = NULL;
     cmd->next =NULL;
     return(cmd);
 }
+
 t_cmd *parse_cmd(t_token *token)
 {
     t_cmd *head = NULL;

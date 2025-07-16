@@ -30,6 +30,7 @@ typedef enum e_type {
     HEREDOC,
 }t_type;
 
+
 typedef struct s_token
 {
     char *value;
@@ -46,17 +47,22 @@ typedef struct s_token
 //     int quoted;
 // } t_heredoc;
 
+typedef struct s_redriection
+{
+    t_type type;
+    char *file_or_delim;
+    struct s_redriection *next;
+}t_redriection;
+
 typedef struct s_cmd
 {
     char *cmd;
     char **args;
-    char **outfile;
-    char *infile;
-    int append;
-    char **heredoc;
+    t_redriection *red;
 
     struct s_cmd *next;
 }t_cmd;
+
 
 
 
