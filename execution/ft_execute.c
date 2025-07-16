@@ -68,47 +68,64 @@ char	*check_path(char **path)
 void in_redirect(t_cmd *cmd)
 {
 	int fd;
+	t_redriection *tmp;
 
-	fd = open(cmd->infile, O_RDONLY, 0777);
-	if (fd < 0)
-		perror("infile error!");
-	if (dup2(fd, 0) == -1)
+	tmp = cmd->red;
+	while (tmp)
 	{
-		perror("dup failed!");
-		exit(1);
-	}
-	close(fd);
-}
-
-void out_redirect(t_cmd *cmd)
-{
-	int fd;
-	int	i;
-
-	i = 0;
-	while (cmd->outfile[i])
-	{
-
-		if (cmd->append)
-			fd = open(cmd->outfile[i], O_CREAT | O_RDWR | O_APPEND, 0777);
-		else
-			fd = open(cmd->outfile[i], O_CREAT | O_RDWR | O_TRUNC, 0777);
-		if (fd < 0)
+		if (tmp->type == REDIR_IN)
 		{
-			perror("outfile error");
-			exit(1);
-		}
-		if (cmd->outfile[i + 1] == NULL)
-		{
-			if (dup2(fd, STDOUT_FILENO) == -1)
+			fd = open(tmp->file_or_delim, O_RDONLY, 0777);
+			if (fd < 0)
+				return (perror("infile error!"), exit(1));
+			if (dup2(fd, STDIN_FILENO) == -1)
 			{
 				perror("dup failed!");
 				exit(1);
 			}
 			close(fd);
 		}
-		i++;
+		tmp = tmp->next;
 	}
+}
+
+void out_redirect(t_cmd *cmd)
+{
+	int fd;
+	t_redriection *tmp;
+
+	tmp = cmd->red;
+	while (tmp)
+	{
+		if (tmp->type == APPEND || tmp->type == REDIR_OUT)
+		{
+			if (tmp->type == APPEND)
+				fd = open(tmp->file_or_delim, O_CREAT | O_RDWR | O_APPEND, 0777);
+			else
+				fd = open(tmp->file_or_delim, O_CREAT | O_RDWR | O_TRUNC, 0777);
+			if (fd < 0)
+			{
+				perror("outfile error");
+				exit(1);
+			}
+			if ((tmp->next == NULL) || (tmp->next && tmp->next->type != APPEND && tmp->next->type != REDIR_OUT))
+			{
+				if (dup2(fd, STDOUT_FILENO) == -1)
+				{
+					perror("dup failed!");
+					exit(1);
+				}
+				close(fd);
+			}
+		}
+		tmp = tmp->next;
+	}
+}
+
+void ft_redirect(t_cmd *cmd)
+{
+	in_redirect(cmd);
+	out_redirect (cmd);
 }
 
 void child_process(t_cmd *cmd, char **env_arr)
@@ -116,10 +133,7 @@ void child_process(t_cmd *cmd, char **env_arr)
 	char	*exact_path;
 	char	**paths;
 
-	if (cmd->infile)
-		in_redirect(cmd);
-	if (cmd->outfile)
-		out_redirect(cmd);
+	ft_redirect(cmd);
 	if (!cmd->args[0] || !cmd->args)
 		exit(0);
 	paths = get_path(env_arr, cmd->args[0]);
@@ -148,7 +162,6 @@ void child_process(t_cmd *cmd, char **env_arr)
 void execute_one(t_cmd *cmd, t_env **env_copy)
 {
 	pid_t	pid;
-
 	char	**env_arr;
 	int		status;
 
@@ -169,7 +182,7 @@ void execute_one(t_cmd *cmd, t_env **env_copy)
 
 int	ft_execute(t_cmd *cmd, t_env **env_copy, char *input)
 {
-	if (!cmd->next)
+	if (cmd->next == NULL)
 		execute_one(cmd, env_copy);
 	return 0;
 }

@@ -25,9 +25,9 @@ t_token *cretae_token(char *value, t_type type)
     token->value = ft_strdup(value);
     token->type = type;
     token->next = NULL;
-
     return (token);
 }
+
 void append_token(t_token **head,t_token *new)
 {
     if(!*head)

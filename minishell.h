@@ -31,7 +31,7 @@ typedef enum e_type {
     REDIR_OUT,
     APPEND,
     HEREDOC,
-}t_type;
+} t_type;
 
 typedef struct s_token
 {
@@ -40,14 +40,18 @@ typedef struct s_token
     struct s_token *next;
 } t_token;
 
+typedef struct s_redriection
+{
+    t_type type;
+    char *file_or_delim;
+    struct s_redriection *next;
+} t_redriection;
+
 typedef struct s_cmd
 {
     char *cmd;
     char **args;
-    char **outfile;
-    char *infile;
-    int append;
-    char *heredoc;
+    t_redriection *red;
     struct s_cmd *next;
 } t_cmd;
 
