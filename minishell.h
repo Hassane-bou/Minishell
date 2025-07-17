@@ -89,7 +89,7 @@ int		ft_unset(char **arr, t_env **env_copy);
 int 	ft_exit(char **arr, t_env **env_copy);
 int		ft_export(char **arr, t_env **env_copy);
 char	*get_env_value(t_env **env_copy, char *key);
-int     is_builtin(t_cmd *cmd, t_env **env_copy);
+int     is_builtin(t_cmd *cmd);
 void	run_builtin(t_cmd *cmd, t_env **env_copy);
 int     ft_execute(t_cmd *cmd, t_env **env_copy, char *input);
 char    **env_to_arr(t_env *env_head);

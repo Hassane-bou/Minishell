@@ -128,6 +128,74 @@ void ft_redirect(t_cmd *cmd)
 	out_redirect (cmd);
 }
 
+int in_redirect_buil(t_cmd *cmd)
+{
+	int fd;
+	t_redriection *tmp;
+
+	tmp = cmd->red;
+	while (tmp)
+	{
+		if (tmp->type == REDIR_IN)
+		{
+			fd = open(tmp->file_or_delim, O_RDONLY, 0777);
+			if (fd < 0)
+				return (perror("infile error!"), -1);
+			if (dup2(fd, STDIN_FILENO) == -1)
+			{
+				perror("dup failed!");
+				return -1;
+			}
+			close(fd);
+		}
+		tmp = tmp->next;
+	}
+	return 1;
+}
+
+int out_redirect_buil(t_cmd *cmd)
+{
+	int fd;
+	t_redriection *tmp;
+
+	tmp = cmd->red;
+	while (tmp)
+	{
+		if (tmp->type == APPEND || tmp->type == REDIR_OUT)
+		{
+			if (tmp->type == APPEND)
+				fd = open(tmp->file_or_delim, O_CREAT | O_RDWR | O_APPEND, 0777);
+			else
+				fd = open(tmp->file_or_delim, O_CREAT | O_RDWR | O_TRUNC, 0777);
+			if (fd < 0)
+			{
+				perror("outfile error");
+				return -1;
+			}
+			if ((tmp->next == NULL) || (tmp->next && tmp->next->type != APPEND && tmp->next->type != REDIR_OUT))
+			{
+				if (dup2(fd, STDOUT_FILENO) == -1)
+				{
+					perror("dup failed!");
+					return -1;
+				}
+				close(fd);
+			}
+		}
+		tmp = tmp->next;
+	}
+	return 1;
+}
+
+int ft_redirect_buil(t_cmd *cmd)
+{
+	if (in_redirect_buil(cmd) == -1)
+		return -1;
+	if (out_redirect_buil(cmd) == -1)
+		return -1;
+	return 0;
+}
+
 void child_process(t_cmd *cmd, char **env_arr)
 {
 	char	*exact_path;
@@ -159,6 +227,26 @@ void child_process(t_cmd *cmd, char **env_arr)
 	exit(127);
 }
 
+void cmd_built(t_cmd *cmd, t_env **env_copy)
+{
+	int save_in = dup(STDIN_FILENO);
+	int save_out = dup(STDOUT_FILENO);
+	if (ft_redirect_buil(cmd) == -1)
+	{
+		dup2(save_in, STDIN_FILENO);
+		dup2(save_out, STDOUT_FILENO);
+		close(save_in);
+		close(save_out);
+		return ;
+	}
+	run_builtin(cmd, env_copy);
+	dup2(save_in, STDIN_FILENO);
+	dup2(save_out, STDOUT_FILENO);
+	close(save_in);
+	close(save_out);
+	return ;
+}
+
 void execute_one(t_cmd *cmd, t_env **env_copy)
 {
 	pid_t	pid;
@@ -166,8 +254,8 @@ void execute_one(t_cmd *cmd, t_env **env_copy)
 	int		status;
 
 	env_arr = env_to_arr(*env_copy);
-	if (is_builtin(cmd, env_copy))
-		return (run_builtin(cmd, env_copy));
+	if (is_builtin(cmd))
+		return (cmd_built(cmd, env_copy));
 	pid = fork();
 	if (pid == 0)
 		child_process(cmd, env_arr);

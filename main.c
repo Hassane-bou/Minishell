@@ -28,7 +28,7 @@ int	ft_strcmp(char *s1, char *s2)
 	return (s1[i] - s2[i]);
 }
 
-int	is_builtin(t_cmd *cmd, t_env **env_copy)
+int	is_builtin(t_cmd *cmd)
 {
 	if (!ft_strcmp(cmd->args[0], "env") || !ft_strcmp(cmd->args[0], "ENV"))
 		return (1);
