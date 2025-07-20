@@ -93,7 +93,8 @@ int main(int ac, char *av[], char **envp)
 	ft_update_shelvl(env_head);
     while(1)
     {
-        input = readline("Minishell$> ");
+		char *pwd = getcwd(NULL, 0);
+        input = readline(ft_strjoin(pwd, "$> "));
         if(input == NULL)
             break ;
         if(*input)

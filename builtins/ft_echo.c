@@ -22,12 +22,12 @@ int	ft_echo(char **arr, t_env *env_copy)
 		if (i == 1 && !ft_strcmp(arr[i], "-n"))
 			i++;
 		if (arr[i])
-			printf("%s", arr[i]);
+			ft_putstr_fd(arr[i], 1);
 		if (arr[i + 1] != NULL)
-			printf(" ");
+			write(1, " ", 1);
 		i++;
 	}
 	if (ft_strcmp(arr[1], "-n"))
-		printf("\n");
+		write(1, "\n", 1);
 	return (0);
 }

@@ -52,6 +52,7 @@ typedef struct s_cmd
     char *cmd;
     char **args;
     t_redriection *red;
+    int herdoc_fd;
     struct s_cmd *next;
 } t_cmd;
 

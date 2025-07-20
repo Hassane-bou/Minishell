@@ -73,6 +73,11 @@ void in_redirect(t_cmd *cmd)
 	tmp = cmd->red;
 	while (tmp)
 	{
+		if (tmp->type == HEREDOC)
+		{
+			dup2(cmd->herdoc_fd, STDIN_FILENO);
+			close(cmd->herdoc_fd);
+		}
 		if (tmp->type == REDIR_IN)
 		{
 			fd = open(tmp->file_or_delim, O_RDONLY, 0777);
@@ -268,9 +273,65 @@ void execute_one(t_cmd *cmd, t_env **env_copy)
 	// }
 }
 
+void run_herdoc(t_cmd *cmd, t_redriection *tmp, int fd)
+{
+	char *line;
+
+	while (1)
+	{
+		line = readline("> ");
+		if (!ft_strcmp(line, tmp->file_or_delim))
+		{
+			free(line);
+			break ;
+		}
+		ft_putendl_fd(line, fd);
+		free(line);
+	}
+}
+
+int ft_herdoc(t_cmd *cmd)
+{
+	t_redriection	*tmp;
+	int 			pid;
+	int				heredoc_fd[2];
+
+	tmp = cmd->red;
+	while (tmp)
+	{
+		if (tmp->type == HEREDOC)
+		{
+			if (pipe(heredoc_fd) == -1)
+			{
+				perror("pipe");
+				exit(1);
+			}
+			pid = fork();
+			if (pid == 0)
+			{
+				close(heredoc_fd[0]);
+				run_herdoc(cmd, tmp, heredoc_fd[1]);
+				close(heredoc_fd[1]);
+				exit(0);
+			}
+			waitpid(pid, NULL, 0);
+			close(heredoc_fd[1]);
+			cmd->herdoc_fd = heredoc_fd[0];
+		}
+		tmp = tmp->next;
+	}
+	return 0;
+}
+
 int	ft_execute(t_cmd *cmd, t_env **env_copy, char *input)
 {
+	t_redriection *tmp;
+
+	tmp = cmd->red;
+	ft_herdoc(cmd);
 	if (cmd->next == NULL)
 		execute_one(cmd, env_copy);
 	return 0;
 }
+
+
