@@ -81,29 +81,53 @@ char **env_to_arr(t_env *env_head)
 	return (env_arr);
 }
 
+int count_pipes(t_cmd *cmd)
+{
+	int	i = 0;
+
+	while (cmd->next)
+	{
+		i++;
+		cmd = cmd->next;
+	}
+	return i;
+}
+
 int main(int ac, char *av[], char **envp)
 {
-    char 	*input;
+	char	*input;
 	char	**env_arr;
 	t_token *res;
-    t_cmd	*cmd;
-    t_env	*env_head;
+	t_cmd	*cmd;
+	t_env	*env_head;
+	(void)ac;
+	(void)av;
 
 	env_copy(envp, &env_head);
 	ft_update_shelvl(env_head);
-    while(1)
-    {
+	while (1)
+	{
 		char *pwd = getcwd(NULL, 0);
-        input = readline(ft_strjoin(pwd, "$> "));
-        if(input == NULL)
-            break ;
-        if(*input)
-            add_history(input);
+		char *green = "\001\033[0;32m\002";
+		char *reset = "\001\033[0m\002";
+		char *suffix = ft_strjoin(pwd, "$> ");
+		char *colored = ft_strjoin(green, suffix);
+		char *final_prompt = ft_strjoin(colored, reset);
+		free(colored);
+		free(pwd);
+		input = readline(final_prompt);
+		free(final_prompt);
+		if (input == NULL)
+			break ;
+		if (*input)
+			add_history(input);
 		res = tokenize(input);
-        cmd = parse_cmd(res);
+		cmd = parse_cmd(res);
 		env_arr = env_to_arr(env_head);
+		cmd->pipe_count = count_pipes(cmd);
 		// print_cmd(cmd);
-		if (cmd->args[0])
-			ft_execute(cmd, &env_head, input);
-    }
+		ft_execute(cmd, &env_head, input);
+		free(input);
+	}
+	return 0;
 }

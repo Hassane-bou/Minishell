@@ -17,7 +17,7 @@ void initilisation(t_cmd *cmd)
     cmd->cmd = NULL;
     cmd->args = NULL;
     // cmd->append = 0;
-    cmd->red =NULL;
+    cmd->red = NULL;
     // heredoc->delimiter = NULL;
     // heredoc->quoted =0;
     

@@ -49,8 +49,9 @@ typedef struct s_redriection
 
 typedef struct s_cmd
 {
-    char *cmd;
-    char **args;
+    char	*cmd;
+    char	**args;
+    int		pipe_count;
     t_redriection *red;
     int herdoc_fd;
     struct s_cmd *next;
