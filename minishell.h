@@ -95,6 +95,8 @@ int     is_builtin(t_cmd *cmd);
 void	run_builtin(t_cmd *cmd, t_env **env_copy);
 int     ft_execute(t_cmd *cmd, t_env **env_copy, char *input);
 char    **env_to_arr(t_env *env_head);
+void    execute_multiple(t_cmd *cmd, t_env **env_copy);
+void    child_process(t_cmd *cmd, char **env_arr);
 
 #define ERROR_ARG "minishell: exit: too many arguments\n"
 

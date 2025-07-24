@@ -328,9 +328,12 @@ int	ft_execute(t_cmd *cmd, t_env **env_copy, char *input)
 	t_redriection *tmp;
 
 	tmp = cmd->red;
+	// printf("-->%d\n", cmd->pipe_count);
 	ft_herdoc(cmd);
 	if (cmd->next == NULL)
 		execute_one(cmd, env_copy);
+	else
+		execute_multiple(cmd, env_copy);
 	return 0;
 }
 
