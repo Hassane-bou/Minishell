@@ -14,53 +14,61 @@
 
 void execute_multiple(t_cmd *cmd, t_env **env_copy)
 {
-	int	pipe_fd[2];
-	int	pid;
-	int	i;
-	char **env_arr;
+    int pipe_fd[2];
+    int prev_fd = -1;
+    int pid;
+    char **env_arr;
+    t_cmd *current = cmd;
 
-	env_arr = env_to_arr(*env_copy);
-	i = cmd->pipe_count;
-	while (cmd)
-	{
-		if (cmd->next != NULL)
-		{
-			if (pipe(pipe_fd) == -1)
-			{
-				perror("pipe");
-				exit (1);
-			}
-		}
-		pid = fork();
-		if (pid == 0)
-		{
-			if (i == cmd->pipe_count)
-			{
-				close(pipe_fd[0]);
-				dup2(pipe_fd[1], STDOUT_FILENO);
-				child_process(cmd, env_arr);
-				close(pipe_fd[1]);
-			}
-			else if (cmd->next == NULL)
-			{
-				close(pipe_fd[1]);
-				dup2(pipe_fd[0], STDIN_FILENO);
-				child_process(cmd, env_arr);
-				close(pipe_fd[0]);
-			}
+    env_arr = env_to_arr(*env_copy);
+    while (current)
+    {
+        if (current->next != NULL)
+        {
+            if (pipe(pipe_fd) == -1)
+            {
+                perror("pipe");
+                exit(1);
+            }
+        }
+        pid = fork();
+        if (pid == -1)
+        {
+            perror("fork");
+            exit(1);
+        }
+        if (pid == 0)
+        {
+            if (prev_fd != -1)
+            {
+                dup2(prev_fd, STDIN_FILENO);
+                close(prev_fd);
+            }
+            if (current->next != NULL)
+            {
+                close(pipe_fd[0]);
+                dup2(pipe_fd[1], STDOUT_FILENO);
+                close(pipe_fd[1]);
+            }
+			if (is_builtin(current))
+				cmd_built(current, env_copy);
 			else
-			{
-				dup2(pipe_fd[1], STDOUT_FILENO);
-				dup2(pipe_fd[0], STDIN_FILENO);
-				child_process(cmd, env_arr);
-				close(pipe_fd[0]);
-				close(pipe_fd[1]);
-			}
-		}
-		// close(pipe_fd[0]);
-		close(pipe_fd[1]);
-		waitpid(pid, NULL, 0);
-		i--;
-		cmd = cmd->next;
-	}
+            	child_process(current, env_arr);
+            exit(1);
+        }
+        if (prev_fd != -1)
+            close(prev_fd);
+        if (current->next != NULL)
+        {
+            close(pipe_fd[1]);
+            prev_fd = pipe_fd[0];
+        }
+        else
+        {
+            prev_fd = -1;
+        }
+        current = current->next;
+    }
+    while (wait(NULL) > 0)
+        ;
 }
