@@ -232,39 +232,6 @@ void child_process(t_cmd *cmd, char **env_arr)
 	exit(127);
 }
 
-// void child_process_mul(t_cmd *cmd, char **env_arr, t_env **env_copy)
-// {
-// 	char	*exact_path;
-// 	char	**paths;
-
-// 	if (is_builtin(cmd))
-// 		return (cmd_built(cmd, env_copy));
-// 	ft_redirect(cmd);
-// 	if (!cmd->args[0] || !cmd->args)
-// 		exit(0);
-// 	paths = get_path(env_arr, cmd->args[0]);
-// 	if (!paths)
-// 	{
-// 		ft_putstr_fd("minishell: ", 2);
-// 		ft_putstr_fd(cmd->args[0], 2);
-// 		ft_putstr_fd(": No such file or directory\n", 2);
-// 	}
-// 	exact_path = check_path(paths);
-// 	if (is_contain_slash(cmd->args[0]))
-// 	{
-// 		execve(cmd->args[0], cmd->args, env_arr);
-// 		ft_putstr_fd("minishell: ", 2);
-// 		ft_putstr_fd(cmd->args[0], 2);
-// 		ft_putstr_fd(": command not found\n", 2);
-// 		exit(127);
-// 	}
-// 	execve(exact_path, cmd->args, env_arr);
-// 	ft_putstr_fd("minishell: ", 2);
-// 	ft_putstr_fd(cmd->args[0], 2);
-// 	ft_putstr_fd(": command not found\n", 2);
-// 	exit(127);
-// }
-
 void cmd_built(t_cmd *cmd, t_env **env_copy)
 {
 	int save_in = dup(STDIN_FILENO);
@@ -298,12 +265,15 @@ void execute_one(t_cmd *cmd, t_env **env_copy)
 	if (pid == 0)
 		child_process(cmd, env_arr);
 	waitpid(pid, &status, 0);
-	// if (WIFEXITED(status))
-	// 	(*env_copy)->status = WEXITSTATUS(status);
-	// else if (WIFSIGNALED(status) && WIFEXITED(status))
-	// {
-	// 	(*env_copy)->status = WTERMSIG(status) + 128;
-	// }
+	if (WIFEXITED(status))
+		last_status = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+	{
+		last_status = WTERMSIG(status) + 128;
+		if (WTERMSIG(status) == SIGQUIT)
+			ft_putstr_fd("Quit: 3\n", 2);
+	}
+	printf("-->%d\n", last_status);
 }
 
 void run_herdoc(t_cmd *cmd, t_redriection *tmp, int fd)

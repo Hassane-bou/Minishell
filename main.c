@@ -12,6 +12,7 @@
 
 #include "minishell.h"
 
+int last_status;
 int	ft_strcmp(char *s1, char *s2)
 {
 	int	i;
@@ -92,9 +93,6 @@ int count_pipes(t_cmd *cmd)
 	}
 	return i;
 }
-#define RED "\033[1;31m"
-#define RESET "\033[0m"
-#define GREEN "\001\033[0;32m\002"
 
 void	print_tamazirt(void)
 {
@@ -120,9 +118,11 @@ int main(int ac, char *av[], char **envp)
 	(void)ac;
 	(void)av;
 
+	last_status = 0;
 	env_copy(envp, &env_head);
 	ft_update_shelvl(env_head);
 	print_tamazirt();
+	setup_signals();
 	while (1)
 	{
 		char *pwd = getcwd(NULL, 0);

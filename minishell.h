@@ -21,7 +21,10 @@
 # include <limits.h>
 # include <fcntl.h>
 # include <sys/wait.h>
-
+#define RED "\033[1;31m"
+#define RESET "\033[0m"
+#define GREEN "\001\033[0;32m\002"
+extern int last_status;
 // ------------ parsing -----------------
 
 typedef enum e_type {
@@ -98,8 +101,8 @@ char    **env_to_arr(t_env *env_head);
 void    execute_multiple(t_cmd *cmd, t_env **env_copy);
 void    child_process(t_cmd *cmd, char **env_arr);
 int     ft_herdoc(t_cmd *cmd);
-void cmd_built(t_cmd *cmd, t_env **env_copy);
-void    child_process_mul(t_cmd *cmd, char **env_arr, t_env **env_copy);
+void    cmd_built(t_cmd *cmd, t_env **env_copy);
+void    setup_signals(void);
 
 #define ERROR_ARG "minishell: exit: too many arguments\n"
 
