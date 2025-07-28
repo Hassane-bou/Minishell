@@ -71,12 +71,13 @@ int handle_word(char *input, int i, t_token **head);
 t_token *tokenize(char *input);
 t_cmd *parse_cmd(t_token *token);
 void print_cmd(t_cmd *cmd);
+int ft_isspace(int c);
 
 // -------------- builtins ----------------
 
 typedef struct s_env
 {
-	char	*key;
+    char	*key;
 	char	*value;
     int     status;
 	struct s_env *next;
@@ -103,6 +104,8 @@ void    child_process(t_cmd *cmd, char **env_arr);
 int     ft_herdoc(t_cmd *cmd);
 void    cmd_built(t_cmd *cmd, t_env **env_copy);
 void    setup_signals(void);
+void    handle_end(void);
+int     check_all_syntaxe(char *input);
 
 #define ERROR_ARG "minishell: exit: too many arguments\n"
 

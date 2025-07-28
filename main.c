@@ -111,13 +111,14 @@ void	print_tamazirt(void)
 int main(int ac, char *av[], char **envp)
 {
 	char	*input;
-	char	**env_arr;
 	t_token *res;
 	t_cmd	*cmd;
 	t_env	*env_head;
 	(void)ac;
 	(void)av;
 
+	res = NULL;
+    cmd = NULL;
 	last_status = 0;
 	env_copy(envp, &env_head);
 	ft_update_shelvl(env_head);
@@ -136,13 +137,18 @@ int main(int ac, char *av[], char **envp)
 		input = readline(final_prompt);
 		free(final_prompt);
 		if (input == NULL)
-			break ;
+			handle_end();
+		if (*input == '\0')
+		{
+    		free(input);
+			continue;
+		}
 		if (*input)
 			add_history(input);
+		if(check_all_syntaxe(input))
+			continue;
 		res = tokenize(input);
 		cmd = parse_cmd(res);
-		env_arr = env_to_arr(env_head);
-		cmd->pipe_count = count_pipes(cmd);
 		// print_cmd(cmd);
 		ft_execute(cmd, &env_head, input);
 		free(input);
