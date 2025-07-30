@@ -223,16 +223,18 @@ void child_process(t_cmd *cmd, char **env_arr)
 		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd(cmd->args[0], 2);
 		ft_putstr_fd(": command not found\n", 2);
+		last_status = 127;
 		exit(127);
 	}
 	execve(exact_path, cmd->args, env_arr);
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(cmd->args[0], 2);
 	ft_putstr_fd(": command not found\n", 2);
+	last_status = 127;
 	exit(127);
 }
 
-void cmd_built(t_cmd *cmd, t_env **env_copy)
+void cmd_built(t_cmd *cmd, t_env **env_copy, int *status)
 {
 	int save_in = dup(STDIN_FILENO);
 	int save_out = dup(STDOUT_FILENO);
@@ -244,7 +246,7 @@ void cmd_built(t_cmd *cmd, t_env **env_copy)
 		close(save_out);
 		return ;
 	}
-	run_builtin(cmd, env_copy);
+	*status = run_builtin(cmd, env_copy);
 	dup2(save_in, STDIN_FILENO);
 	dup2(save_out, STDOUT_FILENO);
 	close(save_in);
@@ -260,19 +262,19 @@ void execute_one(t_cmd *cmd, t_env **env_copy)
 
 	env_arr = env_to_arr(*env_copy);
 	if (is_builtin(cmd))
-		return (cmd_built(cmd, env_copy));
+		return (cmd_built(cmd, env_copy, &status));
 	pid = fork();
 	if (pid == 0)
 		child_process(cmd, env_arr);
 	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		last_status = WEXITSTATUS(status);
-	else if (WIFSIGNALED(status))
-	{
-		last_status = WTERMSIG(status) + 128;
-		if (WTERMSIG(status) == SIGQUIT)
-			ft_putstr_fd("Quit: 3\n", 2);
-	}
+	// else if (WIFSIGNALED(status))
+	// {
+	// 	last_status = WTERMSIG(status) + 128;
+	// 	if (WTERMSIG(status) == SIGQUIT)
+	// 		ft_putstr_fd("Quit: 3\n", 2);
+	// }
 	printf("-->%d\n", last_status);
 }
 

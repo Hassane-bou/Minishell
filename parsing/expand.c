@@ -37,7 +37,7 @@ int ft_stncmp(char *s1,char *s2,int n)
     return 0;    
 }
 
-char *get_env_value(char *var,char **envp)
+char *get_env_value_par(char *var,char **envp)
 {
     int i = 0;
     int len = ft_strlen(var);
@@ -49,30 +49,7 @@ char *get_env_value(char *var,char **envp)
     }
     return("");
 }
-char *ft_strjoin(char *s1,char *s2)
-{
-    int i = 0;
-    int j = 0;
-    int len = ft_strlen(s1) + ft_strlen(s2);
-    char *p = malloc(len + 1);
-    if(!p)
-        return NULL;
-    while(s1[i])
-    {
-        p[j] =s1[i];
-        i++;
-        j++;
-    }
-    i = 0;
-    while(s2[i])
-    {
-        p[j] = s2[i];
-        i++;
-        j++;
-    }
-    p[j]= '\0';
-    return(p);
-}
+
 char *ft_strjoin_char(char *s1,char c)
 {
     int i = 0;
@@ -131,7 +108,7 @@ char *expand_string(char *word,char **envp)
             while(word[i] && is_valid_env_char(word[i]))
                 i++;
             var_name = ft_substr(word,start,i -start);
-            value = get_env_value(var_name,envp);
+            value = get_env_value_par(var_name,envp);
             free(var_name);
 
             tmp = ft_strjoin(resulat,value);

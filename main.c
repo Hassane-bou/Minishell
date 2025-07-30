@@ -47,22 +47,23 @@ int	is_builtin(t_cmd *cmd)
 		return (1);
 	return 0;
 }
-void	run_builtin(t_cmd *cmd, t_env **env_copy)
+int	run_builtin(t_cmd *cmd, t_env **env_copy)
 {
 	if (!ft_strcmp(cmd->args[0], "env") || !ft_strcmp(cmd->args[0], "ENV"))
-		ft_env(*env_copy);
+		return (ft_env(*env_copy));
 	if (!ft_strcmp(cmd->args[0], "pwd") || !ft_strcmp(cmd->args[0], "PWD"))
-		ft_pwd(*env_copy);
+		return (ft_pwd(*env_copy));
 	if (!ft_strcmp(cmd->args[0], "cd"))
-		ft_cd(cmd->args[1], env_copy);
+		return (ft_cd(cmd->args[1], env_copy));
 	if (!ft_strcmp(cmd->args[0], "echo") || !ft_strcmp(cmd->args[0], "ECHO"))
-		ft_echo(cmd->args, *env_copy);
+		return (ft_echo(cmd->args, *env_copy));
 	if (!ft_strcmp(cmd->args[0], "unset"))
-		ft_unset(cmd->args, env_copy);
+		return (ft_unset(cmd->args, env_copy));
 	if (!ft_strcmp(cmd->args[0], "exit"))
-		ft_exit(cmd->args, env_copy);
+		return (ft_exit(cmd->args, env_copy));
 	if (!ft_strcmp(cmd->args[0], "export"))
-		ft_export(cmd->args, env_copy);
+		return (ft_export(cmd->args, env_copy));
+	return 1;
 }
 
 char **env_to_arr(t_env *env_head)
@@ -111,19 +112,17 @@ void	print_tamazirt(void)
 int main(int ac, char *av[], char **envp)
 {
 	char	*input;
-	t_token *res;
-	t_cmd	*cmd;
+	t_token *res = NULL;
+	t_cmd	*cmd = NULL;
 	t_env	*env_head;
 	(void)ac;
 	(void)av;
 
-	res = NULL;
-    cmd = NULL;
 	last_status = 0;
+	setup_signals();
 	env_copy(envp, &env_head);
 	ft_update_shelvl(env_head);
 	print_tamazirt();
-	setup_signals();
 	while (1)
 	{
 		char *pwd = getcwd(NULL, 0);
@@ -138,19 +137,16 @@ int main(int ac, char *av[], char **envp)
 		free(final_prompt);
 		if (input == NULL)
 			handle_end();
-		if (*input == '\0')
-		{
-    		free(input);
-			continue;
-		}
 		if (*input)
 			add_history(input);
 		if(check_all_syntaxe(input))
 			continue;
 		res = tokenize(input);
+		expand_token_list(res,envp);
 		cmd = parse_cmd(res);
 		// print_cmd(cmd);
-		ft_execute(cmd, &env_head, input);
+		if (cmd)
+			ft_execute(cmd, &env_head, input);
 		free(input);
 	}
 	return 0;

@@ -21,6 +21,7 @@
 # include <limits.h>
 # include <fcntl.h>
 # include <sys/wait.h>
+
 #define RED "\033[1;31m"
 #define RESET "\033[0m"
 #define GREEN "\001\033[0;32m\002"
@@ -40,8 +41,9 @@ typedef struct s_token
 {
     char *value;
     t_type type;
+    char new_quote;
     struct s_token *next;
-} t_token;
+}t_token;
 
 typedef struct s_redriection
 {
@@ -60,6 +62,27 @@ typedef struct s_cmd
     struct s_cmd *next;
 } t_cmd;
 
+// t_token *cretae_token(char *value, t_type type);
+// void append_token(t_token **head,t_token *new);
+// int handle_APPEND(char *input,int i,t_token **head);
+// int handle_herdoc(char *input,int i,t_token **head);
+// int handle_outfile(char *input,int i,t_token **head);
+// int handle_intfile(char *input,int i,t_token **head);
+// int handle_pipe(char *input,int i,t_token **head);
+// int handle_word(char *input, int i, t_token **head);
+// t_token *tokenize(char *input);
+// t_cmd *parse_cmd(t_token *token);
+// void print_cmd(t_cmd *cmd);
+// int ft_isspace(int c);
+void signal_handler(int sig);
+void handle_end(void);
+void setup_signals(void);
+
+int check_quotes(char *input);
+int check_pipe_syntaxe(char *input);
+int check_redirection_syntaxe(char *input);
+int check_all_syntaxe(char *input);
+
 t_token *cretae_token(char *value, t_type type);
 void append_token(t_token **head,t_token *new);
 int handle_APPEND(char *input,int i,t_token **head);
@@ -71,7 +94,19 @@ int handle_word(char *input, int i, t_token **head);
 t_token *tokenize(char *input);
 t_cmd *parse_cmd(t_token *token);
 void print_cmd(t_cmd *cmd);
+
+
 int ft_isspace(int c);
+
+
+
+
+void expand_token_list(t_token *head,char **envp);
+char *expand_string(char *word,char **envp);
+char *get_env_value_par(char *var,char **envp);
+int ft_stncmp(char *s1,char *s2,int n);
+int is_valid_env_char(char c);
+
 
 // -------------- builtins ----------------
 
@@ -96,13 +131,13 @@ int 	ft_exit(char **arr, t_env **env_copy);
 int		ft_export(char **arr, t_env **env_copy);
 char	*get_env_value(t_env **env_copy, char *key);
 int     is_builtin(t_cmd *cmd);
-void	run_builtin(t_cmd *cmd, t_env **env_copy);
+int     run_builtin(t_cmd *cmd, t_env **env_copy);
 int     ft_execute(t_cmd *cmd, t_env **env_copy, char *input);
 char    **env_to_arr(t_env *env_head);
 void    execute_multiple(t_cmd *cmd, t_env **env_copy);
 void    child_process(t_cmd *cmd, char **env_arr);
 int     ft_herdoc(t_cmd *cmd);
-void    cmd_built(t_cmd *cmd, t_env **env_copy);
+void    cmd_built(t_cmd *cmd, t_env **env_copy, int *status);
 void    setup_signals(void);
 void    handle_end(void);
 int     check_all_syntaxe(char *input);

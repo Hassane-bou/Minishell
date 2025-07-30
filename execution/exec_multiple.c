@@ -14,11 +14,12 @@
 
 void execute_multiple(t_cmd *cmd, t_env **env_copy)
 {
-    int pipe_fd[2];
-    int prev_fd = -1;
-    int pid;
-    char **env_arr;
-    t_cmd *current = cmd;
+    int 	pipe_fd[2];
+    int 	prev_fd = -1;
+    int 	pid;
+    char 	**env_arr;
+    t_cmd 	*current = cmd;
+    int		status = 0;
 
     env_arr = env_to_arr(*env_copy);
     while (current)
@@ -51,10 +52,10 @@ void execute_multiple(t_cmd *cmd, t_env **env_copy)
                 close(pipe_fd[1]);
             }
 			if (is_builtin(current))
-				cmd_built(current, env_copy);
+				cmd_built(current, env_copy, &status);
 			else
             	child_process(current, env_arr);
-            exit(1);
+            exit(status);
         }
         if (prev_fd != -1)
             close(prev_fd);
@@ -69,6 +70,8 @@ void execute_multiple(t_cmd *cmd, t_env **env_copy)
         }
         current = current->next;
     }
-    while (wait(NULL) > 0)
-        ;
+    while (wait(NULL) > 0);
+	if (WIFEXITED(status))
+		last_status = WEXITSTATUS(status);
+	printf("-->%d\n", last_status);
 }
