@@ -144,7 +144,7 @@ int main(int ac, char *av[], char **envp)
 		res = tokenize(input);
 		expand_token_list(res,envp);
 		cmd = parse_cmd(res);
-		// print_cmd(cmd);
+		print_cmd(cmd);
 		if (cmd)
 			ft_execute(cmd, &env_head, input);
 		free(input);

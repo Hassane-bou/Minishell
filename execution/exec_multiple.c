@@ -20,6 +20,7 @@ void execute_multiple(t_cmd *cmd, t_env **env_copy)
     char 	**env_arr;
     t_cmd 	*current = cmd;
     int		status = 0;
+    int     last_pid = -1;
 
     env_arr = env_to_arr(*env_copy);
     while (current)
@@ -57,6 +58,7 @@ void execute_multiple(t_cmd *cmd, t_env **env_copy)
             	child_process(current, env_arr);
             exit(status);
         }
+        last_pid = pid;
         if (prev_fd != -1)
             close(prev_fd);
         if (current->next != NULL)
@@ -65,11 +67,10 @@ void execute_multiple(t_cmd *cmd, t_env **env_copy)
             prev_fd = pipe_fd[0];
         }
         else
-        {
             prev_fd = -1;
-        }
         current = current->next;
     }
+    waitpid(last_pid, &status, 0);
     while (wait(NULL) > 0);
 	if (WIFEXITED(status))
 		last_status = WEXITSTATUS(status);

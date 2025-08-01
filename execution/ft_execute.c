@@ -275,13 +275,15 @@ void execute_one(t_cmd *cmd, t_env **env_copy)
 	// 	if (WTERMSIG(status) == SIGQUIT)
 	// 		ft_putstr_fd("Quit: 3\n", 2);
 	// }
-	printf("-->%d\n", last_status);
+	// printf("-->%d\n", last_status);
 }
 
-void run_herdoc(t_cmd *cmd, t_redriection *tmp, int fd)
+void run_herdoc(t_cmd *cmd, t_redriection *tmp, int fd, t_env **env_copy)
 {
 	char *line;
+	char **env_arr;
 
+	env_arr = env_to_arr(*env_copy);
 	while (1)
 	{
 		line = readline("> ");
@@ -290,12 +292,13 @@ void run_herdoc(t_cmd *cmd, t_redriection *tmp, int fd)
 			free(line);
 			break ;
 		}
+		line = expand_string(line, env_arr);
 		ft_putendl_fd(line, fd);
 		free(line);
 	}
 }
 
-int ft_herdoc(t_cmd *cmd)
+int ft_herdoc(t_cmd *cmd, t_env **env_copy)
 {
 	t_redriection	*tmp;
 	int 			pid;
@@ -315,7 +318,7 @@ int ft_herdoc(t_cmd *cmd)
 			if (pid == 0)
 			{
 				close(heredoc_fd[0]);
-				run_herdoc(cmd, tmp, heredoc_fd[1]);
+				run_herdoc(cmd, tmp, heredoc_fd[1], env_copy);
 				close(heredoc_fd[1]);
 				exit(0);
 			}
@@ -338,7 +341,7 @@ int	ft_execute(t_cmd *cmd, t_env **env_copy, char *input)
 	// printf("-->%d\n", cmd->pipe_count);
 	while (current)
 	{
-		ft_herdoc(current);
+		ft_herdoc(current, env_copy);
 		current = current->next;
 	}
 	if (cmd->next == NULL)

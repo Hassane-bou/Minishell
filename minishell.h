@@ -136,7 +136,7 @@ int     ft_execute(t_cmd *cmd, t_env **env_copy, char *input);
 char    **env_to_arr(t_env *env_head);
 void    execute_multiple(t_cmd *cmd, t_env **env_copy);
 void    child_process(t_cmd *cmd, char **env_arr);
-int     ft_herdoc(t_cmd *cmd);
+int     ft_herdoc(t_cmd *cmd, t_env **env_copy);
 void    cmd_built(t_cmd *cmd, t_env **env_copy, int *status);
 void    setup_signals(void);
 void    handle_end(void);
