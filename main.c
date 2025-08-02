@@ -21,7 +21,7 @@ void print_token(t_token *token)
         token=token->next;
     }
 }
-int main(int argc,char **argv)
+int main(int argc,char **argv,char **envp)
 {
     if(argc != 1)
         return 1;
@@ -30,7 +30,6 @@ int main(int argc,char **argv)
     t_token *result = NULL;
     t_cmd *cmd = NULL;
     setup_signals();
-    printf("hello\n");
     while(1)
     {
         input = readline("Minishell> ");
@@ -42,7 +41,7 @@ int main(int argc,char **argv)
              continue;
         result = tokenize(input);
         // print_token(result);
-        // expand_token_list(result,envp);
+        expand_token_list(result,envp);
         cmd = parse_cmd(result);
         
         print_cmd(cmd);       

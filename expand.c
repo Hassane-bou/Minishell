@@ -132,6 +132,8 @@ char *expand_string(char *word,char **envp)
                 i++;
             var_name = ft_substr(word,start,i -start);
             value = get_env_value(var_name,envp);
+            if(!value || *value == '\0')
+                value="(null)";
             free(var_name);
 
             tmp = ft_strjoin(resulat,value);
