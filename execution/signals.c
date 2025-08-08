@@ -20,6 +20,16 @@ void signal_handler(int sig)
     rl_replace_line("", 0);
     rl_redisplay();
 }
+
+void disable_echoctl(void)
+{
+    struct termios term;
+
+    tcgetattr(STDIN_FILENO, &term);
+    term.c_lflag &= ~ECHOCTL;
+    tcsetattr(STDIN_FILENO, TCSANOW, &term);
+}
+
 void handle_end(void)
 {
     write(1,"exit\n",5);
@@ -27,6 +37,7 @@ void handle_end(void)
 }
 void setup_signals(void)
 {
+    disable_echoctl();
     signal(SIGINT, signal_handler);
     signal(SIGQUIT,SIG_IGN);
 }

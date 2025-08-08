@@ -16,6 +16,7 @@ int is_valid_env_char(char c)
 {
     return((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_');
 }
+
 int ft_stncmp(char *s1,char *s2,int n)
 {
     int i = 0;
@@ -47,7 +48,7 @@ char *get_env_value_par(char *var,char **envp)
             return(envp[i] + len + 1);
         i++;  
     }
-    return("");
+    return(NULL);
 }
 
 char *ft_strjoin_char(char *s1,char c)
@@ -110,10 +111,12 @@ char *expand_string(char *word,char **envp)
             var_name = ft_substr(word,start,i -start);
             value = get_env_value_par(var_name,envp);
             free(var_name);
-
-            tmp = ft_strjoin(resulat,value);
-            free(resulat);
-            resulat = tmp;
+            if(value)
+            {
+                    tmp = ft_strjoin(resulat,value);
+                    free(resulat);
+                    resulat = tmp;
+            }
         }
         else
         {

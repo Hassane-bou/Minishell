@@ -21,6 +21,8 @@
 # include <limits.h>
 # include <fcntl.h>
 # include <sys/wait.h>
+# include <signal.h>
+# include <termios.h>
 
 #define RED "\033[1;31m"
 #define RESET "\033[0m"

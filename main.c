@@ -115,6 +115,7 @@ int main(int ac, char *av[], char **envp)
 	t_token *res = NULL;
 	t_cmd	*cmd = NULL;
 	t_env	*env_head;
+	char	**env_arr;
 	(void)ac;
 	(void)av;
 
@@ -125,6 +126,7 @@ int main(int ac, char *av[], char **envp)
 	print_tamazirt();
 	while (1)
 	{
+		env_arr = env_to_arr(env_head);
 		char *pwd = getcwd(NULL, 0);
 		char *green = "\033[1;32m";
 		char *reset = "\001\033[0m\002";
@@ -142,9 +144,9 @@ int main(int ac, char *av[], char **envp)
 		if(check_all_syntaxe(input))
 			continue;
 		res = tokenize(input);
-		expand_token_list(res,envp);
+		expand_token_list(res, env_arr);
 		cmd = parse_cmd(res);
-		print_cmd(cmd);
+		// print_cmd(cmd);
 		if (cmd)
 			ft_execute(cmd, &env_head, input);
 		free(input);
