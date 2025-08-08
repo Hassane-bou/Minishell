@@ -47,7 +47,7 @@ char *get_env_value(char *var,char **envp)
             return(envp[i] + len + 1);
         i++;  
     }
-    return("");
+    return(NULL);
 }
 char *ft_strjoin(char *s1,char *s2)
 {
@@ -132,13 +132,13 @@ char *expand_string(char *word,char **envp)
                 i++;
             var_name = ft_substr(word,start,i -start);
             value = get_env_value(var_name,envp);
-            if(!value || *value == '\0')
-                value="(null)";
             free(var_name);
-
-            tmp = ft_strjoin(resulat,value);
-            free(resulat);
-            resulat = tmp;
+            if(value)
+            {
+                    tmp = ft_strjoin(resulat,value);
+                    free(resulat);
+                    resulat = tmp;
+            }
         }
         else
         {
