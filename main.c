@@ -41,7 +41,7 @@ int main(int argc,char **argv,char **envp)
              continue;
         result = tokenize(input);
         // print_token(result);
-        expand_token_list(result,envp);
+        expand_token_list(&result,envp);
         cmd = parse_cmd(result);
         
         print_cmd(cmd);       
