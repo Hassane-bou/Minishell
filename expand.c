@@ -163,9 +163,10 @@ char *expand_string(char *word,char **envp)
 //     return 0;
 // }
 
-void expand_token_list(t_token *head,char **envp)
+void expand_token_list(t_token **head,char **envp)
 {
-    t_token *tmp = head;
+    t_token *tmp = *head;
+    t_token *prev = NULL;
     while(tmp)
     {
         if(tmp->type == HEREDOC)
@@ -182,7 +183,20 @@ void expand_token_list(t_token *head,char **envp)
             char *expanded = expand_string(tmp->value,envp);
             free(tmp->value);
             tmp->value = expanded;
+            if(tmp->value[0] == '\0')
+            {
+                t_token *to_free =tmp;
+                if(prev)
+                    prev->next = tmp->next;
+                else
+                    *head =tmp->next;
+                tmp = tmp->next;
+                free(to_free->value);
+                free(to_free);
+                continue;
+            }
         }
+        prev=tmp;
         tmp = tmp->next;
     }
 }

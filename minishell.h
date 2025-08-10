@@ -100,7 +100,7 @@ int ft_strlen(char *s);
 
 
 
-void expand_token_list(t_token *head,char **envp);
+void expand_token_list(t_token **head,char **envp);
 char *expand_string(char *word,char **envp);
 char *ft_strjoin(char *s1,char *s2);
 char *get_env_value(char *var,char **envp);
