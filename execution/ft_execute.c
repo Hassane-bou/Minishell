@@ -206,6 +206,8 @@ void child_process(t_cmd *cmd, char **env_arr)
 	char	*exact_path;
 	char	**paths;
 
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	ft_redirect(cmd);
 	if (!cmd->args[0] || !cmd->args)
 		exit(0);
@@ -262,19 +264,26 @@ void execute_one(t_cmd *cmd, t_env **env_copy)
 
 	env_arr = env_to_arr(*env_copy);
 	if (is_builtin(cmd))
-		return (cmd_built(cmd, env_copy, &status));
+	{
+		cmd_built(cmd, env_copy, &status);
+		last_status = status;
+		return ;
+	}
 	pid = fork();
 	if (pid == 0)
 		child_process(cmd, env_arr);
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	waitpid(pid, &status, 0);
+	setup_signals();
 	if (WIFEXITED(status))
 		last_status = WEXITSTATUS(status);
-	// else if (WIFSIGNALED(status))
-	// {
-	// 	last_status = WTERMSIG(status) + 128;
-	// 	if (WTERMSIG(status) == SIGQUIT)
-	// 		ft_putstr_fd("Quit: 3\n", 2);
-	// }
+	else if (WIFSIGNALED(status))
+	{
+    	last_status = 128 + WTERMSIG(status);
+    	if (WTERMSIG(status) == SIGQUIT)
+			ft_putendl_fd("Quit", 2);
+	}
 	// printf("-->%d\n", last_status);
 }
 
@@ -303,6 +312,7 @@ int ft_herdoc(t_cmd *cmd, t_env **env_copy)
 	t_redriection	*tmp;
 	int 			pid;
 	int				heredoc_fd[2];
+	int				status;
 
 	tmp = cmd->red;
 	while (tmp)
@@ -317,12 +327,25 @@ int ft_herdoc(t_cmd *cmd, t_env **env_copy)
 			pid = fork();
 			if (pid == 0)
 			{
+				signal(SIGINT, SIG_DFL);
+				signal(SIGQUIT, SIG_IGN);
 				close(heredoc_fd[0]);
 				run_herdoc(cmd, tmp, heredoc_fd[1], env_copy);
 				close(heredoc_fd[1]);
 				exit(0);
 			}
-			waitpid(pid, NULL, 0);
+			signal(SIGINT, SIG_IGN);
+			signal(SIGQUIT, SIG_IGN);
+			waitpid(pid, &status, 0);
+			setup_signals();
+			if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+			{
+				last_status = 130;
+				write(1, "\n", 1);
+				close(heredoc_fd[0]);
+				close(heredoc_fd[1]);
+				return -1;
+			}
 			close(heredoc_fd[1]);
 			cmd->herdoc_fd = heredoc_fd[0];
 		}
@@ -333,22 +356,91 @@ int ft_herdoc(t_cmd *cmd, t_env **env_copy)
 
 int	ft_execute(t_cmd *cmd, t_env **env_copy, char *input)
 {
-	t_redriection *tmp;
 	t_cmd *current;
 
-	tmp = cmd->red;
 	current = cmd;
-	// printf("-->%d\n", cmd->pipe_count);
 	while (current)
 	{
-		ft_herdoc(current, env_copy);
+		if (ft_herdoc(current, env_copy) == -1)
+			return 0;
 		current = current->next;
 	}
 	if (cmd->next == NULL)
 		execute_one(cmd, env_copy);
 	else
 		execute_multiple(cmd, env_copy);
+	printf("-->%d\n", last_status);
 	return 0;
 }
 
+// int ft_herdoc(t_cmd *cmd, t_env **env_copy)
+// {
+//     t_redriection   *tmp;
+//     int             pid;
+//     int             heredoc_fd[2];
+//     int             status;
 
+//     tmp = cmd->red;
+//     while (tmp)
+//     {
+//         if (tmp->type == HEREDOC)
+//         {
+//             if (pipe(heredoc_fd) == -1)
+//             {
+//                 perror("pipe");
+//                 exit(1);
+//             }
+//             pid = fork();
+//             if (pid == 0)
+//             {
+//                 // child: restore signals
+//                 signal(SIGINT, SIG_DFL);
+//                 signal(SIGQUIT, SIG_IGN);
+//                 close(heredoc_fd[0]);
+//                 run_herdoc(cmd, tmp, heredoc_fd[1], env_copy);
+//                 close(heredoc_fd[1]);
+//                 exit(0);
+//             }
+//             // parent ignores signals while waiting
+//             signal(SIGINT, SIG_IGN);
+//             signal(SIGQUIT, SIG_IGN);
+
+//             waitpid(pid, &status, 0);
+
+//             // restore signals for prompt
+//             setup_signals();
+
+//             if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+//             {
+//                 last_status = 130; // 128 + SIGINT
+//                 write(1, "\n", 1);
+//                 close(heredoc_fd[0]);
+//                 close(heredoc_fd[1]);
+//                 return -1; // abort command execution
+//             }
+//             close(heredoc_fd[1]);
+//             cmd->herdoc_fd = heredoc_fd[0];
+//         }
+//         tmp = tmp->next;
+//     }
+//     return 0;
+// }
+
+// int ft_execute(t_cmd *cmd, t_env **env_copy, char *input)
+// {
+//     t_cmd *current = cmd;
+
+//     while (current)
+//     {
+//         if (ft_herdoc(current, env_copy) == -1)
+//             return 0;
+//         current = current->next;
+//     }
+
+//     if (cmd->next == NULL)
+//         execute_one(cmd, env_copy);
+//     else
+//         execute_multiple(cmd, env_copy);
+// 	printf("-->%d\n", last_status);
+//     return 0;
+// }

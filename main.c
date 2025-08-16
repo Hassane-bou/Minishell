@@ -109,6 +109,18 @@ void	print_tamazirt(void)
 	RESET "\n");
 }
 
+char *make_prompt(void)
+{
+    char *pwd = getcwd(NULL, 0);
+    char *suffix = ft_strjoin(pwd, "$> ");
+    char *colored = ft_strjoin("\033[1;32m", suffix);
+    char *final_prompt = ft_strjoin(colored, "\001\033[0m\002");
+    free(pwd);
+    free(suffix);
+    free(colored);
+    return final_prompt;
+}
+
 int main(int ac, char *av[], char **envp)
 {
 	char	*input;
@@ -127,16 +139,7 @@ int main(int ac, char *av[], char **envp)
 	while (1)
 	{
 		env_arr = env_to_arr(env_head);
-		char *pwd = getcwd(NULL, 0);
-		char *green = "\033[1;32m";
-		char *reset = "\001\033[0m\002";
-		char *suffix = ft_strjoin(pwd, "$> ");
-		char *colored = ft_strjoin(green, suffix);
-		char *final_prompt = ft_strjoin(colored, reset);
-		free(colored);
-		free(pwd);
-		input = readline(final_prompt);
-		free(final_prompt);
+		input = readline(make_prompt());
 		if (input == NULL)
 			handle_end();
 		if (*input)
@@ -144,7 +147,7 @@ int main(int ac, char *av[], char **envp)
 		if(check_all_syntaxe(input))
 			continue;
 		res = tokenize(input);
-		expand_token_list(res, env_arr);
+		expand_token_list(&res, env_arr);
 		cmd = parse_cmd(res);
 		// print_cmd(cmd);
 		if (cmd)

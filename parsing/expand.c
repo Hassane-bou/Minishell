@@ -16,7 +16,6 @@ int is_valid_env_char(char c)
 {
     return((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_');
 }
-
 int ft_stncmp(char *s1,char *s2,int n)
 {
     int i = 0;
@@ -38,7 +37,7 @@ int ft_stncmp(char *s1,char *s2,int n)
     return 0;    
 }
 
-char *get_env_value_par(char *var,char **envp)
+char *get_env_value_p(char *var,char **envp)
 {
     int i = 0;
     int len = ft_strlen(var);
@@ -109,7 +108,7 @@ char *expand_string(char *word,char **envp)
             while(word[i] && is_valid_env_char(word[i]))
                 i++;
             var_name = ft_substr(word,start,i -start);
-            value = get_env_value_par(var_name,envp);
+            value = get_env_value_p(var_name,envp);
             free(var_name);
             if(value)
             {
@@ -141,9 +140,10 @@ char *expand_string(char *word,char **envp)
 //     return 0;
 // }
 
-void expand_token_list(t_token *head,char **envp)
+void expand_token_list(t_token **head,char **envp)
 {
-    t_token *tmp = head;
+    t_token *tmp = *head;
+    t_token *prev = NULL;
     while(tmp)
     {
         if(tmp->type == HEREDOC)
@@ -160,7 +160,20 @@ void expand_token_list(t_token *head,char **envp)
             char *expanded = expand_string(tmp->value,envp);
             free(tmp->value);
             tmp->value = expanded;
+            if(tmp->value[0] == '\0')
+            {
+                t_token *to_free =tmp;
+                if(prev)
+                    prev->next = tmp->next;
+                else
+                    *head =tmp->next;
+                tmp = tmp->next;
+                free(to_free->value);
+                free(to_free);
+                continue;
+            }
         }
+        prev=tmp;
         tmp = tmp->next;
     }
 }

@@ -14,11 +14,18 @@
 
 void signal_handler(int sig)
 {
-    (void)sig;
-    write(1,"\n",1);
-    rl_on_new_line();
-    rl_replace_line("", 0);
-    rl_redisplay();
+    if (sig == SIGINT)
+    {
+        write(1,"\n",1);
+        rl_on_new_line();
+        rl_replace_line("", 0);
+        rl_redisplay();
+        last_status = 128 + sig;
+    }
+    else if (sig == SIGQUIT)
+    {
+        last_status = 128 + sig;
+    }
 }
 
 void disable_echoctl(void)
@@ -39,5 +46,5 @@ void setup_signals(void)
 {
     disable_echoctl();
     signal(SIGINT, signal_handler);
-    signal(SIGQUIT,SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
 }

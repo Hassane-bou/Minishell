@@ -70,9 +70,16 @@ void execute_multiple(t_cmd *cmd, t_env **env_copy)
             prev_fd = -1;
         current = current->next;
     }
+    signal(SIGINT, SIG_IGN);
     waitpid(last_pid, &status, 0);
     while (wait(NULL) > 0);
 	if (WIFEXITED(status))
 		last_status = WEXITSTATUS(status);
-	printf("-->%d\n", last_status);
+    else if (WIFSIGNALED(status))
+	{
+    	last_status = 128 + WTERMSIG(status);
+    	if (WTERMSIG(status) == SIGQUIT)
+			ft_putendl_fd("Quit", 2);
+	}
+	// printf("-->%d\n", last_status);
 }

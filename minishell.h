@@ -103,7 +103,7 @@ int ft_isspace(int c);
 
 
 
-void expand_token_list(t_token *head,char **envp);
+void expand_token_list(t_token **head,char **envp);
 char *expand_string(char *word,char **envp);
 char *get_env_value_par(char *var,char **envp);
 int ft_stncmp(char *s1,char *s2,int n);
