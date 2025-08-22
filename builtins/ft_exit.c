@@ -86,10 +86,10 @@ int	check_long(const char *str)
 int	ft_exit(char **arr, t_env **env_copy)
 {
 	printf("exit\n");
+	if (arr[1] == NULL)
+		exit((*env_copy)->exit_status); // i will update this to be the last status (signals)
 	if (check_num(arr) != 1)
 		return (ft_putstr_fd(ERROR_ARG, 2), 1);
-	if (arr[1] == NULL)
-		exit(last_status); // i will update this to be the last status (signals)
 	else if (arr[1] != NULL)
 	{
 		if (check_digit(arr[1]))

@@ -55,7 +55,7 @@ void execute_multiple(t_cmd *cmd, t_env **env_copy)
 			if (is_builtin(current))
 				cmd_built(current, env_copy, &status);
 			else
-            	child_process(current, env_arr);
+            	child_process(current, env_arr, env_copy);
             exit(status);
         }
         last_pid = pid;
@@ -74,10 +74,10 @@ void execute_multiple(t_cmd *cmd, t_env **env_copy)
     waitpid(last_pid, &status, 0);
     while (wait(NULL) > 0);
 	if (WIFEXITED(status))
-		last_status = WEXITSTATUS(status);
+		(*env_copy)->exit_status = WEXITSTATUS(status);
     else if (WIFSIGNALED(status))
 	{
-    	last_status = 128 + WTERMSIG(status);
+    	(*env_copy)->exit_status = 128 + WTERMSIG(status);
     	if (WTERMSIG(status) == SIGQUIT)
 			ft_putendl_fd("Quit", 2);
 	}

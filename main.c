@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int last_status;
+int g_signal;
 int	ft_strcmp(char *s1, char *s2)
 {
 	int	i;
@@ -131,17 +131,21 @@ int main(int ac, char *av[], char **envp)
 	(void)ac;
 	(void)av;
 
-	last_status = 0;
-	setup_signals();
 	env_copy(envp, &env_head);
 	ft_update_shelvl(env_head);
 	print_tamazirt();
 	while (1)
 	{
+		setup_signals();
 		env_arr = env_to_arr(env_head);
 		input = readline(make_prompt());
+		if (g_signal == SIGINT)
+		{
+			env_head->exit_status = 130;
+			g_signal = 0;
+		}
 		if (input == NULL)
-			handle_end();
+			handle_end(env_head);
 		if (*input)
 			add_history(input);
 		if(check_all_syntaxe(input))

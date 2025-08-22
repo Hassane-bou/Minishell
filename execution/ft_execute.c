@@ -201,7 +201,7 @@ int ft_redirect_buil(t_cmd *cmd)
 	return 0;
 }
 
-void child_process(t_cmd *cmd, char **env_arr)
+void child_process(t_cmd *cmd, char **env_arr, t_env **env_copy)
 {
 	char	*exact_path;
 	char	**paths;
@@ -225,14 +225,14 @@ void child_process(t_cmd *cmd, char **env_arr)
 		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd(cmd->args[0], 2);
 		ft_putstr_fd(": command not found\n", 2);
-		last_status = 127;
+		(*env_copy)->exit_status = 127;
 		exit(127);
 	}
 	execve(exact_path, cmd->args, env_arr);
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(cmd->args[0], 2);
 	ft_putstr_fd(": command not found\n", 2);
-	last_status = 127;
+	(*env_copy)->exit_status = 127;
 	exit(127);
 }
 
@@ -266,25 +266,25 @@ void execute_one(t_cmd *cmd, t_env **env_copy)
 	if (is_builtin(cmd))
 	{
 		cmd_built(cmd, env_copy, &status);
-		last_status = status;
+		(*env_copy)->exit_status = status;
 		return ;
 	}
 	pid = fork();
 	if (pid == 0)
-		child_process(cmd, env_arr);
+		child_process(cmd, env_arr, env_copy);
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 	waitpid(pid, &status, 0);
 	setup_signals();
 	if (WIFEXITED(status))
-		last_status = WEXITSTATUS(status);
+		(*env_copy)->exit_status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
 	{
-    	last_status = 128 + WTERMSIG(status);
+		(*env_copy)->exit_status = 128 + WTERMSIG(status);
     	if (WTERMSIG(status) == SIGQUIT)
 			ft_putendl_fd("Quit", 2);
 	}
-	// printf("-->%d\n", last_status);
+	// printf("-->%d\n", (*env_copy)->exit_status);
 }
 
 void run_herdoc(t_cmd *cmd, t_redriection *tmp, int fd, t_env **env_copy)
@@ -296,6 +296,13 @@ void run_herdoc(t_cmd *cmd, t_redriection *tmp, int fd, t_env **env_copy)
 	while (1)
 	{
 		line = readline("> ");
+		if (!line)
+		{
+			ft_putstr_fd("warning: here-document delimited by end-of-file (wanted `", 2);
+            ft_putstr_fd(tmp->file_or_delim, 2);
+            ft_putstr_fd("')\n", 2);
+			break;
+		}
 		if (!ft_strcmp(line, tmp->file_or_delim))
 		{
 			free(line);
@@ -340,7 +347,7 @@ int ft_herdoc(t_cmd *cmd, t_env **env_copy)
 			setup_signals();
 			if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
 			{
-				last_status = 130;
+				(*env_copy)->exit_status = 130;
 				write(1, "\n", 1);
 				close(heredoc_fd[0]);
 				close(heredoc_fd[1]);
@@ -362,14 +369,17 @@ int	ft_execute(t_cmd *cmd, t_env **env_copy, char *input)
 	while (current)
 	{
 		if (ft_herdoc(current, env_copy) == -1)
+		{
+			printf("-->%d\n", (*env_copy)->exit_status);
 			return 0;
+		}
 		current = current->next;
 	}
 	if (cmd->next == NULL)
 		execute_one(cmd, env_copy);
 	else
 		execute_multiple(cmd, env_copy);
-	printf("-->%d\n", last_status);
+	printf("-->%d\n", (*env_copy)->exit_status);
 	return 0;
 }
 

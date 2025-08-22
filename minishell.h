@@ -27,7 +27,7 @@
 #define RED "\033[1;31m"
 #define RESET "\033[0m"
 #define GREEN "\001\033[0;32m\002"
-extern int last_status;
+extern int g_signal;
 // ------------ parsing -----------------
 
 typedef enum e_type {
@@ -77,7 +77,6 @@ typedef struct s_cmd
 // void print_cmd(t_cmd *cmd);
 // int ft_isspace(int c);
 void signal_handler(int sig);
-void handle_end(void);
 void setup_signals(void);
 
 int check_quotes(char *input);
@@ -117,6 +116,7 @@ typedef struct s_env
     char	*key;
 	char	*value;
     int     status;
+    int     exit_status;
 	struct s_env *next;
 } t_env;
 
@@ -137,11 +137,11 @@ int     run_builtin(t_cmd *cmd, t_env **env_copy);
 int     ft_execute(t_cmd *cmd, t_env **env_copy, char *input);
 char    **env_to_arr(t_env *env_head);
 void    execute_multiple(t_cmd *cmd, t_env **env_copy);
-void    child_process(t_cmd *cmd, char **env_arr);
+void    child_process(t_cmd *cmd, char **env_arr, t_env **env_copy);
 int     ft_herdoc(t_cmd *cmd, t_env **env_copy);
 void    cmd_built(t_cmd *cmd, t_env **env_copy, int *status);
 void    setup_signals(void);
-void    handle_end(void);
+void    handle_end(t_env *env);
 int     check_all_syntaxe(char *input);
 
 #define ERROR_ARG "minishell: exit: too many arguments\n"

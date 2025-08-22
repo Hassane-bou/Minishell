@@ -20,12 +20,10 @@ void signal_handler(int sig)
         rl_on_new_line();
         rl_replace_line("", 0);
         rl_redisplay();
-        last_status = 128 + sig;
+        g_signal = SIGINT;
     }
     else if (sig == SIGQUIT)
-    {
-        last_status = 128 + sig;
-    }
+        return ;
 }
 
 void disable_echoctl(void)
@@ -37,10 +35,10 @@ void disable_echoctl(void)
     tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }
 
-void handle_end(void)
+void handle_end(t_env *env)
 {
-    write(1,"exit\n",5);
-    exit(0);
+    write(1,"exit\n", 6);
+    exit(env->exit_status);
 }
 void setup_signals(void)
 {
