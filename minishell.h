@@ -142,7 +142,6 @@ int     ft_herdoc(t_cmd *cmd, t_env **env_copy);
 void    cmd_built(t_cmd *cmd, t_env **env_copy, int *status);
 void    setup_signals(void);
 void    handle_end(t_env *env);
-int     check_all_syntaxe(char *input);
 
 #define ERROR_ARG "minishell: exit: too many arguments\n"
 

@@ -370,7 +370,7 @@ int	ft_execute(t_cmd *cmd, t_env **env_copy, char *input)
 	{
 		if (ft_herdoc(current, env_copy) == -1)
 		{
-			printf("-->%d\n", (*env_copy)->exit_status);
+			// printf("-->%d\n", (*env_copy)->exit_status);
 			return 0;
 		}
 		current = current->next;
@@ -379,7 +379,7 @@ int	ft_execute(t_cmd *cmd, t_env **env_copy, char *input)
 		execute_one(cmd, env_copy);
 	else
 		execute_multiple(cmd, env_copy);
-	printf("-->%d\n", (*env_copy)->exit_status);
+	// printf("-->%d\n", (*env_copy)->exit_status);
 	return 0;
 }
 

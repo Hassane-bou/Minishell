@@ -116,17 +116,17 @@ int check_all_syntaxe(char *input)
 {
     if(check_pipe_syntaxe(input))
     {
-        printf("erreur pipe\n");
+        ft_putendl_fd("erreur pipe", 2);
         return 1;
     }
     if(check_quotes(input))
     {
-        printf("erreur quotes\n");
+        ft_putendl_fd("erreur quotes", 2);
         return 1;
     }
     if(check_redirection_syntaxe(input))
     {
-        printf("erreur redirection\n");
+        ft_putendl_fd("erreur redirection", 2);
         return 1;
     }
     return 0;

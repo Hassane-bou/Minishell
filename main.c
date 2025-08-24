@@ -121,6 +121,17 @@ char *make_prompt(void)
     return final_prompt;
 }
 
+int check_synstax(char *input, t_env *head)
+{
+	if (check_all_syntaxe(input) == 1)
+	{
+		head->exit_status = 258;
+		return 1;
+	}
+	else
+		return 0;
+}
+
 int main(int ac, char *av[], char **envp)
 {
 	char	*input;
@@ -148,15 +159,16 @@ int main(int ac, char *av[], char **envp)
 			handle_end(env_head);
 		if (*input)
 			add_history(input);
-		if(check_all_syntaxe(input))
+		if(check_synstax(input, env_head))
 			continue;
 		res = tokenize(input);
 		expand_token_list(&res, env_arr);
 		cmd = parse_cmd(res);
-		// print_cmd(cmd);
+		// // print_cmd(cmd);
 		if (cmd)
 			ft_execute(cmd, &env_head, input);
 		free(input);
+		printf("-->%d\n", env_head->exit_status);
 	}
 	return 0;
 }
