@@ -20,6 +20,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+extern int g_exit_status;
 
 typedef enum e_type {
     WORD,
@@ -106,7 +107,7 @@ char *ft_strjoin(char *s1,char *s2);
 char *get_env_value(char *var,char **envp);
 int ft_stncmp(char *s1,char *s2,int n);
 int is_valid_env_char(char c);
-
+int count(int nbr);
 
 
 

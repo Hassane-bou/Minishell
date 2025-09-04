@@ -90,11 +90,59 @@ char *ft_strjoin_char(char *s1,char c)
     p[i] ='\0';
     return p;
 }
+int count(int nbr)
+{
+    int count = 0;
+    if(nbr == 0)
+        return(1); 
+    else if(nbr < 0)
+    {
+        nbr *=-1;
+        count++;
+    }
+    while(nbr > 0)
+    {
+        nbr = nbr / 10;
+        count++;
+    }
+    return(count);
+}
+
+char *ft_itoa(int nbr)
+{
+    int i;
+    int len =count(nbr);
+
+    i = len -1;
+    char *p =malloc(len + 1);
+    if(!p)
+        return(NULL);
+    if(nbr == 0)
+    {
+        p[0] ='0';
+        p[1] ='\0';
+        return(p);
+    }
+    if(nbr < 0)
+    {
+        p[0] = '-';
+        nbr *= -1;
+    }
+    while(nbr > 0)
+    {
+        p[i] = (nbr % 10) + '0';
+        nbr = nbr /10;
+    i--;
+    }
+    p[len] ='\0';
+    return(p);
+}
 
 char *expand_string(char *word,char **envp)
 {
     int i =0;
     int start = 0;
+    int g_exit_status = 0;
     char *var_name;
     char *value;
     char *tmp;
@@ -127,6 +175,13 @@ char *expand_string(char *word,char **envp)
         else if(word[i] == '$' && quote !='\'' )
         {
             i++;
+            if(word[i] == '?')
+            {
+                tmp = ft_strjoin(resulat,ft_itoa(g_exit_status));
+                free(resulat);
+                resulat = tmp;
+                i++;
+            }
             start = i;
             while(word[i] && is_valid_env_char(word[i]))
                 i++;
