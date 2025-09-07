@@ -47,8 +47,9 @@ void	add_env(t_env **env_copy, char *key, char *value)
 {
 	t_env	*new_node;
 
-	new_node = *env_copy;
 	new_node = malloc(sizeof(t_env));
+	if (!new_node)
+		return ;
 	new_node->key = ft_strdup(key);
 	new_node->value = ft_strdup(value);
 	new_node->next = NULL;
@@ -66,15 +67,24 @@ int	ft_cd(char *path, t_env **env_copy)
 	if (path == NULL || !ft_strcmp(path, "~"))
 	{
 		if (get_env_value(env_copy, "HOME") == NULL)
-			return (printf("minishell: cd: HOME not set\n"), 1);
-		old_path = getcwd(NULL, 0);
+		{
+			printf("minishell: cd: HOME not set\n");
+			free(pwd);
+			return (1);
+		}
 		chdir(home);
+		return (free(pwd), 0);
 	}
 	if (!ft_strcmp(path, "-"))
 	{
 		if (get_env_value(env_copy, "OLDPWD") == NULL)
-			return (printf("minishell: cd: OLDPWD not set\n"), 1);
+		{
+			printf("minishell: cd: OLDPWD not set\n");
+			free(pwd);
+			return (1);
+		}
 		old_path = get_env_value(env_copy, "OLDPWD");
+		free(pwd);
 		pwd = getcwd(NULL, 0);
 		if (chdir(old_path) == 0)
 			printf("%s\n", old_path);
@@ -85,13 +95,17 @@ int	ft_cd(char *path, t_env **env_copy)
 		ft_putstr_fd("minishell: cd: ", 2);
 		ft_putstr_fd(path, 2);
 		ft_putstr_fd(": No such file or directory\n", 2);
+		free(pwd);
 		return (1);
 	}
 	if (get_env_value(env_copy, "OLDPWD") == NULL)
 		add_env(env_copy, "OLDPWD", pwd);
 	if (get_env_value(env_copy, "OLDPWD") != NULL)
 		update_env(env_copy, "OLDPWD", pwd);
+	char *cwd = getcwd(NULL, 0);
 	if (get_env_value(env_copy, "PWD") != NULL)
-		update_env(env_copy, "PWD", getcwd(NULL, 0));
+		update_env(env_copy, "PWD", cwd);
+	free(pwd);
+	free(cwd);
 	return (0);
 }

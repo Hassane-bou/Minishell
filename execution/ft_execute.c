@@ -267,6 +267,7 @@ void execute_one(t_cmd *cmd, t_env **env_copy)
 	{
 		cmd_built(cmd, env_copy, &status);
 		(*env_copy)->exit_status = status;
+		free_args(env_arr);
 		return ;
 	}
 	pid = fork();
@@ -284,6 +285,7 @@ void execute_one(t_cmd *cmd, t_env **env_copy)
     	if (WTERMSIG(status) == SIGQUIT)
 			ft_putendl_fd("Quit", 2);
 	}
+	free_args(env_arr);
 	// printf("-->%d\n", (*env_copy)->exit_status);
 }
 
@@ -308,7 +310,7 @@ void run_herdoc(t_cmd *cmd, t_redriection *tmp, int fd, t_env **env_copy)
 			free(line);
 			break ;
 		}
-		line = expand_string(line, env_arr);
+		line = expand_string(line, env_arr, *env_copy);
 		ft_putendl_fd(line, fd);
 		free(line);
 	}
@@ -370,7 +372,6 @@ int	ft_execute(t_cmd *cmd, t_env **env_copy, char *input)
 	{
 		if (ft_herdoc(current, env_copy) == -1)
 		{
-			// printf("-->%d\n", (*env_copy)->exit_status);
 			return 0;
 		}
 		current = current->next;

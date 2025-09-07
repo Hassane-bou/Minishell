@@ -37,7 +37,7 @@ int ft_stncmp(char *s1,char *s2,int n)
     return 0;    
 }
 
-char *get_env_value_p(char *var,char **envp)
+char *get_env_value_par(char *var,char **envp)
 {
     int i = 0;
     int len = ft_strlen(var);
@@ -67,8 +67,55 @@ char *ft_strjoin_char(char *s1,char c)
     p[i] ='\0';
     return p;
 }
+int count(int nbr)
+{
+    int count = 0;
+    if(nbr == 0)
+        return(1); 
+    else if(nbr < 0)
+    {
+        nbr *=-1;
+        count++;
+    }
+    while(nbr > 0)
+    {
+        nbr = nbr / 10;
+        count++;
+    }
+    return(count);
+}
 
-char *expand_string(char *word,char **envp)
+char *ft_itoa(int nbr)
+{
+    int i;
+    int len =count(nbr);
+
+    i = len -1;
+    char *p =malloc(len + 1);
+    if(!p)
+        return(NULL);
+    if(nbr == 0)
+    {
+        p[0] ='0';
+        p[1] ='\0';
+        return(p);
+    }
+    if(nbr < 0)
+    {
+        p[0] = '-';
+        nbr *= -1;
+    }
+    while(nbr > 0)
+    {
+        p[i] = (nbr % 10) + '0';
+        nbr = nbr /10;
+    i--;
+    }
+    p[len] ='\0';
+    return(p);
+}
+
+char *expand_string(char *word,char **envp, t_env *env_head)
 {
     int i =0;
     int start = 0;
@@ -104,11 +151,18 @@ char *expand_string(char *word,char **envp)
         else if(word[i] == '$' && quote !='\'' )
         {
             i++;
+            if(word[i] == '?')
+            {
+                tmp = ft_strjoin(resulat,ft_itoa(env_head->exit_status));
+                free(resulat);
+                resulat = tmp;
+                i++;
+            }
             start = i;
             while(word[i] && is_valid_env_char(word[i]))
                 i++;
             var_name = ft_substr(word,start,i -start);
-            value = get_env_value_p(var_name,envp);
+            value = get_env_value_par(var_name,envp);
             free(var_name);
             if(value)
             {
@@ -140,7 +194,7 @@ char *expand_string(char *word,char **envp)
 //     return 0;
 // }
 
-void expand_token_list(t_token **head,char **envp)
+void expand_token_list(t_token **head,char **envp, t_env *env_head)
 {
     t_token *tmp = *head;
     t_token *prev = NULL;
@@ -157,7 +211,7 @@ void expand_token_list(t_token **head,char **envp)
         }
         if(tmp->type == WORD && tmp->value && tmp->new_quote != '\'')
         {
-            char *expanded = expand_string(tmp->value,envp);
+            char *expanded = expand_string(tmp->value,envp, env_head);
             free(tmp->value);
             tmp->value = expanded;
             if(tmp->value[0] == '\0')
@@ -173,7 +227,7 @@ void expand_token_list(t_token **head,char **envp)
                 continue;
             }
         }
-        prev=tmp;
+        prev = tmp;
         tmp = tmp->next;
     }
 }

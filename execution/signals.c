@@ -35,8 +35,25 @@ void disable_echoctl(void)
     tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }
 
+void    free_env(t_env *head)
+{
+    t_env *tmp;
+
+    while (head)
+    {
+        tmp = head->next;
+        free(head->key);
+        free(head->value);
+        free(head);
+        head = tmp;
+    }
+
+}
+
 void handle_end(t_env *env)
 {
+    rl_clear_history();
+    free_env(env);
     write(1,"exit\n", 6);
     exit(env->exit_status);
 }

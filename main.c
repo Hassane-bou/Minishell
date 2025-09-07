@@ -13,6 +13,7 @@
 #include "minishell.h"
 
 int g_signal;
+
 int	ft_strcmp(char *s1, char *s2)
 {
 	int	i;
@@ -69,9 +70,19 @@ int	run_builtin(t_cmd *cmd, t_env **env_copy)
 char **env_to_arr(t_env *env_head)
 {
 	char	**env_arr;
-
+	t_env	*tmp = env_head;
 	int	i = 0;
-	env_arr = malloc(sizeof(char **) * 1337);
+	int size = 0;
+
+	while (tmp)
+	{
+		size++;
+		tmp = tmp->next;
+	}
+	
+	env_arr = malloc(sizeof(char *) * (size + 1));
+	if (!env_arr)
+		return NULL;
 	while (env_head)
 	{
 		char *tmp = ft_strjoin(env_head->key, "=");
@@ -80,6 +91,7 @@ char **env_to_arr(t_env *env_head)
 		i++;
 		env_head = env_head->next;
 	}
+	env_arr[i] = NULL;
 	return (env_arr);
 }
 
@@ -132,6 +144,49 @@ int check_synstax(char *input, t_env *head)
 		return 0;
 }
 
+void	free_args(char **args)
+{
+	int i = 0;
+
+	if (!args)
+		return ;
+	while (args[i])
+	{
+		free(args[i]);
+		i++;
+	}
+	free(args);
+}
+
+void	free_red(t_redriection *red)
+{
+	t_redriection *tmp;
+
+	while (red)
+	{
+		tmp = red->next;
+		free(red->file_or_delim);
+		free(red);
+		red = tmp;
+	}
+}
+
+void	free_cmd(t_cmd *cmd)
+{
+	t_cmd *tmp;
+
+	while (cmd)
+	{
+		tmp = cmd->next;
+		free(cmd->cmd);
+		free_args(cmd->args); // function
+		free_red(cmd->red); // function
+		free(cmd);
+		cmd = tmp;
+	}
+	
+}
+
 int main(int ac, char *av[], char **envp)
 {
 	char	*input;
@@ -162,13 +217,15 @@ int main(int ac, char *av[], char **envp)
 		if(check_synstax(input, env_head))
 			continue;
 		res = tokenize(input);
-		expand_token_list(&res, env_arr);
+		expand_token_list(&res, env_arr, env_head);
 		cmd = parse_cmd(res);
-		// // print_cmd(cmd);
+		// print_cmd(cmd);
 		if (cmd)
 			ft_execute(cmd, &env_head, input);
+		free_cmd(cmd);
+		free_args(env_arr);
 		free(input);
-		printf("-->%d\n", env_head->exit_status);
+		// printf("-->%d\n", env_head->exit_status);
 	}
 	return 0;
 }

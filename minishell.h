@@ -76,8 +76,6 @@ typedef struct s_cmd
 // t_cmd *parse_cmd(t_token *token);
 // void print_cmd(t_cmd *cmd);
 // int ft_isspace(int c);
-void signal_handler(int sig);
-void setup_signals(void);
 
 int check_quotes(char *input);
 int check_pipe_syntaxe(char *input);
@@ -99,11 +97,19 @@ void print_cmd(t_cmd *cmd);
 
 int ft_isspace(int c);
 
+typedef struct s_env
+{
+    char	*key;
+    char	*value;
+    int     status;
+    int     exit_status;
+    struct s_env *next;
+} t_env;
 
 
 
-void expand_token_list(t_token **head,char **envp);
-char *expand_string(char *word,char **envp);
+void expand_token_list(t_token **head,char **envp, t_env *env_head);
+char *expand_string(char *word,char **envp, t_env *env_head);
 char *get_env_value_par(char *var,char **envp);
 int ft_stncmp(char *s1,char *s2,int n);
 int is_valid_env_char(char c);
@@ -111,14 +117,6 @@ int is_valid_env_char(char c);
 
 // -------------- builtins ----------------
 
-typedef struct s_env
-{
-    char	*key;
-	char	*value;
-    int     status;
-    int     exit_status;
-	struct s_env *next;
-} t_env;
 
 void	env_add_back(t_env **env_list, t_env *new_node);
 void	env_copy(char **envp, t_env	**env_head);
@@ -142,6 +140,9 @@ int     ft_herdoc(t_cmd *cmd, t_env **env_copy);
 void    cmd_built(t_cmd *cmd, t_env **env_copy, int *status);
 void    setup_signals(void);
 void    handle_end(t_env *env);
+void    signal_handler(int sig);
+void    setup_signals(void);
+void	free_args(char **args);
 
 #define ERROR_ARG "minishell: exit: too many arguments\n"
 

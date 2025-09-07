@@ -114,19 +114,19 @@ int check_redirection_syntaxe(char *input)
 /********************check all syntaxe**************/
 int check_all_syntaxe(char *input)
 {
-    if(check_pipe_syntaxe(input))
+    if (check_pipe_syntaxe(input))
     {
-        ft_putendl_fd("erreur pipe", 2);
+        ft_putendl_fd("Minishell: erreur pipe", 2);
         return 1;
     }
-    if(check_quotes(input))
+    if (check_quotes(input))
     {
-        ft_putendl_fd("erreur quotes", 2);
+        ft_putendl_fd("Minishell: erreur quotes", 2);
         return 1;
     }
-    if(check_redirection_syntaxe(input))
+    if (check_redirection_syntaxe(input))
     {
-        ft_putendl_fd("erreur redirection", 2);
+        ft_putendl_fd("Minishell: erreur redirection", 2);
         return 1;
     }
     return 0;
