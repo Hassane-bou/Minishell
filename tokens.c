@@ -6,12 +6,11 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 12:38:01 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/04 16:45:27 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/09 16:37:22 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
 
 t_token *cretae_token(char *value, t_type type)
 {
@@ -125,6 +124,7 @@ int handle_word(char *input, int i, t_token **head)
     new = cretae_token(word,WORD);
     new->new_quote = q;
     append_token(head,new);
+    free(word);
     return(i);
 }
 

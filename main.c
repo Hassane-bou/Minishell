@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:31:35 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/07 13:25:59 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/09 16:45:05 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,52 @@ void print_token(t_token *token)
         token=token->next;
     }
 }
+
+void free_token_list(t_token *token)
+{
+    t_token *tmp;
+    while(token)
+    {
+        tmp = token;
+        token = token->next;
+        free(tmp->value);
+        free(tmp);
+    }
+}
+
+void free_cmd_list(t_cmd *cmd)
+{
+    t_cmd *tmp;
+    int i;
+    while(cmd)
+    {
+        tmp = cmd;
+        cmd = cmd->next;
+        free(tmp->cmd);
+        if(tmp->args)
+        {
+            i = 0;
+            while(tmp->args[i])
+            {
+                free(tmp->args[i]);
+                i++;
+            }
+            free(tmp->args);
+        }
+    }
+    free(tmp);
+}
+
+void ff()
+{
+    system("leaks parse");
+}
+
 int main(int argc,char **argv,char **envp)
 {
     if(argc != 1)
         return 1;
+    atexit(ff);
     (void)argv;
     char *input;
     t_token *result = NULL;
@@ -38,13 +80,15 @@ int main(int argc,char **argv,char **envp)
         if(*input)
         add_history(input);
         if(check_all_syntaxe(input))
-             continue;
+            continue;
         result = tokenize(input);
         // print_token(result);
         expand_token_list(&result,envp);
         cmd = parse_cmd(result);
-        
-        print_cmd(cmd);       
+    
+        print_cmd(cmd);
+        free_cmd_list(cmd);
+        free_token_list(result);
         free(input);
     }
     return 0;
