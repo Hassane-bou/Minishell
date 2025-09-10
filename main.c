@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/09 13:04:37 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/10 13:29:46 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,49 +158,79 @@ void	free_args(char **args)
 	free(args);
 }
 
-void	free_red(t_redriection *red)
-{
-	t_redriection *tmp;
+// void	free_env_list(t_env **env_head)
+// {
+// 	t_env *head = *env_head;
+// 	t_env *tmp;
 
-	while (red)
-	{
-		tmp = red->next;
-		free(red->file_or_delim);
-		free(red);
-		red = tmp;
-	}
+// 	while (head)
+// 	{
+// 		tmp = head->next;
+// 		free(head->key);
+// 		free(head->value);
+// 		free(head);
+// 		head = tmp;
+// 	}
+// }
+void free_token_list(t_token *token)
+{
+    t_token *tmp;
+    while(token)
+    {
+        tmp = token;
+        token = token->next;
+        free(tmp->value);
+        free(tmp);
+    }
 }
 
-void	free_cmd(t_cmd *cmd)
+void free_red_list(t_redriection *red)
 {
-	t_cmd *tmp;
-
-	while (cmd)
-	{
-		tmp = cmd->next;
-		free(cmd->cmd);
-		free_args(cmd->args); // function
-		free_red(cmd->red); // function
-		free(cmd);
-		cmd = tmp;
-	}
-	
+    t_redriection *tmp;
+    while(red)
+    {
+        tmp = red;
+        red = red->next;
+        free(tmp->file_or_delim);
+        free(tmp);
+    }
+    
 }
-void ff()
+void free_cmd_list(t_cmd *cmd)
 {
-	system("leaks ./minishell");
+    t_cmd *tmp;
+    int i;
+    while(cmd)
+    {
+        tmp = cmd;
+        cmd = cmd->next;
+        free(tmp->cmd);
+        if(tmp->args)
+        {
+            i = 0;
+            while(tmp->args[i])
+            {
+                free(tmp->args[i]);
+                i++;
+            }
+            free(tmp->args);
+        }
+        if(tmp->red)
+            free_red_list(tmp->red);
+    free(tmp);
+    }
 }
-
 int main(int ac, char *av[], char **envp)
 {
 	char	*input;
-	t_token *res = NULL;
 	t_cmd	*cmd = NULL;
+	t_token *res = NULL;
 	t_env	*env_head;
 	char	**env_arr;
 	(void)ac;
 	(void)av;
 
+	char *prompt = make_prompt();
 	env_copy(envp, &env_head);
 	ft_update_shelvl(env_head);
 	print_tamazirt();
@@ -208,7 +238,7 @@ int main(int ac, char *av[], char **envp)
 	{
 		setup_signals();
 		env_arr = env_to_arr(env_head);
-		input = readline(make_prompt());
+		input = readline(prompt);
 		if (g_signal == SIGINT)
 		{
 			env_head->exit_status = 1;
@@ -223,13 +253,17 @@ int main(int ac, char *av[], char **envp)
 		res = tokenize(input);
 		expand_token_list(&res, env_arr, env_head);
 		cmd = parse_cmd(res);
-		// print_cmd(cmd);
-		if (cmd)
-			ft_execute(cmd, &env_head, input);
-		free_cmd(cmd);
+		print_cmd(cmd);
+		// if (cmd)
+		// 	ft_execute(cmd, &env_head, input);
+		free_cmd_list(cmd);
+        // free_token_list(res);
 		free_args(env_arr);
 		free(input);
 		// printf("-->%d\n", env_head->exit_status);
 	}
+	// free_env_list(&env_head);
+	free_env(env_head);
+	free(prompt);
 	return 0;
 }

@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 11:03:15 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/07/02 11:00:39 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/10 10:10:47 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,8 +119,6 @@ int	ft_export(char **arr, t_env **env_copy)
 			value = ft_strdup(get_env_value(env_copy, key));
 		}
 		add_update_env(env_copy, key, value);
-		free(key);
-		free(value);
 		i++;
 	}
 	return (0);

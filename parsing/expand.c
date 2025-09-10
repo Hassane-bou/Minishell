@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:58:54 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/07 09:48:12 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/10 11:20:16 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,8 +153,10 @@ char *expand_string(char *word,char **envp, t_env *env_head)
             i++;
             if(word[i] == '?')
             {
-                tmp = ft_strjoin(resulat,ft_itoa(env_head->exit_status));
+                char *str = ft_itoa(env_head->exit_status);
+                tmp = ft_strjoin(resulat,str);
                 free(resulat);
+                free(str);
                 resulat = tmp;
                 i++;
             }

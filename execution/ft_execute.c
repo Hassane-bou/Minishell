@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 12:37:38 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/07/09 11:34:03 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/10 13:08:40 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ char	**get_path(char **envp, char *cmd)
 {
 	char	*str;
 	char	**arr;
+	char	*tmp;
 	int		i;
 	int		j;
 
@@ -217,6 +218,8 @@ void child_process(t_cmd *cmd, char **env_arr, t_env **env_copy)
 		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd(cmd->args[0], 2);
 		ft_putstr_fd(": No such file or directory\n", 2);
+		free_cmd_list(cmd);
+		exit(1);
 	}
 	exact_path = check_path(paths);
 	if (is_contain_slash(cmd->args[0]))
@@ -225,6 +228,8 @@ void child_process(t_cmd *cmd, char **env_arr, t_env **env_copy)
 		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd(cmd->args[0], 2);
 		ft_putstr_fd(": command not found\n", 2);
+		free_args(paths);
+		free_cmd_list(cmd);
 		(*env_copy)->exit_status = 127;
 		exit(127);
 	}
@@ -232,6 +237,8 @@ void child_process(t_cmd *cmd, char **env_arr, t_env **env_copy)
 	ft_putstr_fd("minishell: ", 2);
 	ft_putstr_fd(cmd->args[0], 2);
 	ft_putstr_fd(": command not found\n", 2);
+	free_args(paths);
+	free_cmd_list(cmd);
 	(*env_copy)->exit_status = 127;
 	exit(127);
 }
@@ -372,6 +379,7 @@ int	ft_execute(t_cmd *cmd, t_env **env_copy, char *input)
 	{
 		if (ft_herdoc(current, env_copy) == -1)
 		{
+			free_cmd_list(current);
 			return 0;
 		}
 		current = current->next;
@@ -380,6 +388,7 @@ int	ft_execute(t_cmd *cmd, t_env **env_copy, char *input)
 		execute_one(cmd, env_copy);
 	else
 		execute_multiple(cmd, env_copy);
+	free_cmd_list(current);
 	// printf("-->%d\n", (*env_copy)->exit_status);
 	return 0;
 }

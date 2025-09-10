@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/09 11:35:03 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/10 13:16:21 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ int handle_word(char *input, int i, t_token **head);
 t_token *tokenize(char *input);
 t_cmd *parse_cmd(t_token *token);
 void print_cmd(t_cmd *cmd);
+void free_cmd_list(t_cmd *cmd);
 
 
 int ft_isspace(int c);
@@ -143,6 +144,8 @@ void    handle_end(t_env *env);
 void    signal_handler(int sig);
 void    setup_signals(void);
 void	free_args(char **args);
+void    ft_redirect(t_cmd *cmd);
+void    free_env(t_env *head);
 
 #define ERROR_ARG "minishell: exit: too many arguments\n"
 

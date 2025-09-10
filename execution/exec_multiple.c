@@ -41,6 +41,7 @@ void execute_multiple(t_cmd *cmd, t_env **env_copy)
         }
         if (pid == 0)
         {
+            ft_redirect(current);
             if (prev_fd != -1)
             {
                 dup2(prev_fd, STDIN_FILENO);
@@ -81,5 +82,7 @@ void execute_multiple(t_cmd *cmd, t_env **env_copy)
     	if (WTERMSIG(status) == SIGQUIT)
 			ft_putendl_fd("Quit", 2);
 	}
+    free_args(env_arr);
+    free_cmd_list(current);
 	// printf("-->%d\n", last_status);
 }
