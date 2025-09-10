@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:58:54 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/09 11:56:55 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/10 10:43:56 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,8 +177,10 @@ char *expand_string(char *word,char **envp)
             i++;
             if(word[i] == '?')
             {
-                tmp = ft_strjoin(resulat,ft_itoa(g_exit_status));
+                char *str = ft_itoa(g_exit_status);
+                tmp = ft_strjoin(resulat,str);
                 free(resulat);
+                free(str);
                 resulat = tmp;
                 i++;
             }

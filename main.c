@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:31:35 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/09 16:45:05 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/10 10:34:13 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,18 @@ void free_token_list(t_token *token)
     }
 }
 
+void free_red_list(t_redriection *red)
+{
+    t_redriection *tmp;
+    while(red)
+    {
+        tmp = red;
+        red = red->next;
+        free(tmp->file_or_delim);
+        free(tmp);
+    }
+    
+}
 void free_cmd_list(t_cmd *cmd)
 {
     t_cmd *tmp;
@@ -53,8 +65,10 @@ void free_cmd_list(t_cmd *cmd)
             }
             free(tmp->args);
         }
-    }
+        if(tmp->red)
+            free_red_list(tmp->red);
     free(tmp);
+    }
 }
 
 void ff()
@@ -87,6 +101,7 @@ int main(int argc,char **argv,char **envp)
         cmd = parse_cmd(result);
     
         print_cmd(cmd);
+        // free_red_list(cmd->red);
         free_cmd_list(cmd);
         free_token_list(result);
         free(input);
