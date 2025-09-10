@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/10 13:29:46 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/10 13:32:33 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -254,10 +254,10 @@ int main(int ac, char *av[], char **envp)
 		expand_token_list(&res, env_arr, env_head);
 		cmd = parse_cmd(res);
 		print_cmd(cmd);
-		// if (cmd)
-		// 	ft_execute(cmd, &env_head, input);
+		if (cmd)
+			ft_execute(cmd, &env_head, input);
 		free_cmd_list(cmd);
-        // free_token_list(res);
+        free_token_list(res);
 		free_args(env_arr);
 		free(input);
 		// printf("-->%d\n", env_head->exit_status);
