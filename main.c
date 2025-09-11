@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:31:35 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/10 10:34:13 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/10 13:28:18 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ int main(int argc,char **argv,char **envp)
         if(input == NULL)
             handle_end();
         if(*input)
-        add_history(input);
+            add_history(input);
         if(check_all_syntaxe(input))
             continue;
         result = tokenize(input);

@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:58:54 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/10 10:43:56 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/10 11:38:08 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ char *get_env_value(char *var,char **envp)
     {
         if(ft_stncmp(envp[i],var,len) == 0 && envp[i][len] == '=')
             return(envp[i] + len + 1);
-        i++;  
+        i++;
     }
     return(NULL);
 }

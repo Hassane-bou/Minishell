@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/09 15:53:48 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/10 12:44:44 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ void signal_handler(int sig);
 void handle_end(void);
 void setup_signals(void);
 
+/************check_syntaxe****************/
 int check_quotes(char *input);
 int check_pipe_syntaxe(char *input);
 int check_redirection_syntaxe(char *input);
