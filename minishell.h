@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/10 13:16:21 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/11 12:43:04 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ t_token *tokenize(char *input);
 t_cmd *parse_cmd(t_token *token);
 void print_cmd(t_cmd *cmd);
 void free_cmd_list(t_cmd *cmd);
+void free_token_list(t_token *token);
 
 
 int ft_isspace(int c);

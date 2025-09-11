@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/10 13:32:33 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/11 13:07:43 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,6 +175,7 @@ void	free_args(char **args)
 void free_token_list(t_token *token)
 {
     t_token *tmp;
+
     while(token)
     {
         tmp = token;
@@ -213,7 +214,7 @@ void free_cmd_list(t_cmd *cmd)
                 free(tmp->args[i]);
                 i++;
             }
-            free(tmp->args);
+        	free(tmp->args);
         }
         if(tmp->red)
             free_red_list(tmp->red);
@@ -230,9 +231,10 @@ int main(int ac, char *av[], char **envp)
 	(void)ac;
 	(void)av;
 
-	char *prompt = make_prompt();
 	env_copy(envp, &env_head);
+	char *prompt = make_prompt();
 	ft_update_shelvl(env_head);
+	env_head->exit_status = 0;
 	print_tamazirt();
 	while (1)
 	{
@@ -249,21 +251,27 @@ int main(int ac, char *av[], char **envp)
 		if (*input)
 			add_history(input);
 		if(check_synstax(input, env_head))
+		{
+			free(input);
+			free_args(env_arr);
 			continue;
+		}
 		res = tokenize(input);
 		expand_token_list(&res, env_arr, env_head);
 		cmd = parse_cmd(res);
-		print_cmd(cmd);
+		// print_cmd(cmd);
 		if (cmd)
 			ft_execute(cmd, &env_head, input);
 		free_cmd_list(cmd);
         free_token_list(res);
 		free_args(env_arr);
 		free(input);
+		// printf("%p\n", &input);
 		// printf("-->%d\n", env_head->exit_status);
 	}
-	// free_env_list(&env_head);
 	free_env(env_head);
+	free_args(env_arr);
 	free(prompt);
+	free(input);
 	return 0;
 }

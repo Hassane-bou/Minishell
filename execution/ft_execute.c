@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 12:37:38 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/10 13:08:40 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/11 13:08:15 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -379,7 +379,6 @@ int	ft_execute(t_cmd *cmd, t_env **env_copy, char *input)
 	{
 		if (ft_herdoc(current, env_copy) == -1)
 		{
-			free_cmd_list(current);
 			return 0;
 		}
 		current = current->next;
@@ -388,7 +387,6 @@ int	ft_execute(t_cmd *cmd, t_env **env_copy, char *input)
 		execute_one(cmd, env_copy);
 	else
 		execute_multiple(cmd, env_copy);
-	free_cmd_list(current);
 	// printf("-->%d\n", (*env_copy)->exit_status);
 	return 0;
 }

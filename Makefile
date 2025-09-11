@@ -14,12 +14,12 @@ LIB = lib/libft.a
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@$(CC) $(OBJ) $(LIB) -lreadline -o $(NAME)
+	$(CC) $(OBJ) $(LIB) -lreadline -o $(NAME)
 	@echo "\033[1;32m✔️  $(NAME) built successfully!\033[0m"
 	@make clean
 
 %.o: %.c minishell.h
-	@$(CC) -c $< -o $@
+	@$(CC) -g -c $< -o $@
 
 clean:
 	@rm -f $(OBJ)

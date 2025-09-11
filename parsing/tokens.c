@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 12:38:01 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/09 11:34:06 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/11 13:06:11 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,9 +125,10 @@ int handle_word(char *input, int i, t_token **head)
         else
             i++;
     }
-    word = ft_substr(input,start,i - start);
-    new = cretae_token(word,WORD);
-    append_token(head,new);
+    word = ft_substr(input, start, i - start);
+    new = cretae_token(word, WORD);
+    append_token(head, new);
+    free(word);
     return(i);
 }
 
@@ -139,8 +140,6 @@ t_token *tokenize(char *input)
     {
         if(ft_isspace(input[i]))
             i++;
-        // else if(input[i]=='"' || input[i] == '\'')
-        //     i = handle_quotes(input,i,&head);
         else if(input[i] == '>' && input[i + 1] =='>')
             i = handle_APPEND(input,i,&head);
         else if(input[i] == '<' && input[i + 1] == '<')
