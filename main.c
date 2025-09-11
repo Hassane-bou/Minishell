@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/11 10:30:46 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/11 11:22:26 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int main(int argc,char **argv,char **envp)
 {
     if(argc != 1)
         return 1;
-    atexit(ff);
+    // atexit(ff);
     (void)argv;
     char *input;
     t_token *result = NULL;
