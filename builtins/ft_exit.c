@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 11:02:49 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/07/02 10:59:38 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/13 13:22:32 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,11 +83,16 @@ int	check_long(const char *str)
 	return (1);
 }
 
-int	ft_exit(char **arr, t_env **env_copy)
+int	ft_exit(char **arr, t_env **env_copy, t_cmd *cmd)
 {
 	printf("exit\n");
 	if (arr[1] == NULL)
-		exit((*env_copy)->exit_status);
+	{
+		int ex_status = (*env_copy)->exit_status;
+		free_env(*env_copy);
+		free_cmd_list(cmd);
+		exit(ex_status);
+	}
 	if (check_num(arr) != 1)
 		return (ft_putstr_fd(ERROR_ARG, 2), 1);
 	else if (arr[1] != NULL)
@@ -97,6 +102,8 @@ int	ft_exit(char **arr, t_env **env_copy)
 			ft_putstr_fd("minishell: exit: ", 2);
 			ft_putstr_fd(arr[1], 2);
 			ft_putstr_fd(": numeric argument required\n", 2);
+			free_env(*env_copy);
+			free_args(arr);
 			exit(255);
 		}
 		if (!check_long(arr[1]))
@@ -105,6 +112,7 @@ int	ft_exit(char **arr, t_env **env_copy)
 			ft_putstr_fd(arr[1], 2);
 			ft_putstr_fd(": numeric argument required\n", 2);
 		}
+		free_env(*env_copy);
 		exit(ft_atoi(arr[1]));
 	}
 	return (0);

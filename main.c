@@ -6,13 +6,13 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/13 11:38:51 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/13 13:22:42 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int g_signal;
+int	g_signal;
 
 int	ft_strcmp(char *s1, char *s2)
 {
@@ -61,7 +61,7 @@ int	run_builtin(t_cmd *cmd, t_env **env_copy)
 	if (!ft_strcmp(cmd->args[0], "unset"))
 		return (ft_unset(cmd->args, env_copy));
 	if (!ft_strcmp(cmd->args[0], "exit"))
-		return (ft_exit(cmd->args, env_copy));
+		return (ft_exit(cmd->args, env_copy, cmd));
 	if (!ft_strcmp(cmd->args[0], "export"))
 		return (ft_export(cmd->args, env_copy));
 	return 1;
@@ -158,20 +158,6 @@ void	free_args(char **args)
 	free(args);
 }
 
-// void	free_env_list(t_env **env_head)
-// {
-// 	t_env *head = *env_head;
-// 	t_env *tmp;
-
-// 	while (head)
-// 	{
-// 		tmp = head->next;
-// 		free(head->key);
-// 		free(head->value);
-// 		free(head);
-// 		head = tmp;
-// 	}
-// }
 void free_token_list(t_token *token)
 {
     t_token *tmp;
@@ -195,8 +181,8 @@ void free_red_list(t_redriection *red)
         free(tmp->file_or_delim);
         free(tmp);
     }
-    
 }
+
 void free_cmd_list(t_cmd *cmd)
 {
     t_cmd *tmp;
@@ -227,24 +213,25 @@ void free_cmd_list(t_cmd *cmd)
 int main(int ac, char *av[], char **envp)
 {
 	char	*input;
-	t_cmd	*cmd = NULL;
-	t_token *res = NULL;
+	t_cmd	*cmd;
+	t_token	*res;
 	t_env	*env_head;
 	char	**env_arr;
-	char	*prompt;
 	(void)ac;
 	(void)av;
 
+	cmd = NULL;
+	res = NULL;
 	env_copy(envp, &env_head);
 	ft_update_shelvl(env_head);
 	env_head->exit_status = 0;
 	print_tamazirt();
 	while (1)
 	{
-		prompt = make_prompt();
+		env_head->prompt = make_prompt();
 		setup_signals();
 		env_arr = env_to_arr(env_head);
-		input = readline(prompt);
+		input = readline(env_head->prompt);
 		if (g_signal == SIGINT)
 		{
 			env_head->exit_status = 1;
@@ -252,13 +239,12 @@ int main(int ac, char *av[], char **envp)
 		}
 		if (input == NULL)
 		{
-			free(prompt);
 			free_args(env_arr);
 			handle_end(env_head);
 		}
 		if (*input)
 			add_history(input);
-		if(check_synstax(input, env_head))
+		if (check_synstax(input, env_head))
 		{
 			free(input);
 			free_args(env_arr);
@@ -273,7 +259,7 @@ int main(int ac, char *av[], char **envp)
         free_token_list(res);
 		free_args(env_arr);
 		free(input);
-		free(prompt);
+		free(env_head->prompt);
 	}
 	free_env(env_head);
 	free_args(env_arr);

@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/11 12:43:04 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/13 13:20:14 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,7 @@ typedef struct s_env
     char	*value;
     int     status;
     int     exit_status;
+    char    *prompt;
     struct s_env *next;
 } t_env;
 
@@ -129,7 +130,7 @@ int		ft_cd(char *path, t_env **env_copy);
 int		ft_strcmp(char *s1, char *s2);
 int		ft_echo(char **arr, t_env *env_copy);
 int		ft_unset(char **arr, t_env **env_copy);
-int 	ft_exit(char **arr, t_env **env_copy);
+int 	ft_exit(char **arr, t_env **env_copy, t_cmd *cmd);
 int		ft_export(char **arr, t_env **env_copy);
 char	*get_env_value(t_env **env_copy, char *key);
 int     is_builtin(t_cmd *cmd);
