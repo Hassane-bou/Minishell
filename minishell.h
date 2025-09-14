@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/10 12:44:44 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/12 16:44:52 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int ft_strlen(char *s);
 
 
 void expand_token_list(t_token **head,char **envp);
-char *expand_string(char *word,char **envp);
+char *expand_string(char *word,char **envp, int *f);
 char *ft_strjoin(char *s1,char *s2);
 char *get_env_value(char *var,char **envp);
 int ft_stncmp(char *s1,char *s2,int n);

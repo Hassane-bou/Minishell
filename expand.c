@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:58:54 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/10 11:38:08 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/12 16:44:35 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ char *ft_itoa(int nbr)
     return(p);
 }
 
-char *expand_string(char *word,char **envp)
+char *expand_string(char *word,char **envp, int *f)
 {
     int i =0;
     int start = 0;
@@ -174,6 +174,7 @@ char *expand_string(char *word,char **envp)
         }
         else if(word[i] == '$' && quote !='\'' )
         {
+            (*f)=1;
             i++;
             if(word[i] == '?')
             {
@@ -225,8 +226,11 @@ void expand_token_list(t_token **head,char **envp)
 {
     t_token *tmp = *head;
     t_token *prev = NULL;
+    int f;
+    
     while(tmp)
     {
+        f=0;
         if(tmp->type == HEREDOC)
         {
             if(tmp->next)
@@ -238,10 +242,10 @@ void expand_token_list(t_token **head,char **envp)
         }
         if(tmp->type == WORD && tmp->value && tmp->new_quote != '\'')
         {
-            char *expanded = expand_string(tmp->value,envp);
+            char *expanded = expand_string(tmp->value,envp, &f);
             free(tmp->value);
             tmp->value = expanded;
-            if(tmp->value[0] == '\0')
+            if(tmp->value[0] == '\0' && f==1)
             {
                 t_token *to_free =tmp;
                 if(prev)

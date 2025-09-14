@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 12:38:01 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/09 16:37:22 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/12 16:30:45 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ int handle_word(char *input, int i, t_token **head)
     char q;
     start = i;
     q = 0;
-     while (input[i] && (!ft_isspace(input[i]) && input[i] != '>' && input[i] != '<' && input[i] != '|'))
+    while (input[i] && (!ft_isspace(input[i]) && input[i] != '>' && input[i] != '<' && input[i] != '|'))
     {
         if (input[i] == '"' || input[i] == '\'')
         {
@@ -123,6 +123,7 @@ int handle_word(char *input, int i, t_token **head)
     word = ft_substr(input,start,i - start);
     new = cretae_token(word,WORD);
     new->new_quote = q;
+    printf("<%s>\n",new->value);
     append_token(head,new);
     free(word);
     return(i);
@@ -136,8 +137,6 @@ t_token *tokenize(char *input)
     {
         if(ft_isspace(input[i]))
             i++;
-        // else if(input[i]=='"' || input[i] == '\'')
-        //     i = handle_quotes(input,i,&head);
         else if(input[i] == '>' && input[i + 1] =='>')
             i = handle_APPEND(input,i,&head);
         else if(input[i] == '<' && input[i + 1] == '<')

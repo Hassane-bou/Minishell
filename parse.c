@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 12:50:48 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/09 16:37:20 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/12 16:14:22 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,7 @@ int count_word_in_token(t_token *token)
     while(token && token->type != PIPE)
     {
         if(token->type == WORD)
-        {
             count++;
-        }
         token = token->next;
     }
     return(count);  
@@ -62,18 +60,15 @@ int count_heredoc_in_token(t_token *token)
 void print_cmd(t_cmd *cmd)
 {
     int i;
-    // int j;
     while(cmd)
     {
         i = 0;
         printf("cmd: %s\n",cmd->cmd);
-        // printf("cmd: %p\n",&cmd->cmd);
         if(cmd->args)
         {
             while(cmd->args[i])
             {
                 printf("args[%d]: %s\n",i,cmd->args[i]);
-                // printf("args: %p\n",(void *)&cmd->args[i]);
                 i++;
             }
         }
@@ -81,7 +76,6 @@ void print_cmd(t_cmd *cmd)
         while(red)
         {
             printf("redirection: type = %d file=%s\n",red->type,red->file_or_delim);
-            // printf("redtype: %p , fileordelim: %p\n ",&red->type,&red->file_or_delim);
             red = red->next;
         }
         cmd = cmd->next;
@@ -163,17 +157,11 @@ void add_red(t_type type, t_cmd *cmd,char *file)
 t_cmd *new_cmd(t_token *token)
 {
     t_cmd *cmd;
-    // t_redriection *red;
     cmd = malloc(sizeof(t_cmd));
     if(!cmd)
         return NULL;
     initilisation(cmd);
-    // red = malloc(sizeof(t_redriection));
-    // if(!red)
-    //     return(free(cmd),NULL);
     int nbr_args = count_word_in_token(token);
-    //int nbr_red = count_redirect_in_token(token);
-   // int nbr_here= count_heredoc_in_token(token);
     cmd->args = malloc(sizeof(char *) * (nbr_args + 2));
     if(!cmd->args)
         return(free(cmd),NULL);
@@ -196,6 +184,7 @@ t_cmd *new_cmd(t_token *token)
         }
         token = token->next;
     }
+    
     cmd->args[i] = NULL;
     cmd->next =NULL;
     return(cmd);
