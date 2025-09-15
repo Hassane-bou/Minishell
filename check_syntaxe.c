@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 10:30:19 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/12 16:37:17 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/14 10:24:06 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,35 +33,6 @@ int check_quotes(char *input)
 
 /****************check syntaxe pipe*****************/
 
-int check_pipe1(char *input,int i,int quote)
-{
-   int j;
-   
-   j = 0;
-   while(input[i])
-   {
-        if((input[i] == '\'' || input[i] =='"') && !quote)
-            quote = input[i];
-        else if(input[i] == quote)
-            quote = 0;
-        if(!quote)
-        {
-            if((input[i] == '|' && input[i+1] && input[i+1] == '|' ))
-                return 1;
-            if(input[i] == '|')
-            {
-                j = i + 1;
-                while(ft_isspace(input[j]))
-                    j++;
-                if(input[j] == '|')
-                    return 1;
-            }
-        }
-        i++;
-   }
-   return 0;
-}
-
 int check_pipe_syntaxe(char *input)
 {
     int i =0;
@@ -76,28 +47,27 @@ int check_pipe_syntaxe(char *input)
         end_input--;
     if(input[end_input] == '|')
         return 1;
-    // while(input[i])
-    // {
-    //     if ((input[i] == '\'' || input[i] == '"') && !quote)
-    //         quote = input[i];
-    //     else if (input[i] == quote)
-    //         quote = 0;
-    //     if(!quote)
-    //     {
-    //         if(input[i] == '|' && input[i+1] && input[i+1]=='|')
-    //             return 1;
-    //         if(input[i] == '|')
-    //         {
-    //             int j = i + 1;
-    //             while (ft_isspace(input[j]))
-    //                 j++;
-    //             if(input[j] == '|')
-    //                 return 1;  
-    //         }
-    //     }
-    //     i++;    
-    // }
-    check_pipe1(input,i,quote);
+    while(input[i])
+    {
+        if ((input[i] == '\'' || input[i] == '"') && !quote)
+            quote = input[i];
+        else if (input[i] == quote)
+            quote = 0;
+        if(!quote)
+        {
+            if(input[i] == '|' && input[i+1] && input[i+1]=='|')
+                return 1;
+            if(input[i] == '|')
+            {
+                int j = i + 1;
+                while (ft_isspace(input[j]))
+                    j++;
+                if(input[j] == '|')
+                    return 1;  
+            }
+        }
+        i++;    
+    }
     return 0;
 }
 /****************check syntaxe redirection*****************/

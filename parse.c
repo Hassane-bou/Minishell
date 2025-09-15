@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 12:50:48 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/12 16:14:22 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/15 10:45:26 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,23 +110,7 @@ int count_pipe(t_token *token)
     return i;
 }
 
-char *remove_quotes(char *str)
-{
-    int i = 0;
-    int j  =0;
-    int len = ft_strlen(str);
-    char *res = malloc(len +1);
-    if(!res)
-        return NULL;
-    while(str[i])
-    {
-        if(str[i] != '\'' && str[i] != '"')
-            res[j++] = str[i];
-        i++;
-    }
-    res[j] = '\0';
-    return res;
-}
+
 
 t_redriection *new_red(t_type type,char *file)
 {

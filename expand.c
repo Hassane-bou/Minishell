@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:58:54 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/12 16:44:35 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/15 11:27:59 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,38 @@ char *ft_itoa(int nbr)
     return(p);
 }
 
+
+
+// int has_quotes(char *s)
+// {
+//     int i = 0;
+//     while(s[i])
+//     {
+//         if(s[i] == '\'' || s[i] == '"')
+//             return 1;
+//         i++;
+//     }
+//     return 0;
+// }
+
+
+char *remove_quotes(char *str)
+{
+    int i = 0;
+    int j  =0;
+    int len = ft_strlen(str);
+    char *res = malloc(len +1);
+    if(!res)
+        return NULL;
+    while(str[i])
+    {
+        if(str[i] != '\'' && str[i] != '"')
+            res[j++] = str[i];
+        i++;
+    }
+    res[j] = '\0';
+    return res;
+}
 char *expand_string(char *word,char **envp, int *f)
 {
     int i =0;
@@ -210,17 +242,6 @@ char *expand_string(char *word,char **envp, int *f)
     return(resulat);
 }
 
-// int has_quotes(char *s)
-// {
-//     int i = 0;
-//     while(s[i])
-//     {
-//         if(s[i] == '\'' || s[i] == '"')
-//             return 1;
-//         i++;
-//     }
-//     return 0;
-// }
 
 void expand_token_list(t_token **head,char **envp)
 {
@@ -231,14 +252,11 @@ void expand_token_list(t_token **head,char **envp)
     while(tmp)
     {
         f=0;
-        if(tmp->type == HEREDOC)
+        if (tmp->type == HEREDOC && tmp->next)
         {
-            if(tmp->next)
-                tmp=tmp->next->next;
-            else
-                tmp = tmp->next;
+            tmp->next->value = remove_quotes(tmp->next->value);
+            tmp = tmp->next->next;
             continue;
-            
         }
         if(tmp->type == WORD && tmp->value && tmp->new_quote != '\'')
         {

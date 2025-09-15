@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 12:55:51 by haboucha          #+#    #+#             */
-/*   Updated: 2025/07/04 16:42:14 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/14 14:16:02 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -272,7 +272,7 @@ void print_tokens(t_token *token)
     while(token)
     {
         printf("->[%s]",token->value);
-        printf(" -- [%d]\n",token->type);
+        (" -- [%d]\n",token->type);
         token = token->next;
     }
 }
