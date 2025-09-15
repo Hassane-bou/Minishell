@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/13 13:20:14 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/15 13:10:46 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ typedef struct s_cmd
 // t_cmd *parse_cmd(t_token *token);
 // void print_cmd(t_cmd *cmd);
 // int ft_isspace(int c);
-
+// char *remove_quotes(char *str);
 int check_quotes(char *input);
 int check_pipe_syntaxe(char *input);
 int check_redirection_syntaxe(char *input);
@@ -109,10 +109,17 @@ typedef struct s_env
     struct s_env *next;
 } t_env;
 
+typedef struct s_help
+{
+    char    *key;
+    char    *ptr_value;
+    char    *value;
+    int     pos;
+} t_help;
 
-
+char *ft_strjoin_char(char *s1,char c);
 void expand_token_list(t_token **head,char **envp, t_env *env_head);
-char *expand_string(char *word,char **envp, t_env *env_head);
+char *expand_string(char *word,char **envp, t_env *env_head, int *f);
 char *get_env_value_par(char *var,char **envp);
 int ft_stncmp(char *s1,char *s2,int n);
 int is_valid_env_char(char c);
@@ -148,6 +155,8 @@ void    setup_signals(void);
 void	free_args(char **args);
 void    ft_redirect(t_cmd *cmd);
 void    free_env(t_env *head);
+void	print_error(char *str);
+void	key_value_alloc(t_help var, char *str);
 
 #define ERROR_ARG "minishell: exit: too many arguments\n"
 

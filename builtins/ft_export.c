@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 11:03:15 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/11 13:08:58 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/15 13:09:49 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,39 +88,29 @@ int	check_args(char *str)
 
 int	ft_export(char **arr, t_env **env_copy)
 {
-	char	*value;
-	char	*ptr_value;
-	char	*key;
-	int		pos;
+	t_help	var;
 	int		i;
 
-	i = 1;
+	i = 0;
 	if (arr[1] == NULL)
 		print_export(env_copy);
-	while (arr[i])
+	while (arr[++i])
 	{
-		if (check_args(arr[i]) || arr[i] == NULL)
-		{
-			ft_putstr_fd("minishell: export: `", 2);
-			ft_putstr_fd(arr[i], 2);
-			ft_putstr_fd("': not a valid identifier\n", 2);
-			return (1);
-		}
+		var.ptr_value = ft_strchr(arr[i], '=');
+		var.value = var.ptr_value + 1;
+		var.pos = var.ptr_value - arr[i];
+		var.key = ft_substr(arr[i], 0, var.pos);
+		if (check_args(var.key) || arr[i] == NULL)
+			return (print_error(arr[i]), 1);
 		if (is_contain_equal(arr[i]))
-		{
-			ptr_value = ft_strchr(arr[i], '=');
-			value = ptr_value + 1;
-			pos = ptr_value - arr[i];
-			key = ft_substr(arr[i], 0, pos);
-		}
+			key_value_alloc(var, arr[i]);
 		else
 		{
-			key = ft_strdup(arr[i]);
-			value = ft_strdup(get_env_value(env_copy, key));
+			var.key = ft_strdup(arr[i]);
+			var.value = ft_strdup(get_env_value(env_copy, var.key));
 		}
-		add_update_env(env_copy, key, value);
-		free(key);
-		i++;
+		add_update_env(env_copy, var.key, var.value);
+		free(var.key);
 	}
 	return (0);
 }

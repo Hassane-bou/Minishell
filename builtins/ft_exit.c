@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 11:02:49 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/13 13:22:32 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/15 13:13:28 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,10 +85,12 @@ int	check_long(const char *str)
 
 int	ft_exit(char **arr, t_env **env_copy, t_cmd *cmd)
 {
+	int	ex_status;
+
 	printf("exit\n");
 	if (arr[1] == NULL)
 	{
-		int ex_status = (*env_copy)->exit_status;
+		ex_status = (*env_copy)->exit_status;
 		free_env(*env_copy);
 		free_cmd_list(cmd);
 		exit(ex_status);

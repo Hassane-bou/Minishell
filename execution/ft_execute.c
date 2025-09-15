@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 12:37:38 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/13 11:26:48 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/15 12:32:21 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -296,6 +296,74 @@ void execute_one(t_cmd *cmd, t_env **env_copy)
 	// printf("-->%d\n", (*env_copy)->exit_status);
 }
 
+char *expand_string_her(char *word,char **envp, t_env *env_head)
+{
+    int i =0;
+    int start = 0;
+    char *var_name;
+    char *value;
+    char *tmp;
+    char quote = 0;
+    char *resulat = ft_strdup("");
+    if(!word)
+        return(ft_strdup(""));
+    while(word[i])
+    {
+        if(word[i] == '\'' && quote == 0)
+        {
+            quote = '\'';
+            i++;
+        }
+        else if(word[i] == '\'' && quote == '\'')
+        {
+            quote = 0;
+            i++;
+        }
+        else if(word[i] == '"' && quote == 0)
+        {
+            quote = '"';
+            i++;
+        }
+        else if(word[i] == '"' && quote == '"')
+        {
+            quote = 0;
+            i++;
+        }
+        else if(word[i] == '$' && quote !='\'' )
+        {
+            i++;
+            if(word[i] == '?')
+            {
+                char *str = ft_itoa(env_head->exit_status);
+                tmp = ft_strjoin(resulat,str);
+                free(resulat);
+                free(str);
+                resulat = tmp;
+                i++;
+            }
+            start = i;
+            while(word[i] && is_valid_env_char(word[i]))
+                i++;
+            var_name = ft_substr(word,start,i -start);
+            value = get_env_value_par(var_name,envp);
+            free(var_name);
+            if(value)
+            {
+                    tmp = ft_strjoin(resulat,value);
+                    free(resulat);
+                    resulat = tmp;
+            }
+        }
+        else
+        {
+            tmp = ft_strjoin_char(resulat,word[i]);
+            free(resulat);
+            resulat =tmp;
+            i++;
+        }
+    }
+    return(resulat);
+}
 void run_herdoc(t_cmd *cmd, t_redriection *tmp, int fd, t_env **env_copy)
 {
 	char *line;
@@ -312,7 +380,7 @@ void run_herdoc(t_cmd *cmd, t_redriection *tmp, int fd, t_env **env_copy)
 			free(line);
 			break ;
 		}
-		line = expand_string(line, env_arr, *env_copy);
+		// line = expand_string_her(line, env_arr, *env_copy);
 		ft_putendl_fd(line, fd);
 		free(line);
 	}

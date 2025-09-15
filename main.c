@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/13 13:22:42 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/15 12:39:07 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,6 +180,7 @@ void free_red_list(t_redriection *red)
         red = red->next;
         free(tmp->file_or_delim);
         free(tmp);
+		
     }
 }
 
@@ -246,6 +247,7 @@ int main(int ac, char *av[], char **envp)
 			add_history(input);
 		if (check_synstax(input, env_head))
 		{
+			free(env_head->prompt);
 			free(input);
 			free_args(env_arr);
 			continue;
@@ -255,11 +257,13 @@ int main(int ac, char *av[], char **envp)
 		cmd = parse_cmd(res);
 		if (cmd)
 			ft_execute(cmd, &env_head, input);
+		// print_cmd(cmd);
 		free_cmd_list(cmd);
         free_token_list(res);
 		free_args(env_arr);
 		free(input);
 		free(env_head->prompt);
+		printf("-->%d\n", env_head->exit_status);
 	}
 	free_env(env_head);
 	free_args(env_arr);
