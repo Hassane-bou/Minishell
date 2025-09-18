@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 12:55:51 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/14 14:16:02 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/17 14:19:14 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ char	*ft_strdup(char *s1)
 	int		n;
 	int		i;
     if(!s1)
-    return NULL;
+        return NULL;
 	p = (char *)s1;
 	n = ft_strlen(s1) + 1;
 	i = 0;
@@ -179,7 +179,6 @@ t_token *create_token(char *value,t_type type)
     token->value=strdup(value);
     token->type =type;
     token->next=NULL;
-
     return (token);
 }
 
@@ -650,9 +649,9 @@ int main(int argc,char **av,char **envp )
             add_history(input);
         res = tokenize(input);
         expand_token_list(res,envp);
-        // expand  = expand_string(input,envp);
+        expand  = expand_string(input,envp);
         // free(expand);
-        // print_tokens(res);
+        print_tokens(res);
         // free(tmp);
         // remove_quotes_from_tokens(res);
         parse = parse_toking(res);

@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/14 09:35:22 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/14 10:45:19 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/15 16:46:45 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #include <ctype.h>
 #include <string.h>
 
-// char *str = "'hello' | 'hello'";
 
 int check_synatxe_pipe(char *input)
 {
@@ -42,7 +41,15 @@ int check_synatxe_pipe(char *input)
             if(!quote)
             {
                 if(input[i] == '|' && input[i+1] == '|')
-                    return 1; 
+                    return 1;
+                if(input[i] == '|')
+                {
+                    int j = i + 1;
+                    while(ft_isspace(input[j]))
+                        j++;
+                    if(input[i] == '|')
+                        return(1);
+                }
             }
             i++;       
         } 

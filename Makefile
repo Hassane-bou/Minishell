@@ -1,6 +1,6 @@
 CC = cc 
-# CFLAGS = -Wall -Wextra -Werror #-fsanitize=address -g
-CFLAGS = 
+CFLAGS = -Wall -Wextra -Werror #-fsanitize=address -g
+# CFLAGS = 
 SRCS = main.c utils.c ft_split.c ft_substr.c parse.c tokens.c ft_strdup.c\
 		check_syntaxe.c expand.c 
 
@@ -12,8 +12,12 @@ NAME = parse
 
 all: $(NAME)
 
-$(NAME):$(OBJE)
-		$(CC) $(CFLAGS) $(SRCS) $(LIBS) -o $(NAME) 
+# $(NAME):$(OBJE)
+# 		$(CC) $(CFLAGS) $(OBJE) $(LIBS) -o $(NAME) 
+
+
+$(NAME): $(OBJE)
+	$(CC) $(OBJE) $(CFLAGS) $(LIBS) -o $(NAME)
 
 %.o:%.c
 	$(CC) $(CFLAGS) -c $< -o $@ 

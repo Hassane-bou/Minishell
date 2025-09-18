@@ -6,12 +6,12 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:58:54 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/15 11:27:59 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/18 10:18:22 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
+#include <string.h>
 int is_valid_env_char(char c)
 {
     return((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_');
@@ -138,21 +138,6 @@ char *ft_itoa(int nbr)
     return(p);
 }
 
-
-
-// int has_quotes(char *s)
-// {
-//     int i = 0;
-//     while(s[i])
-//     {
-//         if(s[i] == '\'' || s[i] == '"')
-//             return 1;
-//         i++;
-//     }
-//     return 0;
-// }
-
-
 char *remove_quotes(char *str)
 {
     int i = 0;
@@ -170,6 +155,7 @@ char *remove_quotes(char *str)
     res[j] = '\0';
     return res;
 }
+
 char *expand_string(char *word,char **envp, int *f)
 {
     int i =0;
@@ -222,31 +208,87 @@ char *expand_string(char *word,char **envp, int *f)
                 i++;
             var_name = ft_substr(word,start,i -start);
             value = get_env_value(var_name,envp);
-            free(var_name);
+            // update ici pour redirction in out append
+            if(value == NULL)
+            {
+                tmp = ft_strjoin(resulat,word);
+                free(resulat);
+                resulat = tmp;
+            }
             if(value)
             {
-                    tmp = ft_strjoin(resulat,value);
-                    free(resulat);
-                    resulat = tmp;
+                tmp = ft_strjoin(resulat,value);
+                free(resulat);
+                resulat = tmp;
             }
+            free(var_name);
         }
         else
         {
             tmp = ft_strjoin_char(resulat,word[i]);
             free(resulat);
             resulat =tmp;
-
             i++;
         }
     }
+    
     return(resulat);
 }
 
+t_token *export_value(char *export)
+{
+    t_token *new_token;
+    t_token *head;
+    t_token *tmp;
+    
+    char **value;
+    int i = 0;
+    
+    // free double array value 
+    value =ft_split(export,' ');
+    if(!value)
+        return NULL;
+        
+    tmp = cretae_token(value[i],WORD);
+    if(!tmp)
+        return(free(value),NULL);
+    head = tmp;
+    i++;
+    while(value[i])
+    {
+        new_token = malloc(sizeof(t_token));
+        if(!new_token)
+            return(free(value),NULL);
+        new_token->value = ft_strdup(value[i]);
+        new_token->type = WORD;
+        new_token->new_quote = 0;
+        new_token->next = NULL;
+        tmp->next = new_token;
+        tmp=tmp->next;
+        i++;
+    }
+    return(head);
+}
+int    has_quotes(char *s)
+{
+    int    i;
 
+    if (!s)
+        return (1); // if NULL, treat as no quotes -> expand
+    i = 0;
+    while (s[i])
+    {
+        if (s[i] == '\'' || s[i] == '"')
+            return (0); // found quotes -> do NOT expand
+        i++;
+    }
+    return (1); // no quotes -> expand
+}
 void expand_token_list(t_token **head,char **envp)
 {
     t_token *tmp = *head;
     t_token *prev = NULL;
+    t_token *res;
     int f;
     
     while(tmp)
@@ -254,15 +296,39 @@ void expand_token_list(t_token **head,char **envp)
         f=0;
         if (tmp->type == HEREDOC && tmp->next)
         {
+            if(!has_quotes(tmp->next->value))
+                tmp->quoted = 1;
             tmp->next->value = remove_quotes(tmp->next->value);
             tmp = tmp->next->next;
             continue;
         }
+        
         if(tmp->type == WORD && tmp->value && tmp->new_quote != '\'')
         {
             char *expanded = expand_string(tmp->value,envp, &f);
             free(tmp->value);
             tmp->value = expanded;
+            // split export and toknes
+            int i = 0;
+            while(tmp->value[i])
+            {
+                if(isspace(tmp->value[i]))
+                {
+                    res = export_value(expanded);
+                    if(prev)
+                        prev->next = res;
+                    else
+                        *head = res;
+                    t_token *last = res;
+                    while(last->next)
+                        last = last->next;
+                    last->next = tmp->next;
+                    free(tmp->value);
+                    free(tmp);
+                    tmp =last;
+                }
+                i++;
+            }
             if(tmp->value[0] == '\0' && f==1)
             {
                 t_token *to_free =tmp;
@@ -279,4 +345,6 @@ void expand_token_list(t_token **head,char **envp)
         prev=tmp;
         tmp = tmp->next;
     }
+    print_token(*head);
 }
+

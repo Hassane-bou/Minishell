@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/15 11:22:21 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/18 10:17:21 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef struct s_token
     char *value;
     t_type type;
     char new_quote;
+    int quoted;
     struct s_token *next;
 }t_token;
 
@@ -59,8 +60,8 @@ typedef struct s_cmd
 {
     char *cmd;
     char **args;
+    int error;
     t_redriection *red;
-
     struct s_cmd *next;
 }t_cmd;
 
@@ -113,4 +114,5 @@ int	ft_count(char *str, char c);
 char	**ft_split(char *str, char c);
 char	*allocate_word(char **pr, int i, int j, int k);
 char	*ft_strncpy(char *dst, char *src, int len);
+void print_token(t_token *token);
 #endif

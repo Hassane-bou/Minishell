@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 12:38:01 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/14 14:16:13 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/17 11:44:51 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_token *cretae_token(char *value, t_type type)
     token->value = ft_strdup(value);
     token->type = type;
     token->next = NULL;
-
+    token->quoted = 0;
     return (token);
 }
 void append_token(t_token **head,t_token *new)

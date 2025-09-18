@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 15:12:04 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/11 15:12:52 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/15 16:43:08 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,31 +58,31 @@ char	*allocate_word(char **pr, int i, int j, int k)
 	return (pr[k]);
 }
 
-// char	**ft_split(char *str, char c)
-// {
-// 	int		i;
-// 	int		j;
-// 	int		k;
-// 	char	**pr;
+char	**ft_split(char *str, char c)
+{
+	int		i;
+	int		j;
+	int		k;
+	char	**pr;
 
-// 	i = ((j = (k = 0), 0), 0);
-// 	pr = (char **)malloc(sizeof(char *) * (ft_count(str, c) + 1));
-// 	if (!pr)
-// 		return (NULL);
-// 	i = 0;
-// 	while (str[i])
-// 	{
-// 		while (str[i] && str[i] == c)
-// 			i++;
-// 		j = i;
-// 		while (str[i] && str[i] != c)
-// 			i++;
-// 		if (i > j)
-// 		{
-// 			allocate_word(pr, i, j, k);
-// 			ft_strncpy(pr[k++], &str[j], i - j);
-// 			j++;
-// 		}
-// 	}
-// 	return (pr[k] = NULL, pr);
-// }
+	i = ((j = (k = 0), 0), 0);
+	pr = (char **)malloc(sizeof(char *) * (ft_count(str, c) + 1));
+	if (!pr)
+		return (NULL);
+	i = 0;
+	while (str[i])
+	{
+		while (str[i] && str[i] == c)
+			i++;
+		j = i;
+		while (str[i] && str[i] != c)
+			i++;
+		if (i > j)
+		{
+			allocate_word(pr, i, j, k);
+			ft_strncpy(pr[k++], &str[j], i - j);
+			j++;
+		}
+	}
+	return (pr[k] = NULL, pr);
+}

@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 12:50:48 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/15 10:45:26 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/17 19:37:09 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,8 +110,6 @@ int count_pipe(t_token *token)
     return i;
 }
 
-
-
 t_redriection *new_red(t_type type,char *file)
 {
     t_redriection *red = malloc(sizeof(t_redriection));
@@ -131,8 +129,10 @@ void add_red(t_type type, t_cmd *cmd,char *file)
     else
     {
         t_redriection *tmp =cmd->red;
-        while(tmp->next)
+        while(tmp->next && tmp->file_or_delim != NULL)
+        {
             tmp = tmp->next;
+        }
         tmp->next = red;
     }
 }
@@ -168,7 +168,6 @@ t_cmd *new_cmd(t_token *token)
         }
         token = token->next;
     }
-    
     cmd->args[i] = NULL;
     cmd->next =NULL;
     return(cmd);
