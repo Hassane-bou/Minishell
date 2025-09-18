@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 12:50:48 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/15 12:41:46 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/17 14:32:05 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ int count_word_in_token(t_token *token)
 int count_redirect_in_token(t_token *token)
 {
     int count = 0;
+    if (token)
     while(token && token->type != PIPE)
     {
         if(token->type == REDIR_OUT)
@@ -158,7 +159,6 @@ void add_red(t_type type, t_cmd *cmd,char *file)
     }
 }
 
-
 t_cmd *new_cmd(t_token *token)
 {
     t_cmd *cmd;
@@ -185,7 +185,9 @@ t_cmd *new_cmd(t_token *token)
                 || token->type == HEREDOC)
         {
             if(token->next)
+            {
                 add_red(token->type,cmd,token->next->value);
+            }
             token=token->next;
         }
         token = token->next;

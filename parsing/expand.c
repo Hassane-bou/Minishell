@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:58:54 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/15 12:40:26 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/18 13:14:50 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,54 @@ char *remove_quotes(char *str)
     res[j] = '\0';
     return res;
 }
+
+t_token *export_value(char *export)
+{
+    t_token *new_token;
+    t_token *head;
+    t_token *tmp;
+    
+    char **value;
+    int i = 0;
+    
+    // free double array value 
+    // printf("%s\n", export);
+    // char *ptr = ft_strchr(export, '=');
+    // size_t pos = ptr - export;
+	// char *str = ptr + 1;
+    // char *key = ft_substr(export, 0, pos);
+    // printf("--%s\n", key);
+    value =ft_split(export,' ');
+    // int h = 0;
+    // while (value[h])
+    // {
+    //     printf("%s\n", value[h]);
+    //     h++;
+    // }
+    if(!value)
+        return NULL;
+        
+    tmp = cretae_token(value[i],WORD);
+    if(!tmp)
+        return(free(value),NULL);
+    head = tmp;
+    i++;
+    while(value[i])
+    {
+        new_token = malloc(sizeof(t_token));
+        if(!new_token)
+            return(free(value),NULL);
+        new_token->value = ft_strdup(value[i]);
+        new_token->type = WORD;
+        new_token->new_quote = 0;
+        new_token->next = NULL;
+        tmp->next = new_token;
+        tmp=tmp->next;
+        i++;
+    }
+    return(head);
+}
+
 char *expand_string(char *word,char **envp, t_env *env_head, int *f)
 {
     int i =0;
@@ -197,7 +245,11 @@ char *expand_string(char *word,char **envp, t_env *env_head, int *f)
                 i++;
             var_name = ft_substr(word,start,i -start);
             value = get_env_value_par(var_name,envp);
+            // if(value == NULL)
+            // { 
+            // }
             free(var_name);
+            
             if(value)
             {
                     tmp = ft_strjoin(resulat,value);
@@ -210,18 +262,33 @@ char *expand_string(char *word,char **envp, t_env *env_head, int *f)
             tmp = ft_strjoin_char(resulat,word[i]);
             free(resulat);
             resulat =tmp;
-
             i++;
         }
     }
     return(resulat);
 }
 
+int    has_quotes(char *s)
+{
+    int    i;
+
+    if (!s)
+        return (1); // if NULL, treat as no quotes -> expand
+    i = 0;
+    while (s[i])
+    {
+        if (s[i] == '\'' || s[i] == '"')
+            return (0); // found quotes -> do NOT expand
+        i++;
+    }
+    return (1); // no quotes -> expand
+}
 
 void expand_token_list(t_token **head,char **envp, t_env *env_head)
 {
     t_token *tmp = *head;
     t_token *prev = NULL;
+    t_token *res;
     int f;
     
     while(tmp)
@@ -229,7 +296,25 @@ void expand_token_list(t_token **head,char **envp, t_env *env_head)
         f=0;
         if (tmp->type == HEREDOC && tmp->next)
         {
+            if (!has_quotes(tmp->next->value))
+                (*head)->quoted = 1;
             tmp->next->value = remove_quotes(tmp->next->value);
+            tmp = tmp->next->next;
+            continue;
+        }
+        if((tmp->type == REDIR_IN || tmp->type == REDIR_OUT || tmp->type == APPEND) && tmp->next)
+        {
+            if(tmp->next->value && tmp->new_quote != '\'')
+            {
+                char *expanded = expand_string(tmp->next->value,envp,env_head, &f);
+                free(tmp->next->value);
+                tmp->next->value = expanded;
+                if(expanded[0] == '\0' && f == 1)
+                {
+                    tmp = tmp->next->next;
+                    continue;
+                }
+            }
             tmp = tmp->next->next;
             continue;
         }
@@ -238,7 +323,28 @@ void expand_token_list(t_token **head,char **envp, t_env *env_head)
             char *expanded = expand_string(tmp->value,envp,env_head, &f);
             free(tmp->value);
             tmp->value = expanded;
-            if(tmp->value[0] == '\0' && f==1)
+            // int i = 0;
+            // printf("%s\n", tmp->value);
+            // while(tmp->value[i])
+            // {
+            //     if(isspace(tmp->value[i]))
+            //     {
+            //         res = export_value(expanded);
+            //         if(prev)
+            //             prev->next = res;
+            //         else
+            //             *head = res;
+            //         t_token *last = res;
+            //         while(last->next)
+            //             last = last->next;
+            //         last->next = tmp->next;
+            //         free(tmp->value);
+            //         free(tmp);
+            //         tmp =last;
+            //     }
+            //     i++;
+            // }
+            if(tmp->value[0] == '\0' && f == 1)
             {
                 t_token *to_free =tmp;
                 if(prev)

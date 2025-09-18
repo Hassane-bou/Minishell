@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/15 12:39:07 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/18 12:07:19 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,7 +210,15 @@ void free_cmd_list(t_cmd *cmd)
     free(tmp);
     }
 }
-
+void print_token(t_token *token)
+{
+    while(token)
+    {
+        printf("-> [%s]",token->value);
+        printf("-- [%d]\n",token->type);
+        token=token->next;
+    }
+}
 int main(int ac, char *av[], char **envp)
 {
 	char	*input;
@@ -256,14 +264,15 @@ int main(int ac, char *av[], char **envp)
 		expand_token_list(&res, env_arr, env_head);
 		cmd = parse_cmd(res);
 		if (cmd)
-			ft_execute(cmd, &env_head, input);
+			ft_execute(cmd, &env_head, input, res);
+		// print_token(res);
 		// print_cmd(cmd);
 		free_cmd_list(cmd);
         free_token_list(res);
 		free_args(env_arr);
 		free(input);
 		free(env_head->prompt);
-		printf("-->%d\n", env_head->exit_status);
+		// printf("-->%d\n", env_head->exit_status);
 	}
 	free_env(env_head);
 	free_args(env_arr);

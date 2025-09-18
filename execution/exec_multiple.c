@@ -14,14 +14,20 @@
 
 void execute_multiple(t_cmd *cmd, t_env **env_copy)
 {
-    int 	pipe_fd[2];
-    int 	prev_fd = -1;
+    int     pipe_fd[2];
+    int 	prev_fd;
     int 	pid;
-    char 	**env_arr;
-    t_cmd 	*current = cmd;
-    int		status = 0;
-    int     last_pid = -1;
+    char	**env_arr;
+    t_cmd	*current;
+    int		status;
+    int		last_pid;
 
+    prev_fd = -1;
+    current = cmd;
+    status = 0;
+    last_pid = -1;
+    signal(SIGINT, signal_handler);
+    signal(SIGQUIT, SIG_IGN);
     env_arr = env_to_arr(*env_copy);
     while (current)
     {
@@ -37,7 +43,8 @@ void execute_multiple(t_cmd *cmd, t_env **env_copy)
         if (pid == -1)
         {
             perror("fork");
-            exit(1);
+            (*env_copy)->exit_status = 1;
+            return ;
         }
         if (pid == 0)
         {
@@ -84,5 +91,4 @@ void execute_multiple(t_cmd *cmd, t_env **env_copy)
 	}
     free_args(env_arr);
     free_cmd_list(current);
-	// printf("-->%d\n", last_status);
 }
