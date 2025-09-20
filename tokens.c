@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 12:38:01 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/17 11:44:51 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/19 10:24:20 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ void append_token(t_token **head,t_token *new)
         tmp->next = new;
     }
 }
-
 /*******************HANDLE APPEND************************/
 int handle_APPEND(char *input,int i,t_token **head)
 {

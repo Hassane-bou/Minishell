@@ -6,13 +6,11 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 18:40:35 by haboucha          #+#    #+#             */
-/*   Updated: 2025/06/14 12:17:52 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/20 09:25:59 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-
 
 char	*ft_substr(char *s, int start, int len)
 {

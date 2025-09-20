@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 10:30:19 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/15 14:46:47 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/19 15:15:06 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,7 @@ int	check_all_syntaxe(char *input)
 {
 	if (check_pipe_syntaxe(input))
 	{
-		printf("erreur pipe\n");
+		printf("syntax error near unexpected token `|'\n");
 		free(input);
 		return (1);
 	}
@@ -157,7 +157,7 @@ int	check_all_syntaxe(char *input)
 	}
 	if (check_redirection_syntaxe(input))
 	{
-		printf("erreur redirection\n");
+		printf("syntax error near unexpected token `newline'\n");
 		free(input);
 		return (1);
 	}
