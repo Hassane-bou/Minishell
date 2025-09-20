@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 12:37:38 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/18 13:18:58 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/20 12:52:39 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,74 +69,6 @@ char	*check_path(char **path)
 	return (NULL);
 }
 
-void in_redirect(t_cmd *cmd)
-{
-	int				fd;
-	t_redriection	*tmp;
-
-	tmp = cmd->red;
-	while (tmp)
-	{
-		if (tmp->type == HEREDOC)
-		{
-			dup2(cmd->herdoc_fd, STDIN_FILENO);
-			close(cmd->herdoc_fd);
-		}
-		if (tmp->type == REDIR_IN)
-		{
-			fd = open(tmp->file_or_delim, O_RDONLY, 0777);
-			if (fd < 0)
-				return (perror("infile error!"), exit(1));
-			if (dup2(fd, STDIN_FILENO) == -1)
-			{
-				perror("dup failed!");
-				exit(1);
-			}
-			close(fd);
-		}
-		tmp = tmp->next;
-	}
-}
-
-void out_redirect(t_cmd *cmd)
-{
-	int fd;
-	t_redriection *tmp;
-
-	tmp = cmd->red;
-	while (tmp)
-	{
-		if (tmp->type == APPEND || tmp->type == REDIR_OUT)
-		{
-			if (tmp->type == APPEND)
-				fd = open(tmp->file_or_delim, O_CREAT | O_RDWR | O_APPEND, 0777);
-			else
-				fd = open(tmp->file_or_delim, O_CREAT | O_RDWR | O_TRUNC, 0777);
-			if (fd < 0)
-			{
-				perror("outfile error");
-				exit(1);
-			}
-			if ((tmp->next == NULL) || (tmp->next && tmp->next->type != APPEND && tmp->next->type != REDIR_OUT))
-			{
-				if (dup2(fd, STDOUT_FILENO) == -1)
-				{
-					perror("dup failed!");
-					exit(1);
-				}
-				close(fd);
-			}
-		}
-		tmp = tmp->next;
-	}
-}
-
-void ft_redirect(t_cmd *cmd)
-{
-	in_redirect(cmd);
-	out_redirect(cmd);
-}
-
 int in_redirect_buil(t_cmd *cmd)
 {
 	int				fd;
@@ -177,17 +109,11 @@ int out_redirect_buil(t_cmd *cmd)
 			else
 				fd = open(tmp->file_or_delim, O_CREAT | O_RDWR | O_TRUNC, 0777);
 			if (fd < 0)
-			{
-				perror("outfile error");
-				return (-1);
-			}
+				return (perror("outfile error"), -1);
 			if ((tmp->next == NULL) || (tmp->next && tmp->next->type != APPEND && tmp->next->type != REDIR_OUT))
 			{
 				if (dup2(fd, STDOUT_FILENO) == -1)
-				{
-					perror("dup failed!");
-					return (-1);
-				}
+					return (perror("dup failed!"), -1);
 				close(fd);
 			}
 		}

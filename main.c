@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/20 09:19:32 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/20 11:57:28 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,10 +262,10 @@ int main(int ac, char *av[], char **envp)
 		}
 		res = tokenize(input);
 		expand_token_list(&res, env_arr, env_head);
-		print_token(res);
 		cmd = parse_cmd(res);
 		if (cmd)
 			ft_execute(cmd, &env_head, input, res);
+		// print_token(res);
 		// print_cmd(cmd);
 		free_cmd_list(cmd);
         free_token_list(res);

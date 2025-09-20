@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:58:54 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/20 09:34:39 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/20 11:00:10 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,14 +147,63 @@ char *remove_quotes(char *str)
     return res;
 }
 
-t_token *export_value(char *export)
-{
-    t_token *new_token;
-    new_token = cretae_token(export,WORD);
-    if(!new_token)
-        return(NULL);
-    return(new_token);
-}
+// t_token *export_value(char *export)
+// {
+//     t_token *new_token;
+//     new_token = cretae_token(export,WORD);
+//     if(!new_token)
+//         return (NULL);
+//     return(new_token);
+// }
+
+// void free_split(char **value)
+// {
+//     int i = 0;
+//     while(value[i])
+//     {
+//         free(value[i]);
+//         i++;
+//     }
+//     free(value);
+// }
+
+// t_token *export_value(char *export)
+// {
+//     t_token *new_token;
+//     t_token *head;
+//     t_token *tmp;
+//     char    **value;
+//     int i = 0;
+
+//     value =ft_split(export,' ');
+//     if(!value || !value[0])
+//     {
+//         free_split(value);
+//         return NULL;
+//     }
+//     tmp = cretae_token(value[i],WORD);
+//     if(!tmp)
+//     {
+//         free_split(value);
+//         return NULL;
+//     }
+//     head = tmp;
+//     i++;
+//     while(value[i])
+//     {
+//         new_token = cretae_token(value[i],WORD);
+//         if(!new_token)
+//         {
+//             free_split(value);
+//             return NULL;
+//         }
+//         tmp->next = new_token;
+//         tmp = tmp->next;
+//         i++;
+//     }
+//     free_split(value);
+//     return head;
+// }
 
 char *expand_string(char *word,char **envp, t_env *env_head, int *f)
 {
@@ -282,27 +331,26 @@ void expand_token_list(t_token **head,char **envp, t_env *env_head)
             char *expanded = expand_string(tmp->value,envp,env_head, &f);
             free(tmp->value);
             tmp->value = expanded;
-            int i = 0;
-            printf("%s\n", tmp->value);
-            while(tmp->value[i])
-            {
-                if(isspace(tmp->value[i]))
-                {
-                    res = export_value(expanded);
-                    if(prev)
-                        prev->next = res;
-                    else
-                        *head = res;
-                    t_token *last = res;
-                    while(last->next)
-                        last = last->next;
-                    last->next = tmp->next;
-                    free(tmp->value);
-                    free(tmp);
-                    tmp =last;
-                }
-                i++;
-            }
+            // int i = 0;
+            // while(tmp->value[i])
+            // {
+            //     if(isspace(tmp->value[i]))
+            //     {
+            //         res = export_value(expanded);
+            //         if(prev)
+            //             prev->next = res;
+            //         else
+            //             *head = res;
+            //         t_token *last = res;
+            //         while(last->next)
+            //             last = last->next;
+            //         last->next = tmp->next;
+            //         free(tmp->value);
+            //         free(tmp);
+            //         tmp =last;
+            //     }
+            //     i++;
+            // }
             if(tmp->value[0] == '\0' && f == 1)
             {
                 t_token *to_free =tmp;
@@ -316,7 +364,7 @@ void expand_token_list(t_token **head,char **envp, t_env *env_head)
                 continue;
             }
         }
-        prev=tmp;
+        prev = tmp;
         tmp = tmp->next;
     }
 }

@@ -40,12 +40,19 @@ void execute_multiple(t_cmd *cmd, t_env **env_copy)
             }
         }
         pid = fork();
-        if (pid == -1)
-        {
-            perror("fork");
-            (*env_copy)->exit_status = 1;
-            return ;
-        }
+		if (pid == -1)
+		{
+    		perror("fork");
+    		if (current->next != NULL)
+    		{
+        		close(pipe_fd[0]);
+        		close(pipe_fd[1]);
+    		}
+    		if (prev_fd != -1)
+        		close(prev_fd);
+    		(*env_copy)->exit_status = 1;
+    		return ;
+		}
         if (pid == 0)
         {
             ft_redirect(current);
@@ -92,3 +99,4 @@ void execute_multiple(t_cmd *cmd, t_env **env_copy)
     free_args(env_arr);
     free_cmd_list(current);
 }
+

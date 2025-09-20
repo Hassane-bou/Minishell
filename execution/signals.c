@@ -54,8 +54,8 @@ void	handle_end(t_env *env)
 {
 	int	ex_status;
 
-	ex_status = env->exit_status;
 	rl_clear_history();
+	ex_status = env->exit_status;
 	free_env(env);
 	write(1, "exit\n", 6);
 	exit(ex_status);
