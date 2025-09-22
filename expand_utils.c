@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 09:58:36 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/22 10:10:13 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/22 11:31:51 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,8 @@ char	*remove_quotes(char *str)
 	int		len;
 	char	*res;
 
+	if(!str)
+		return NULL;
 	i = 0;
 	j = 0;
 	len = ft_strlen(str);
@@ -114,12 +116,25 @@ char	*remove_quotes(char *str)
 	return (res);
 }
 
-t_token	*expand_heredoc(t_token *tmp)
+t_token	*expand_heredoc(t_token *tmp,t_expand *e)
 {
+	char *expand;
 	if (!tmp || !tmp->next)
 		return (NULL);
 	if (!has_quotes(tmp->next->value))
 		tmp->quoted = 1;
+	else
+	{
+		if(tmp->next->value && tmp->next->new_quote !='\'')
+		{
+			expand = expand_string(tmp->next->value,e);
+			if(expand)
+			{
+				free(tmp->next->value);
+				tmp->next->value = expand;
+			}
+		}
+	}
 	tmp->next->value = remove_quotes(tmp->next->value);
 	tmp = tmp->next->next;
 	return (tmp);

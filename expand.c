@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:58:54 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/22 10:20:17 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/22 11:32:47 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void expand_loop_list(t_token **head, t_expand *exp)
 	{
 		exp->f = 0;
 		if (tmp->type == HEREDOC && tmp->next)
-			tmp = expand_heredoc(tmp);
+			tmp = expand_heredoc(tmp,exp);
 		else if ((tmp->type == REDIR_IN || tmp->type == REDIR_OUT
 				|| tmp->type == APPEND) && tmp->next)
 			tmp = expand_redirection(tmp, exp);

@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/22 10:16:50 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/22 11:32:57 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,6 @@ typedef struct s_token
     struct s_token *next;
 }t_token;
 
-
-
-// typedef struct s_heredoc
-// {
-//     char *delimiter;
-//     int quoted;
-// } t_heredoc;
 
 typedef struct s_redriection
 {
@@ -117,7 +110,7 @@ void print_cmd(t_cmd *cmd);
 
 void expand_token_list(t_token **head,char **envp);
 void expand_loop_list(t_token **head, t_expand *exp);
-t_token	*expand_heredoc(t_token *tmp);
+t_token	*expand_heredoc(t_token *tmp,t_expand *e);
 t_token	*expand_redirection(t_token *tmp, t_expand *e);
 t_token	*expand_word(t_token *tmp, t_expand *e, t_token **head, t_token **prev);
 char	*expand_string(char *word, t_expand *ex);
@@ -142,11 +135,11 @@ int ft_isspace(int c);
 char	*ft_strdup( char *s1);
 char	*ft_substr(char *s, int start, int len);
 int ft_strlen(char *s);
-
 int	ft_count(char *str, char c);
 char	**ft_split(char *str, char c);
 char	*allocate_word(char **pr, int i, int j, int k);
 char	*ft_strncpy(char *dst, char *src, int len);
 void print_token(t_token *token);
+
 
 #endif
