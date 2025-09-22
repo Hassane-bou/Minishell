@@ -6,12 +6,13 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 12:38:01 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/19 10:24:20 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/22 09:42:03 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+/*******************************Ceate tokens****************************/
 t_token *cretae_token(char *value, t_type type)
 {
     t_token *token = malloc(sizeof(t_token));
@@ -23,6 +24,8 @@ t_token *cretae_token(char *value, t_type type)
     token->quoted = 0;
     return (token);
 }
+
+/***************************add_tokens_inliste******************************/
 void append_token(t_token **head,t_token *new)
 {
     if(!*head)
@@ -36,66 +39,6 @@ void append_token(t_token **head,t_token *new)
             tmp=tmp->next;
         tmp->next = new;
     }
-}
-/*******************HANDLE APPEND************************/
-int handle_APPEND(char *input,int i,t_token **head)
-{
-    t_token *new_token;
-    char *word;
-    word = ft_substr(input,i,2);
-    new_token = cretae_token(word,APPEND);
-    append_token(head,new_token);
-    free(word);
-    i+=2;
-    return i;
-}
-/*********************HANDLE HERDOC****************************/
-int handle_herdoc(char *input,int i,t_token **head)
-{
-    char *word;
-    t_token *new;
-     word = ft_substr(input,i,2);
-    new = cretae_token(word,HEREDOC);
-    append_token(head,new);
-    free(word);
-    i+=2;
-    return i;
-}
-/*************************HANDLE OUTFILE************************/
-int handle_outfile(char *input,int i,t_token **head)
-{
-    char *word;
-    t_token *new;
-    word = ft_substr(input,i,1);
-    new = cretae_token(word,REDIR_OUT);
-    append_token(head,new);
-    free(word);
-    i++;
-    return(i);
-}
-/*************************HANDLE INFILE************************/
-int handle_intfile(char *input,int i,t_token **head)
-{
-    char *word;
-    t_token *new;
-    word = ft_substr(input,i,1);
-    new = cretae_token(word,REDIR_IN);
-    append_token(head,new);
-    free(word);
-    i++;
-    return(i);
-}
-/*************************HANDLE PIPE************************/
-int handle_pipe(char *input,int i,t_token **head)
-{
-    char *word;
-    t_token *new;
-    word = ft_substr(input,i,1);
-    new = cretae_token(word,PIPE);
-    append_token(head,new);
-    free(word);
-    i++;
-    return(i);
 }
 /***********************handle word**************************/
 int handle_word(char *input, int i, t_token **head)

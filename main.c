@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/19 10:29:04 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/22 10:26:23 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void free_cmd_list(t_cmd *cmd)
 }
 
 void ff()
-{
+{   
     system("leaks parse");
 }
 
@@ -96,8 +96,8 @@ int main(int argc,char **argv,char **envp)
         if(check_all_syntaxe(input))
             continue;
         result = tokenize(input);
+        print_token(result);
         expand_token_list(&result,envp);
-        // print_token(result);
         cmd = parse_cmd(result);
         print_cmd(cmd);
         // free_red_list(cmd->red);
