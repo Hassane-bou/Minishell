@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/20 11:57:28 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/22 10:34:55 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,18 +93,6 @@ char **env_to_arr(t_env *env_head)
 	}
 	env_arr[i] = NULL;
 	return (env_arr);
-}
-
-int count_pipes(t_cmd *cmd)
-{
-	int	i = 1;
-
-	while (cmd->next)
-	{
-		i++;
-		cmd = cmd->next;
-	}
-	return i;
 }
 
 void	print_tamazirt(void)
@@ -258,7 +246,7 @@ int main(int ac, char *av[], char **envp)
 			free(env_head->prompt);
 			free(input);
 			free_args(env_arr);
-			continue;
+			continue ;
 		}
 		res = tokenize(input);
 		expand_token_list(&res, env_arr, env_head);
