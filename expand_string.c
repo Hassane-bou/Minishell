@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 10:08:25 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/22 10:09:48 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/22 10:36:06 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,15 +73,31 @@ char	*append_char(char *res, char c)
 	}
 	return (res);
 }
-
+int handle_dollar(char *word ,t_expand *ex)
+{
+	ex->f = 1;
+	ex->i++;
+	if (word[ex->i] == '?')
+	{
+		ex->res = expand_exit_status(ex->res, ex->g_exit_status);
+		if (!ex->res)
+			return (0);
+		ex->i++;
+	}
+	else
+	{
+		ex->res = expand_var_value(word, &ex->i, ex->res, ex->envp);
+		if (!ex->res)
+			return (0);
+	}
+	return(1);
+}
 
 
 char	*expand_string(char *word, t_expand *ex)
 {
 	initialiser_vars(ex);
-	if (!word)
-		return (ft_strdup(""));
-	if (!ex->res)
+	if (!word || !ex->res)
 		return (ft_strdup(""));
 	while (word[ex->i])
 	{
@@ -89,21 +105,8 @@ char	*expand_string(char *word, t_expand *ex)
 			ex->i++;
 		else if (word[ex->i] == '$' && ex->quote != '\'')
 		{
-			ex->f = 1;
-			ex->i++;
-			if (word[ex->i] == '?')
-			{
-				ex->res = expand_exit_status(ex->res, ex->g_exit_status);
-				if (!ex->res)
-					return (ft_strdup(""));
-				ex->i++;
-			}
-			else
-			{
-				ex->res = expand_var_value(word, &ex->i, ex->res, ex->envp);
-				if (!ex->res)
-					return (ft_strdup(""));
-			}
+			if(!handle_dollar(word,ex))
+				return(ft_strdup(""));
 		}
 		else
 			ex->res = append_char(ex->res, word[ex->i++]);
