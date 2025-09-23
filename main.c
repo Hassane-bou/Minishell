@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/23 11:38:55 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/23 11:44:15 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -269,12 +269,12 @@ int main(int ac, char *av[], char **envp)
 		expand_token_list(&res, env_arr, env_head);
 		cmd = parse_cmd(res);
 		int a = 0;
-		while (res)
-		{
-			if (res->quoted == 1)
-				a = 1;
-			res = res->next;
-		}
+		// while (res)
+		// {
+		// 	if (res->quoted == 1)
+		// 		a = 1;
+		// 	res = res->next;
+		// }
 		// printf("----%d-----\n", a);
 		// debug_print_tokens(res);
 		if (cmd)
