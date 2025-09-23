@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 11:16:20 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/22 11:01:22 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/23 11:30:53 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ char	*expand_string_her(char *word, t_env *env_head)
 	return (res);
 }
 
-void	run_herdoc(t_redriection *tmp, int fd, t_env **env_copy, t_token *res)
+void	run_herdoc(t_redriection *tmp, int fd, t_env **env_copy, int a)
 {
 	char	*line;
 
@@ -134,14 +134,14 @@ void	run_herdoc(t_redriection *tmp, int fd, t_env **env_copy, t_token *res)
 			free(line);
 			break ;
 		}
-		if (!res->quoted)
+		if (!a)
 			line = expand_string_her(line, *env_copy);
 		ft_putendl_fd(line, fd);
 		free(line);
 	}
 }
 
-int	h_chi(t_redriection *tmp, int heredoc_fd[2], t_env **env_copy, t_token *res)
+int	h_chi(t_redriection *tmp, int heredoc_fd[2], t_env **env_copy, int a)
 {
 	int	pid;
 	int	status;
@@ -152,7 +152,7 @@ int	h_chi(t_redriection *tmp, int heredoc_fd[2], t_env **env_copy, t_token *res)
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_IGN);
 		close(heredoc_fd[0]);
-		run_herdoc(tmp, heredoc_fd[1], env_copy, res);
+		run_herdoc(tmp, heredoc_fd[1], env_copy, a);
 		close(heredoc_fd[1]);
 		exit(0);
 	}
@@ -170,7 +170,7 @@ int	h_chi(t_redriection *tmp, int heredoc_fd[2], t_env **env_copy, t_token *res)
 	return (heredoc_fd[0]);
 }
 
-int	ft_herdoc(t_cmd *cmd, t_env **env_copy, t_token *res)
+int	ft_herdoc(t_cmd *cmd, t_env **env_copy, int a)
 {
 	t_redriection	*tmp;
 	int				heredoc_fd[2];
@@ -185,7 +185,7 @@ int	ft_herdoc(t_cmd *cmd, t_env **env_copy, t_token *res)
 				perror("pipe");
 				exit(1);
 			}
-			cmd->herdoc_fd = h_chi(tmp, heredoc_fd, env_copy, res);
+			cmd->herdoc_fd = h_chi(tmp, heredoc_fd, env_copy, a);
 			if (cmd->herdoc_fd == -1)
 				return (-1);
 		}

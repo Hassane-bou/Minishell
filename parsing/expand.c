@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:58:54 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/22 12:18:35 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/23 10:50:25 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	free_split(char **value)
 
 void expand_loop_list(t_token **head, t_expand *exp)
 {
-	t_token *tmp;
+	t_token	*tmp;
 	t_token *prev;
 
 	tmp = *head;
@@ -76,7 +76,10 @@ void expand_loop_list(t_token **head, t_expand *exp)
 	{
 		exp->f = 0;
 		if (tmp->type == HEREDOC && tmp->next)
-			tmp = expand_heredoc(tmp,exp);
+		{
+			tmp = expand_heredoc(tmp, exp);
+			// printf("->->->%d\n", tmp->new_quote);
+		}
 		else if ((tmp->type == REDIR_IN || tmp->type == REDIR_OUT
 				|| tmp->type == APPEND) && tmp->next)
 			tmp = expand_redirection(tmp, exp);
@@ -99,6 +102,5 @@ void	expand_token_list(t_token **head, char **envp, t_env *env_head)
 		return ;
 	exp = &exp_struct;
 	exp->envp = envp;
-	expand_loop_list(head,exp);
-	
+	expand_loop_list(head, exp);
 }

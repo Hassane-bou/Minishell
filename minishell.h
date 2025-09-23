@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/22 12:27:39 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/23 11:32:40 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ typedef enum e_type {
     REDIR_OUT,
     APPEND,
     HEREDOC,
-}t_type;
+} t_type;
 
 
 typedef struct s_token
@@ -56,9 +56,9 @@ typedef struct s_token
     char *value;
     t_type type;
     char new_quote;
-    int quoted;
+	int quoted;
     struct s_token *next;
-}t_token;
+} t_token;
 
 
 typedef struct s_redriection
@@ -80,6 +80,7 @@ typedef struct s_expand
 
 typedef struct s_cmd
 {
+    int     quoted_del;
     char	*cmd;
     char	**args;
     t_redriection *red;
@@ -178,11 +179,11 @@ int		ft_export(char **arr, t_env **env_copy);
 char	*get_env_value(t_env **env_copy, char *key);
 int     is_builtin(t_cmd *cmd);
 int     run_builtin(t_cmd *cmd, t_env **env_copy);
-int     ft_execute(t_cmd *cmd, t_env **env_copy, char *input, t_token *res);
+int     ft_execute(t_cmd *cmd, t_env **env_copy, char *input, int a);
 char    **env_to_arr(t_env *env_head);
 void    execute_multiple(t_cmd *cmd, t_env **env_copy);
 void    child_process(t_cmd *cmd, char **env_arr, t_env **env_copy);
-int     ft_herdoc(t_cmd *cmd, t_env **env_copy, t_token *res);
+int     ft_herdoc(t_cmd *cmd, t_env **env_copy, int a);
 void    cmd_built(t_cmd *cmd, t_env **env_copy, int *status);
 void    setup_signals(void);
 void    handle_end(t_env *env);

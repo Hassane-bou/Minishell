@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 12:50:48 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/22 12:19:36 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/23 11:12:06 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,8 @@ t_cmd	*new_cmd(t_token *token)
 	if (!cmd->args)
 		return (free(cmd), NULL);
 	cmd_add(token, cmd);
+	if (token->quoted == 1)
+		cmd->quoted_del = 1;
 	return (cmd);
 }
 

@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 09:45:30 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/22 12:34:26 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/23 11:12:16 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ int ft_isspace(int c)
 
 void	initilisation(t_cmd *cmd)
 {
+	cmd->quoted_del = 0;
 	cmd->cmd = NULL;
 	cmd->args = NULL;
 	cmd->red = NULL;

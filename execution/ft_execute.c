@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 12:37:38 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/21 13:16:41 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/23 11:31:23 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,14 +71,14 @@ void	execute_one(t_cmd *cmd, t_env **env_copy)
 	free_args(env_arr);
 }
 
-int	ft_execute(t_cmd *cmd, t_env **env_copy, char *input, t_token *res)
+int	ft_execute(t_cmd *cmd, t_env **env_copy, char *input, int a)
 {
 	t_cmd	*current;
 
 	current = cmd;
 	while (current)
 	{
-		if (ft_herdoc(current, env_copy, res) == -1)
+		if (ft_herdoc(current, env_copy, a) == -1)
 			return (0);
 		current = current->next;
 	}
