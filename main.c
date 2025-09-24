@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/23 11:44:15 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/24 09:33:56 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,26 +214,28 @@ void debug_print_tokens(t_token *head)
     }
 }
 
-void print_token(t_token *token)
-{
-    while(token)
-    {
-        printf("-> [%s]",token->value);
-        printf("-- [%d]\n",token->type);
-        printf("-- [%d]\n",token->quoted);
-        token=token->next;
-    }
-}
+// void print_token(t_token *token)
+// {
+//     while(token)
+//     {
+//         printf("-> [%s]",token->value);
+//         printf("-- [%d]\n",token->type);
+//         printf("-- [%d]\n",token->quoted);
+//         token=token->next;
+//     }
+// }
 
 int main(int ac, char *av[], char **envp)
 {
 	char	*input;
 	t_cmd	*cmd;
 	t_token	*res;
+	t_token	*tmp;
 	t_env	*env_head;
 	char	**env_arr;
 	(void)ac;
 	(void)av;
+	int	a = 0;
 
 	cmd = NULL;
 	res = NULL;
@@ -268,25 +270,22 @@ int main(int ac, char *av[], char **envp)
 		res = tokenize(input);
 		expand_token_list(&res, env_arr, env_head);
 		cmd = parse_cmd(res);
-		int a = 0;
-		// while (res)
-		// {
-		// 	if (res->quoted == 1)
-		// 		a = 1;
-		// 	res = res->next;
-		// }
-		// printf("----%d-----\n", a);
-		// debug_print_tokens(res);
+		tmp = res;
+		while (tmp)
+		{
+			if (tmp->type == HEREDOC)
+				a = tmp->quoted;
+			tmp = tmp->next;
+		}
 		if (cmd)
 			ft_execute(cmd, &env_head, input, a);
-		print_token(res);
+		// print_token(res);
 		// print_cmd(cmd);
 		free_cmd_list(cmd);
         free_token_list(res);
-		// free_args(env_arr);
-		// free(input);
+		free_args(env_arr);
+		free(input);
 		free(env_head->prompt);
-		// printf("-->%d\n", env_head->exit_status);
 	}
 	free_env(env_head);
 	free_args(env_arr);

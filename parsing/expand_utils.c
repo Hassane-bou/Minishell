@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 09:58:36 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/23 11:00:19 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/23 13:27:01 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,19 +119,7 @@ t_token	*expand_heredoc(t_token *tmp,t_expand *e)
 	if (!tmp || !tmp->next)
 		return (NULL);
 	if (!has_quotes(tmp->next->value))
-		tmp->next->quoted = 1;
-	else
-	{
-		if(tmp->next->value && tmp->next->new_quote !='\'')
-		{
-			expand = expand_string(tmp->next->value,e);
-			if (expand)
-			{
-				free(tmp->next->value);
-				tmp->next->value = expand;
-			}
-		}
-	}
+		tmp->quoted = 1;
 	tmp->next->value = remove_quotes(tmp->next->value);
 	tmp = tmp->next->next;
 	return (tmp);

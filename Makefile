@@ -7,7 +7,7 @@ SRC = env/shelvl.c main.c env/env_copy.c builtins/ft_env.c builtins/ft_pwd.c \
 	  parsing/expand_string.c builtins/ft_export_utils.c builtins/ft_exit_utils.c execution/ft_redirect.c \
 	  execution/ft_redirect_buil.c execution/child_process.c execution/herdoc.c parsing/parse.c \
 	  parsing/utils_syntaxe.c parsing/expand.c parsing/expand_utils.c \
-	 	parsing/utils_parse.c parsing/utils_tokens.c
+	  parsing/utils_parse.c parsing/utils_tokens.c
 
 CC = cc
 # CFLAGS = -Wall -Wextra -Werror
