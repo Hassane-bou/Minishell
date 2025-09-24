@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/24 10:46:40 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/24 11:33:48 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,8 @@ typedef struct s_expand
     int     g_exit_status;
     int     f;
     char    **envp;
-}t_expand;
+    t_token *tmp;
+} t_expand;
 
 typedef struct s_cmd
 {
@@ -130,7 +131,7 @@ void expand_token_list(t_token **head,char **envp, t_env *env_head);
 void expand_loop_list(t_token **head, t_expand *exp, t_env *env_head);
 t_token	*expand_heredoc(t_token *tmp,t_expand *e);
 t_token	*expand_redirection(t_token *tmp, t_expand *e, t_env *env_head);
-t_token	*expand_word(t_token *tmp, t_expand *e, t_token **head, t_token **prev, t_env *env_head);
+t_token	*expand_word(t_expand *e, t_token **head, t_token **prev, t_env *env_head);
 char	*expand_string(char *word, t_expand *ex, t_env *env_head);
 void	initialiser_vars(t_expand *e);
 int	check_expand_quotes(char c, char *quote);

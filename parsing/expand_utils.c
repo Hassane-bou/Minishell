@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 09:58:36 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/24 11:19:01 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/24 11:32:59 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,29 +148,29 @@ t_token	*expand_redirection(t_token *tmp, t_expand *e, t_env *env_head)
 	return (tmp->next->next);
 }
 
-t_token	*expand_word(t_token *tmp, t_expand *e, t_token **head, t_token **prev, t_env *env_head)
+t_token	*expand_word(t_expand *e, t_token **head, t_token **prev, t_env *env_head)
 {
 	t_token *to_free;
 	char *expand;
 
-	expand = expand_string(tmp->value, e, env_head);
+	expand = expand_string(e->tmp->value, e, env_head);
 	if (expand)
 	{
-		free(tmp->value);
-		tmp->value = expand;
-		if (tmp->value[0] == '\0' && e->f == 1)
+		free(e->tmp->value);
+		e->tmp->value = expand;
+		if (e->tmp->value[0] == '\0' && e->f == 1)
 		{
-			to_free = tmp;
+			to_free = e->tmp;
 			if (*prev)
-				(*prev)->next = tmp->next;
+				(*prev)->next = e->tmp->next;
 			else
-				*head = tmp->next;
-			tmp = tmp->next;
+				*head = e->tmp->next;
+			e->tmp = e->tmp->next;
 			free(to_free->value);
 			free(to_free);
-			return (tmp);
+			return (e->tmp);
 		}
 	}
-	*prev = tmp;
-	return (tmp->next);
+	*prev = e->tmp;
+	return (e->tmp->next);
 }

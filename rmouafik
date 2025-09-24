@@ -1,0 +1,10 @@
+Makefile
+builtins
+env
+execution
+lib
+main.c
+minishell
+minishell.h
+parsing
+rmouafik

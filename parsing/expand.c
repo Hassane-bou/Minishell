@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:58:54 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/24 10:48:43 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/24 11:32:08 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,27 +67,27 @@ void	free_split(char **value)
 
 void expand_loop_list(t_token **head, t_expand *exp, t_env *env_head)
 {
-	t_token	*tmp;
+	// t_token	*tmp;
 	t_token *prev;
 
-	tmp = *head;
+	exp->tmp = *head;
 	prev = NULL;
-	while (tmp)
+	while (exp->tmp)
 	{
 		exp->f = 0;
-		if (tmp->type == HEREDOC && tmp->next)
+		if (exp->tmp->type == HEREDOC && exp->tmp->next)
 		{
-			tmp = expand_heredoc(tmp, exp);
+			exp->tmp = expand_heredoc(exp->tmp, exp);
 		}
-		else if ((tmp->type == REDIR_IN || tmp->type == REDIR_OUT
-				|| tmp->type == APPEND) && tmp->next)
-			tmp = expand_redirection(tmp, exp, env_head);
-		else if (tmp->type == WORD && tmp->value && tmp->new_quote != '\'')
-			tmp = expand_word(tmp, exp, head, &prev, env_head);
+		else if ((exp->tmp->type == REDIR_IN || exp->tmp->type == REDIR_OUT
+				|| exp->tmp->type == APPEND) && exp->tmp->next)
+			exp->tmp = expand_redirection(exp->tmp, exp, env_head);
+		else if (exp->tmp->type == WORD && exp->tmp->value && exp->tmp->new_quote != '\'')
+			exp->tmp = expand_word(exp, head, &prev, env_head);
 		else
 		{
-			prev = tmp;
-			tmp = tmp->next;
+			prev = exp->tmp;
+			exp->tmp = exp->tmp->next;
 		}
 	}
 }
