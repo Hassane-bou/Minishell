@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/24 11:33:48 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/24 11:38:51 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,6 @@ char	*ft_strjoin_char(char *s1, char c);
 char	*remove_quotes(char *str);
 void	free_cmd_list(t_cmd *cmd);
 int		ft_isspace(int c);
-
 
 // -------------- execution ------------------
 

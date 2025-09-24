@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 10:30:19 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/24 11:16:47 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/24 11:42:47 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,16 +88,19 @@ int check_all_syntaxe(char *input)
     if (check_pipe_syntaxe(input))
     {
         ft_putendl_fd("Minishell: syntax error near unexpected token `|'", 2);
+		free(input);
         return 1;
     }
     if (check_quotes(input))
     {
         ft_putendl_fd("Minishell: syntax error near unexpected token `\"'", 2);
+		free(input);
         return 1;
     }
     if (check_redirection_syntaxe(input))
     {
         ft_putendl_fd("Minishell: syntax error near unexpected token `newline'", 2);
+		free(input);
         return 1;
     }
     return 0;
