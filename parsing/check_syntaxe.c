@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 10:30:19 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/22 12:18:43 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/24 11:16:47 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,25 +83,22 @@ int	check_redirection_syntaxe(char *input)
 	return (0);
 }
 
-int	check_all_syntaxe(char *input)
+int check_all_syntaxe(char *input)
 {
-	if (check_pipe_syntaxe(input))
-	{
-		printf("syntax error near unexpected token `|'\n");
-		free(input);
-		return (1);
-	}
-	if (check_quotes(input))
-	{
-		printf("erreur quotes\n");
-		free(input);
-		return (1);
-	}
-	if (check_redirection_syntaxe(input))
-	{
-		printf("syntax error near unexpected token `newline'\n");
-		free(input);
-		return (1);
-	}
-	return (0);
+    if (check_pipe_syntaxe(input))
+    {
+        ft_putendl_fd("Minishell: syntax error near unexpected token `|'", 2);
+        return 1;
+    }
+    if (check_quotes(input))
+    {
+        ft_putendl_fd("Minishell: syntax error near unexpected token `\"'", 2);
+        return 1;
+    }
+    if (check_redirection_syntaxe(input))
+    {
+        ft_putendl_fd("Minishell: syntax error near unexpected token `newline'", 2);
+        return 1;
+    }
+    return 0;
 }

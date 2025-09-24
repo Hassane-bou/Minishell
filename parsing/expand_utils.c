@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 09:58:36 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/24 10:46:18 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/24 11:19:01 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,17 +112,19 @@ char	*remove_quotes(char *str)
 	return (res);
 }
 
-t_token	*expand_heredoc(t_token *tmp,t_expand *e)
+t_token    *expand_heredoc(t_token *tmp,t_expand *e)
 {
-	char *expand;
+    char *old;
 
-	if (!tmp || !tmp->next)
-		return (NULL);
-	if (!has_quotes(tmp->next->value))
-		tmp->quoted = 1;
-	tmp->next->value = remove_quotes(tmp->next->value);
-	tmp = tmp->next->next;
-	return (tmp);
+    if (!tmp || !tmp->next)
+        return (NULL);
+    if (!has_quotes(tmp->next->value))
+        tmp->quoted = 1;
+    old = tmp->next->value;
+    tmp->next->value = remove_quotes(tmp->next->value);
+    free(old);
+    tmp = tmp->next->next;
+    return (tmp);
 }
 
 
