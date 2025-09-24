@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/24 09:33:56 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/24 10:47:07 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	ft_strcmp(char *s1, char *s2)
 
 	i = 0;
 	if (!s1 || !s2)
-		return 1;
+		return (1);
 	while (s1[i] && s2[i])
 	{
 		if ((unsigned char)s1[i] != (unsigned char)s2[i])
@@ -46,8 +46,9 @@ int	is_builtin(t_cmd *cmd)
 		return (1);
 	if (!ft_strcmp(cmd->args[0], "export"))
 		return (1);
-	return 0;
+	return (0);
 }
+
 int	run_builtin(t_cmd *cmd, t_env **env_copy)
 {
 	if (!ft_strcmp(cmd->args[0], "env") || !ft_strcmp(cmd->args[0], "ENV"))
@@ -64,49 +65,50 @@ int	run_builtin(t_cmd *cmd, t_env **env_copy)
 		return (ft_exit(cmd->args, env_copy, cmd));
 	if (!ft_strcmp(cmd->args[0], "export"))
 		return (ft_export(cmd->args, env_copy));
-	return 1;
+	return (1);
 }
 
-char **env_to_arr(t_env *env_head)
+char	**env_to_arr(t_env *env_head)
 {
 	char	**env_arr;
-	t_env	*tmp = env_head;
-	int	i = 0;
-	int size = 0;
+	t_env	*tmp;
+	char	*temp;
+	int (i), (size);
 
+	i = 0;
+	size = 0;
+	tmp = env_head;
 	while (tmp)
 	{
 		size++;
 		tmp = tmp->next;
 	}
-	
 	env_arr = malloc(sizeof(char *) * (size + 1));
 	if (!env_arr)
-		return NULL;
+		return (NULL);
 	while (env_head)
 	{
-		char *tmp = ft_strjoin(env_head->key, "=");
-		env_arr[i] = ft_strjoin(tmp, env_head->value);
-		free(tmp);
+		temp = ft_strjoin(env_head->key, "=");
+		env_arr[i] = ft_strjoin(temp, env_head->value);
+		free(temp);
 		i++;
 		env_head = env_head->next;
 	}
-	env_arr[i] = NULL;
-	return (env_arr);
+	return (env_arr[i] = NULL, env_arr);
 }
 
 void	print_tamazirt(void)
 {
 	printf(GREEN
-	"\n"
-	" ███    ███ ██╗███╗   ██╗██╗███████╗██╗  ██╗ ███████╗██╗     ██╗     \n"
-	" ████  ████ ██║████╗  ██║██║██╔════╝██║  ██║ ██╔════╝██║     ██║     \n"
-	" ██╔████╔██ ██║██╔██╗ ██║██║███████╗███████║ █████╗  ██║     ██║     \n"
-	" ██║╚██╔╝██ ██║██║╚██╗██║██║╚════██║██╔══██║ ██╔══╝  ██║     ██║     \n"
-	" ██║ ╚═╝ ██ ██║██║ ╚████║██║███████║██║  ██║ ███████╗███████╗███████╗\n"
-	" ╚═╝     ╚═ ╚═╝╚═╝  ╚═══╝╚═╝╚══════╝╚═╝  ╚═╝ ╚══════╝╚══════╝╚══════╝\n"
-	"Tamazirt shell 😎 — ready to cook some Amlou\n"
-	RESET "\n");
+		"\n"
+		" ███    ███ ██╗███╗   ██╗██╗███████╗██╗  ██╗ ███████╗██╗     ██╗     \n"
+		" ████  ████ ██║████╗  ██║██║██╔════╝██║  ██║ ██╔════╝██║     ██║     \n"
+		" ██╔████╔██ ██║██╔██╗ ██║██║███████╗███████║ █████╗  ██║     ██║     \n"
+		" ██║╚██╔╝██ ██║██║╚██╗██║██║╚════██║██╔══██║ ██╔══╝  ██║     ██║     \n"
+		" ██║ ╚═╝ ██ ██║██║ ╚████║██║███████║██║  ██║ ███████╗███████╗███████╗\n"
+		" ╚═╝     ╚═ ╚═╝╚═╝  ╚═══╝╚═╝╚══════╝╚═╝  ╚═╝ ╚══════╝╚══════╝╚══════╝\n"
+		"Tamazirt shell 😎 — ready to cook some Amlou\n"
+		RESET "\n");
 }
 
 char *make_prompt(void)
@@ -162,13 +164,13 @@ void free_token_list(t_token *token)
 void free_red_list(t_redriection *red)
 {
     t_redriection *tmp;
+
     while(red)
     {
         tmp = red;
         red = red->next;
         free(tmp->file_or_delim);
         free(tmp);
-		
     }
 }
 
@@ -283,9 +285,11 @@ int main(int ac, char *av[], char **envp)
 		// print_cmd(cmd);
 		free_cmd_list(cmd);
         free_token_list(res);
+        free_token_list(tmp);
 		free_args(env_arr);
 		free(input);
 		free(env_head->prompt);
+		printf("--->>>>%d\n", env_head->exit_status);
 	}
 	free_env(env_head);
 	free_args(env_arr);

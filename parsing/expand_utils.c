@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 09:58:36 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/23 13:27:01 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/24 10:46:18 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ t_token	*expand_heredoc(t_token *tmp,t_expand *e)
 }
 
 
-t_token	*expand_redirection(t_token *tmp, t_expand *e)
+t_token	*expand_redirection(t_token *tmp, t_expand *e, t_env *env_head)
 {
 	char	*expanded;
 
@@ -134,7 +134,7 @@ t_token	*expand_redirection(t_token *tmp, t_expand *e)
 		return (NULL);
 	if (tmp->next->value && tmp->next->new_quote != '\'')
 	{
-		expanded = expand_string(tmp->next->value, e);
+		expanded = expand_string(tmp->next->value, e, env_head);
 		if (expanded)
 		{
 			free(tmp->next->value);
@@ -146,12 +146,12 @@ t_token	*expand_redirection(t_token *tmp, t_expand *e)
 	return (tmp->next->next);
 }
 
-t_token	*expand_word(t_token *tmp, t_expand *e, t_token **head, t_token **prev)
+t_token	*expand_word(t_token *tmp, t_expand *e, t_token **head, t_token **prev, t_env *env_head)
 {
 	t_token *to_free;
 	char *expand;
 
-	expand = expand_string(tmp->value, e);
+	expand = expand_string(tmp->value, e, env_head);
 	if (expand)
 	{
 		free(tmp->value);

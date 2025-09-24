@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/23 13:10:41 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/24 10:46:40 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,11 +127,11 @@ void print_cmd(t_cmd *cmd);
 /******************expand_token_list**********************************************/
 
 void expand_token_list(t_token **head,char **envp, t_env *env_head);
-void expand_loop_list(t_token **head, t_expand *exp);
+void expand_loop_list(t_token **head, t_expand *exp, t_env *env_head);
 t_token	*expand_heredoc(t_token *tmp,t_expand *e);
-t_token	*expand_redirection(t_token *tmp, t_expand *e);
-t_token	*expand_word(t_token *tmp, t_expand *e, t_token **head, t_token **prev);
-char	*expand_string(char *word, t_expand *ex);
+t_token	*expand_redirection(t_token *tmp, t_expand *e, t_env *env_head);
+t_token	*expand_word(t_token *tmp, t_expand *e, t_token **head, t_token **prev, t_env *env_head);
+char	*expand_string(char *word, t_expand *ex, t_env *env_head);
 void	initialiser_vars(t_expand *e);
 int	check_expand_quotes(char c, char *quote);
 char	*expand_exit_status(char *res, int g_exit_status);

@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 10:08:25 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/22 12:32:13 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/24 10:47:26 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ char	*expand_exit_status(char *res, int g_exit_status)
 	char	*str;
 	char	*tmp;
 
-	g_exit_status = 0;
 	str = ft_itoa(g_exit_status);
 	tmp = ft_strjoin(res, str);
 	free(res);
@@ -73,13 +72,14 @@ char	*append_char(char *res, char c)
 	}
 	return (res);
 }
-int handle_dollar(char *word ,t_expand *ex)
+
+int handle_dollar(char *word ,t_expand *ex, t_env *env_head)
 {
 	ex->f = 1;
 	ex->i++;
 	if (word[ex->i] == '?')
 	{
-		ex->res = expand_exit_status(ex->res, ex->g_exit_status);
+		ex->res = expand_exit_status(ex->res, env_head->exit_status);
 		if (!ex->res)
 			return (0);
 		ex->i++;
@@ -93,8 +93,7 @@ int handle_dollar(char *word ,t_expand *ex)
 	return(1);
 }
 
-
-char	*expand_string(char *word, t_expand *ex)
+char	*expand_string(char *word, t_expand *ex, t_env *env_head)
 {
 	initialiser_vars(ex);
 	if (!word || !ex->res)
@@ -105,7 +104,7 @@ char	*expand_string(char *word, t_expand *ex)
 			ex->i++;
 		else if (word[ex->i] == '$' && ex->quote != '\'')
 		{
-			if(!handle_dollar(word,ex))
+			if(!handle_dollar(word,ex, env_head))
 				return(ft_strdup(""));
 		}
 		else
