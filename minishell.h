@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/27 11:46:43 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/27 12:18:35 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ t_cmd			*parse_cmd(t_token *token);
 void			expand_token_list(t_token **head, char **envp, t_env *env_head);
 void			expand_loop_list(t_token **head,
 					t_expand *exp, t_env *env_head);
-t_token			*expand_heredoc(t_token *tmp, t_expand *e);
+t_token			*expand_heredoc(t_token *tmp);
 t_token			*expand_redirection(t_token *tmp, t_expand *e, t_env *env_head);
 t_token			*expand_word(t_expand *e,
 					t_token **head, t_token **prev, t_env *env_head);
@@ -180,14 +180,14 @@ int				ft_env(t_env *env_copy);
 int				ft_pwd(t_env *env_copy);
 int				ft_cd(char *path, t_env **env_copy);
 int				ft_strcmp(char *s1, char *s2);
-int				ft_echo(char **arr, t_env *env_copy);
+int				ft_echo(char **arr);
 int				ft_unset(char **arr, t_env **env_copy);
 int				ft_exit(char **arr, t_env **env_copy, t_cmd *cmd);
 int				ft_export(char **arr, t_env **env_copy);
 int				is_builtin(t_cmd *cmd);
 char			*get_env_value(t_env **env_copy, char *key);
 int				run_builtin(t_cmd *cmd, t_env **env_copy);
-int				ft_execute(t_cmd *cmd, t_env **env_copy, char *input, int a);
+int				ft_execute(t_cmd *cmd, t_env **env_copy, int a);
 char			**env_to_arr(t_env *env_head);
 void			execute_multiple(t_cmd *cmd, t_env **env_copy);
 void			child_process(t_cmd *cmd, char **env_arr, t_env **env_copy);

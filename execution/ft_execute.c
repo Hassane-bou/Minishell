@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/28 12:37:38 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/24 09:15:25 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/27 12:22:36 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,18 @@ void	exec_helper(t_cmd *cmd, t_env **env_copy, int status, char **env_arr)
 	free_args(env_arr);
 }
 
+void	signal_func(void)
+{
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+}
+
 void	execute_one(t_cmd *cmd, t_env **env_copy)
 {
 	char	**env_arr;
 
 	int (pid), (status);
+	status = 0;
 	env_arr = env_to_arr(*env_copy);
 	if (is_builtin(cmd))
 	{
@@ -56,8 +63,7 @@ void	execute_one(t_cmd *cmd, t_env **env_copy)
 	pid = fork();
 	if (pid == 0)
 		child_process(cmd, env_arr, env_copy);
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
+	signal_func();
 	waitpid(pid, &status, 0);
 	setup_signals();
 	if (WIFEXITED(status))
@@ -71,7 +77,7 @@ void	execute_one(t_cmd *cmd, t_env **env_copy)
 	free_args(env_arr);
 }
 
-int	ft_execute(t_cmd *cmd, t_env **env_copy, char *input, int a)
+int	ft_execute(t_cmd *cmd, t_env **env_copy, int a)
 {
 	t_cmd	*current;
 

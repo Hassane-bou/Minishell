@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 11:02:54 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/24 13:11:16 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/27 12:07:41 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ static int	cd_oldpwd(char *path, t_env **env_copy, char **pwd)
 
 int	ft_cd(char *path, t_env **env_copy)
 {
-	char *(old_path), *(pwd), *(home), *(cwd);
+	char *(pwd), *(home), *(cwd);
 	pwd = getcwd(NULL, 0);
 	home = get_env_value(env_copy, "HOME");
 	if (path == NULL || !ft_strcmp(path, "~"))

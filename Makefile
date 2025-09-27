@@ -11,19 +11,18 @@ SRC = env/shelvl.c main.c env/env_copy.c builtins/ft_env.c builtins/ft_pwd.c \
 	  env/prompt.c builtins/is_builtins.c parsing/expand_utils1.c parsing/expand_utils2.c
 
 CC = cc
-# CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror
 OBJ = $(SRC:.c=.o)
 LIB = lib/libft.a
 
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) $(OBJ) $(LIB) -lreadline -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) $(LIB) -lreadline -o $(NAME)
 	@echo "\033[1;32m✔️  $(NAME) built successfully!\033[0m"
-	@make clean
 
 %.o: %.c minishell.h
-	@$(CC) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	@rm -f $(OBJ)

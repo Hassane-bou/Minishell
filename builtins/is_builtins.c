@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 11:50:42 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/25 11:51:46 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/27 12:08:56 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ int	run_builtin(t_cmd *cmd, t_env **env_copy)
 	if (!ft_strcmp(cmd->args[0], "cd"))
 		return (ft_cd(cmd->args[1], env_copy));
 	if (!ft_strcmp(cmd->args[0], "echo") || !ft_strcmp(cmd->args[0], "ECHO"))
-		return (ft_echo(cmd->args, *env_copy));
+		return (ft_echo(cmd->args));
 	if (!ft_strcmp(cmd->args[0], "unset"))
 		return (ft_unset(cmd->args, env_copy));
 	if (!ft_strcmp(cmd->args[0], "exit"))

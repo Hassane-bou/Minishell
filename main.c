@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 10:35:46 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/27 09:34:47 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/27 12:10:20 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	process_cmd(t_help *var, t_env *env_head, char **env_arr)
 		var->temp = var->temp->next;
 	}
 	if (cmd)
-		ft_execute(cmd, &env_head, var->input, var->quoted);
+		ft_execute(cmd, &env_head, var->quoted);
 	free_cmd_list(cmd);
 	free_token_list(res);
 	free_token_list(var->temp);

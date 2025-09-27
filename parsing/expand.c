@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:58:54 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/24 15:39:46 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/27 12:18:52 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	expand_loop_list(t_token **head, t_expand *exp, t_env *env_head)
 	{
 		exp->f = 0;
 		if (exp->tmp->type == HEREDOC && exp->tmp->next)
-			exp->tmp = expand_heredoc(exp->tmp, exp);
+			exp->tmp = expand_heredoc(exp->tmp);
 		else if ((exp->tmp->type == REDIR_IN || exp->tmp->type == REDIR_OUT
 				|| exp->tmp->type == APPEND) && exp->tmp->next)
 			exp->tmp = expand_redirection(exp->tmp, exp, env_head);

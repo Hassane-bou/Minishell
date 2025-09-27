@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 10:38:14 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/24 11:27:09 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/27 12:17:54 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@ char	**get_path(char **envp, char *cmd)
 {
 	char	*str;
 	char	**arr;
-	char	*tmp;
 	int		i;
 	int		j;
 
@@ -97,7 +96,6 @@ void	child_helper(t_env **env_copy, t_cmd *cmd, char **env_arr, char **paths)
 
 void	child_process(t_cmd *cmd, char **env_arr, t_env **env_copy)
 {
-	char	*exact_path;
 	char	**paths;
 
 	signal(SIGINT, SIG_DFL);

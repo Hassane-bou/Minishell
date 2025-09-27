@@ -6,13 +6,13 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 11:02:51 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/07/02 10:53:20 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/27 12:07:54 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	ft_echo(char **arr, t_env *env_copy)
+int	ft_echo(char **arr)
 {
 	int	i;
 

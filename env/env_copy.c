@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 10:52:52 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/18 09:59:14 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/27 12:07:01 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ void	env_copy(char **envp, t_env	**env_head)
 
 	i = 0;
 	*env_head = NULL;
+	env_node = NULL;
 	if (!envp || !*envp)
 		empty_env(env_node, env_head);
 	while (envp[i])

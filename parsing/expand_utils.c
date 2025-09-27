@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expand_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 09:58:36 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/25 13:09:03 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/27 12:18:58 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-t_token	*expand_heredoc(t_token *tmp, t_expand *e)
+t_token	*expand_heredoc(t_token *tmp)
 {
 	char	*old;
 
@@ -52,7 +52,6 @@ t_token	*expand_word(t_expand *e, t_token **head, t_token **prev,
 {
 	char	*expand;
 	char	**words;
-	int		i;
 
 	expand = expand_string(e->tmp->value, e, env_head);
 	if (!expand)

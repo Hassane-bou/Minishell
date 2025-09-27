@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_string.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 10:08:25 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/25 13:14:07 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/27 12:19:54 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ char	*expand_var_value(char *word, t_expand *ex)
 
 	start = 0;
 	start = ex->i;
+	tmp2 = NULL;
+	tmp = NULL;
 	while (word[ex->i] && is_valid_env_char(word[ex->i]))
 		(ex->i)++;
 	var_name = ft_substr(word, start, ex->i - start);
@@ -48,8 +50,7 @@ char	*expand_var_value(char *word, t_expand *ex)
 	}
 	else if (ex->quote == '\'')
 		expand_helper(tmp, tmp2, ex, var_name);
-	free(var_name);
-	return (ex->res);
+	return (free(var_name), ex->res);
 }
 
 char	*append_char(char *res, char c)
