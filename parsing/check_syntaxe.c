@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_syntaxe.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 10:30:19 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/25 09:26:41 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/27 12:54:37 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,17 +87,20 @@ int	check_all_syntaxe(char *input)
 	if (check_pipe_syntaxe(input))
 	{
 		ft_putendl_fd("Minishell: syntax error near unexpected token `|'", 2);
+		free(input);
 		return (1);
 	}
 	if (check_quotes(input))
 	{
 		ft_putendl_fd("Minishell: syntax error near unexpected token `\"'", 2);
+		free(input);
 		return (1);
 	}
 	if (check_redirection_syntaxe(input))
 	{
 		ft_putendl_fd("Minishell: syntax error near unexpected token `newline'",
 			2);
+		free(input);
 		return (1);
 	}
 	return (0);
