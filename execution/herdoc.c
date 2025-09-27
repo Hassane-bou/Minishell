@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/21 11:16:20 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/27 10:36:14 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/27 11:05:32 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,8 @@ int	ft_herdoc(t_cmd *cmd, t_env **env_copy, int a)
 				perror("pipe");
 				exit(1);
 			}
+			if (cmd->herdoc_fd)
+				close(cmd->herdoc_fd);
 			cmd->herdoc_fd = h_chi(tmp, heredoc_fd, env_copy, a);
 			if (cmd->herdoc_fd == -1)
 				return (-1);
