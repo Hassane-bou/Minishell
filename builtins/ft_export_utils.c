@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 13:09:38 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/22 12:01:58 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/24 13:28:45 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,13 @@ void	print_error(char *str)
 	ft_putstr_fd("': not a valid identifier\n", 2);
 }
 
-void	key_value_alloc(t_help var, char *str)
+void	key_value_alloc(t_help *var, char *str)
 {
-	free(var.key);
-	var.ptr_value = ft_strchr(str, '=');
-	var.value = var.ptr_value + 1;
-	var.pos = var.ptr_value - str;
-	var.key = ft_substr(str, 0, var.pos);
+	var->ptr_value = ft_strchr(str, '=');
+	var->value = var->ptr_value + 1;
+	var->pos = var->ptr_value - str;
+	free(var->key);
+	var->key = ft_substr(str, 0, var->pos);
 }
 
 int	check_exp(char *str, t_env **env_copy)

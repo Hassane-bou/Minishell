@@ -3,14 +3,43 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:58:54 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/24 11:32:08 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/24 15:39:46 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+int	has_quotes(char *s)
+{
+	int	i;
+
+	if (!s)
+		return (1);
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == '\'' || s[i] == '"')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+int	check_expand_quotes(char c, char *quote)
+{
+	if (c == '\'' && *quote == 0)
+		return (*quote = '\'', 1);
+	else if (c == '\'' && *quote == '\'')
+		return (*quote = 0, 1);
+	else if (c == '"' && *quote == 0)
+		return (*quote = '"', 1);
+	else if (c == '"' && *quote == '"')
+		return (*quote = 0, 1);
+	return (0);
+}
 
 void	free_split(char **value)
 {
@@ -25,50 +54,9 @@ void	free_split(char **value)
 	free(value);
 }
 
-
-// t_token	*export_value(char *export)
-// {
-// 	t_token	*new_token;
-// 	t_token	*head;
-// 	t_token	*tmp;
-// 	char	**value;
-// 	int		i;
-
-// 	i = 0;
-// 	value = ft_split(export, ' ');
-// 	if (!value || !value[0])
-// 	{
-// 		free_split(value);
-// 		return (NULL);
-// 	}
-// 	tmp = cretae_token(value[i], WORD);
-// 	if (!tmp)
-// 	{
-// 		free_split(value);
-// 		return (NULL);
-// 	}
-// 	head = tmp;
-// 	i++;
-// 	while (value[i])
-// 	{
-// 		new_token = cretae_token(value[i], WORD);
-// 		if (!new_token)
-// 		{
-// 			free_split(value);
-// 			return (NULL);
-// 		}
-// 		tmp->next = new_token;
-// 		tmp = tmp->next;
-// 		i++;
-// 	}
-// 	free_split(value);
-// 	return (head);
-// }
-
-void expand_loop_list(t_token **head, t_expand *exp, t_env *env_head)
+void	expand_loop_list(t_token **head, t_expand *exp, t_env *env_head)
 {
-	// t_token	*tmp;
-	t_token *prev;
+	t_token	*prev;
 
 	exp->tmp = *head;
 	prev = NULL;
@@ -76,13 +64,11 @@ void expand_loop_list(t_token **head, t_expand *exp, t_env *env_head)
 	{
 		exp->f = 0;
 		if (exp->tmp->type == HEREDOC && exp->tmp->next)
-		{
 			exp->tmp = expand_heredoc(exp->tmp, exp);
-		}
 		else if ((exp->tmp->type == REDIR_IN || exp->tmp->type == REDIR_OUT
 				|| exp->tmp->type == APPEND) && exp->tmp->next)
 			exp->tmp = expand_redirection(exp->tmp, exp, env_head);
-		else if (exp->tmp->type == WORD && exp->tmp->value && exp->tmp->new_quote != '\'')
+		else if (exp->tmp->type == WORD && exp->tmp->value)
 			exp->tmp = expand_word(exp, head, &prev, env_head);
 		else
 		{
@@ -100,6 +86,6 @@ void	expand_token_list(t_token **head, char **envp, t_env *env_head)
 	if (!head || !*head)
 		return ;
 	exp = &exp_struct;
-	exp->envp = envp;
+	exp->envp = envp; 
 	expand_loop_list(head, exp, env_head);
 }

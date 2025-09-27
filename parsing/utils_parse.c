@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   utils_parse.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 09:45:30 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/23 11:12:16 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/24 11:45:15 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int ft_isspace(int c)
+int	ft_isspace(int c)
 {
-    return(c == 32  || (c >= 9 && c <= 13));
+	return (c == 32 || (c >= 9 && c <= 13));
 }
 
 void	initilisation(t_cmd *cmd)

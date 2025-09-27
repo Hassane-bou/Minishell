@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/24 11:38:51 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/27 10:51:07 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ typedef enum e_type {
     APPEND,
     HEREDOC,
 } t_type;
-
 
 typedef struct s_token
 {
@@ -102,9 +101,9 @@ int check_all_syntaxe(char *input);
 
 /***************create tokens******************************/
 
-t_token *cretae_token(char *value, t_type type);
+t_token *create_token(char *value, t_type type);
 void append_token(t_token **head,t_token *new);
-int handle_APPEND(char *input,int i,t_token **head);
+int handle_append(char *input,int i,t_token **head);
 int handle_herdoc(char *input,int i,t_token **head);
 int handle_outfile(char *input,int i,t_token **head);
 int handle_intfile(char *input,int i,t_token **head);
@@ -136,7 +135,7 @@ char	*expand_string(char *word, t_expand *ex, t_env *env_head);
 void	initialiser_vars(t_expand *e);
 int	check_expand_quotes(char c, char *quote);
 char	*expand_exit_status(char *res, int g_exit_status);
-char	*expand_var_value(char *word, int *i, char *res, char **envp);
+char	*expand_var_value(char *word,  t_expand *ex);
 char	*append_char(char *res, char c);
 int	has_quotes(char *s);
 int	check_expand_quotes(char c, char *quote);
@@ -146,6 +145,10 @@ char	*ft_strjoin_char(char *s1, char c);
 char	*remove_quotes(char *str);
 void	free_cmd_list(t_cmd *cmd);
 int		ft_isspace(int c);
+void	free_splited_token(char **word);
+t_token	*remove_empty_token(t_expand *e, t_token **head, t_token **prev);
+void	split_tokens(t_expand *e, char **words);
+void	expand_helper(char *tmp, char *tmp2, t_expand *ex, char *var_name);
 
 // -------------- execution ------------------
 
@@ -155,50 +158,61 @@ typedef struct s_help
 	int		start;
 	char	*key;
 	char	*ptr_value;
-    char    *value;
-    int     pos;
-    int     status;
-    int     prev_fd;
-    int     pid;
+	char	*value;
+	char	*tmp;
+	int		pos;
+	int		status;
+	int		prev_fd;
+	int		pid;
 	int		pipe_fd[2];
-} t_help;
+	char	*input;
+	int		quoted;
+	t_token	*temp;
+}	t_help;
 
 
-int     ft_redirect_buil(t_cmd *cmd);
 void	env_add_back(t_env **env_list, t_env *new_node);
 void	env_copy(char **envp, t_env	**env_head);
 void	ft_update_shelvl(t_env *env_list);
-int 	ft_env(t_env *env_copy);
+int		ft_redirect_buil(t_cmd *cmd);
+int		ft_env(t_env *env_copy);
 int		ft_pwd(t_env *env_copy);
 int		ft_cd(char *path, t_env **env_copy);
 int		ft_strcmp(char *s1, char *s2);
 int		ft_echo(char **arr, t_env *env_copy);
 int		ft_unset(char **arr, t_env **env_copy);
-int 	ft_exit(char **arr, t_env **env_copy, t_cmd *cmd);
+int		ft_exit(char **arr, t_env **env_copy, t_cmd *cmd);
 int		ft_export(char **arr, t_env **env_copy);
+int		is_builtin(t_cmd *cmd);
 char	*get_env_value(t_env **env_copy, char *key);
-int     is_builtin(t_cmd *cmd);
-int     run_builtin(t_cmd *cmd, t_env **env_copy);
-int     ft_execute(t_cmd *cmd, t_env **env_copy, char *input, int a);
-char    **env_to_arr(t_env *env_head);
-void    execute_multiple(t_cmd *cmd, t_env **env_copy);
-void    child_process(t_cmd *cmd, char **env_arr, t_env **env_copy);
-int     ft_herdoc(t_cmd *cmd, t_env **env_copy, int a);
-void    cmd_built(t_cmd *cmd, t_env **env_copy, int *status);
-void    setup_signals(void);
-void    handle_end(t_env *env);
-void    signal_handler(int sig);
-void    setup_signals(void);
+int		run_builtin(t_cmd *cmd, t_env **env_copy);
+int		ft_execute(t_cmd *cmd, t_env **env_copy, char *input, int a);
+char	**env_to_arr(t_env *env_head);
+void	execute_multiple(t_cmd *cmd, t_env **env_copy);
+void	child_process(t_cmd *cmd, char **env_arr, t_env **env_copy);
+int		ft_herdoc(t_cmd *cmd, t_env **env_copy, int a);
+void	cmd_built(t_cmd *cmd, t_env **env_copy, int *status);
+void	setup_signals(void);
+void	handle_end(t_env *env);
+void	signal_handler(int sig);
+void	setup_signals(void);
 void	free_args(char **args);
-void    ft_redirect(t_cmd *cmd);
-void    free_env(t_env *head);
+void	ft_redirect(t_cmd *cmd);
+void	free_env(t_env *head);
 void	print_error(char *str);
-void	key_value_alloc(t_help var, char *str);
-int     check_long(const char *str);
+void	key_value_alloc(t_help *var, char *str);
+int		check_long(const char *str);
 void	open_append(int *fd, t_redriection **tmp);
 int		check_exp(char *str, t_env **env_copy);
 void	print_export(t_env **env_copy);
+char	*make_prompt(void);
+void	print_tamazirt(void);
+void	free_cmd_list(t_cmd *cmd);
+void	free_args(char **args);
+void	free_red_list(t_redriection *red);
+void	free_cmd_list(t_cmd *cmd);
+void	free_token_list(t_token *token);
 
-#define ERROR_ARG "minishell: exit: too many arguments\n"
+# define ERROR_ARG "minishell: exit: too many arguments\n"
 
 #endif

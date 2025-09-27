@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 12:03:24 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/17 14:35:32 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/27 09:35:28 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*ft_strdup(const char *s1)
 	char	*s2;
 
 	if (!s1)
-		return NULL;
+		return (NULL);
 	s2 = (char *)malloc(sizeof(char) * (ft_strlen(s1) + 1));
 	if (!s2)
 		return (NULL);

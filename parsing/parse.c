@@ -3,42 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 12:50:48 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/23 11:12:06 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/24 12:00:19 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-void	print_cmd(t_cmd *cmd)
-{
-	int				i;
-	t_redriection	*red;
-
-	while (cmd)
-	{
-		i = 0;
-		printf("cmd: %s\n", cmd->cmd);
-		if (cmd->args)
-		{
-			while (cmd->args[i])
-			{
-				printf("args[%d]: %s\n", i, cmd->args[i]);
-				i++;
-			}
-		}
-		red = cmd->red;
-		while (red)
-		{
-			printf("redirection: type = %d file=%s\n", red->type,
-				red->file_or_delim);
-			red = red->next;
-		}
-		cmd = cmd->next;
-	}
-}
 
 t_cmd	*add_back_cmd(t_cmd **cmd, t_cmd *new_cmd)
 {

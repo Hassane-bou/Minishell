@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 11:03:15 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/22 12:52:03 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/25 11:47:19 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,12 +102,12 @@ int	ft_export(char **arr, t_env **env_copy)
 		if (check_args(var.key) || arr[var.i] == NULL)
 			return (print_error(arr[var.i]), 1);
 		if (is_contain_equal(arr[var.i]))
-			key_value_alloc(var, arr[var.i]);
+			key_value_alloc(&var, arr[var.i]);
 		else
 		{
 			free(var.key);
 			var.key = ft_strdup(arr[var.i]);
-			var.value = ft_strdup(get_env_value(env_copy, var.key));
+			var.value = get_env_value(env_copy, var.key);
 		}
 		add_update_env(env_copy, var.key, var.value);
 		free(var.key);

@@ -3,23 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   expand_string.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 10:08:25 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/24 10:47:26 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/25 13:14:07 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-void	initialiser_vars(t_expand *e)
-{
-	e->res = ft_strdup("");
-	e->i = 0;
-	e->g_exit_status = 0;
-	e->quote = 0;
-	e->f = 0;
-}
 
 char	*expand_exit_status(char *res, int g_exit_status)
 {
@@ -33,29 +24,32 @@ char	*expand_exit_status(char *res, int g_exit_status)
 	return (tmp);
 }
 
-char	*expand_var_value(char *word, int *i, char *res, char **envp)
+char	*expand_var_value(char *word, t_expand *ex)
 {
 	int		start;
 	char	*value;
 	char	*var_name;
 	char	*tmp;
+	char	*tmp2;
 
 	start = 0;
-	start = *i;
-	while (word[*i] && is_valid_env_char(word[*i]))
-		(*i)++;
-	var_name = ft_substr(word, start, *i - start);
+	start = ex->i;
+	while (word[ex->i] && is_valid_env_char(word[ex->i]))
+		(ex->i)++;
+	var_name = ft_substr(word, start, ex->i - start);
 	if (!var_name)
-		return (res);
-	value = get_env_value_par(var_name, envp);
-	if (value)
+		return (ex->res);
+	value = get_env_value_par(var_name, ex->envp);
+	if (value && ex->quote != '\'')
 	{
-		tmp = ft_strjoin(res, value);
-		free(res);
-		res = tmp;
+		tmp = ft_strjoin(ex->res, value);
+		free(ex->res);
+		ex->res = tmp;
 	}
+	else if (ex->quote == '\'')
+		expand_helper(tmp, tmp2, ex, var_name);
 	free(var_name);
-	return (res);
+	return (ex->res);
 }
 
 char	*append_char(char *res, char c)
@@ -73,11 +67,11 @@ char	*append_char(char *res, char c)
 	return (res);
 }
 
-int handle_dollar(char *word ,t_expand *ex, t_env *env_head)
+int	handle_dollar(char *word, t_expand *ex, t_env *env_head)
 {
 	ex->f = 1;
 	ex->i++;
-	if (word[ex->i] == '?')
+	if (word[ex->i] == '?' && ex->quote != '\'')
 	{
 		ex->res = expand_exit_status(ex->res, env_head->exit_status);
 		if (!ex->res)
@@ -86,11 +80,11 @@ int handle_dollar(char *word ,t_expand *ex, t_env *env_head)
 	}
 	else
 	{
-		ex->res = expand_var_value(word, &ex->i, ex->res, ex->envp);
+		ex->res = expand_var_value(word, ex);
 		if (!ex->res)
 			return (0);
 	}
-	return(1);
+	return (1);
 }
 
 char	*expand_string(char *word, t_expand *ex, t_env *env_head)
@@ -102,10 +96,10 @@ char	*expand_string(char *word, t_expand *ex, t_env *env_head)
 	{
 		if (check_expand_quotes(word[ex->i], &ex->quote))
 			ex->i++;
-		else if (word[ex->i] == '$' && ex->quote != '\'')
+		else if (word[ex->i] == '$')
 		{
-			if(!handle_dollar(word,ex, env_head))
-				return(ft_strdup(""));
+			if (!handle_dollar(word, ex, env_head))
+				return (ft_strdup(""));
 		}
 		else
 			ex->res = append_char(ex->res, word[ex->i++]);
