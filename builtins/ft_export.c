@@ -6,49 +6,11 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 11:03:15 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/25 11:47:19 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/28 14:33:34 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-int	is_contain_equal(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '=')
-			return (1);
-		i++;
-	}
-	return (0);
-}
-
-void	add_update_env(t_env **env_copy, char *key, char *value)
-{
-	t_env	*head;
-	t_env	*new_node;
-
-	head = *env_copy;
-	while (head)
-	{
-		if (!ft_strcmp(head->key, key))
-		{
-			free(head->value);
-			head->value = ft_strdup(value);
-			return ;
-		}
-		head = head->next;
-	}
-	new_node = *env_copy;
-	new_node = malloc(sizeof(t_env));
-	new_node->key = ft_strdup(key);
-	new_node->value = ft_strdup(value);
-	new_node->next = NULL;
-	env_add_back(env_copy, new_node);
-}
 
 void	print_export(t_env **env_copy)
 {
@@ -86,31 +48,53 @@ int	check_args(char *str)
 	return (0);
 }
 
-int	ft_export(char **arr, t_env **env_copy)
+int	handle_export_value(t_help *var, char *item, t_env **env_copy)
+{
+	if (is_contain_equal(item))
+		key_value_alloc(var, item);
+	else
+	{
+		free(var->key);
+		var->key = ft_strdup(item);
+		var->value = get_env_value(env_copy, var->key);
+	}
+	return (0);
+}
+
+int	process_export_item(char *item, t_env **env_copy)
 {
 	t_help	var;
 
-	var.i = 0;
-	if (check_exp(arr[1], env_copy) == 1)
-		return (1);
-	while (arr[++var.i])
+	var.export = 0;
+	if (!item || item[0] == '\0')
+		return (print_error(item), 1);
+	var.ptr_value = ft_strchr(item, '=');
+	var.value = var.ptr_value + 1;
+	var.pos = var.ptr_value - item;
+	var.key = ft_substr(item, 0, var.pos);
+	if (check_args(var.key))
 	{
-		var.ptr_value = ft_strchr(arr[var.i], '=');
-		var.value = var.ptr_value + 1;
-		var.pos = var.ptr_value - arr[var.i];
-		var.key = ft_substr(arr[var.i], 0, var.pos);
-		if (check_args(var.key) || arr[var.i] == NULL)
-			return (print_error(arr[var.i]), 1);
-		if (is_contain_equal(arr[var.i]))
-			key_value_alloc(&var, arr[var.i]);
-		else
-		{
-			free(var.key);
-			var.key = ft_strdup(arr[var.i]);
-			var.value = get_env_value(env_copy, var.key);
-		}
-		add_update_env(env_copy, var.key, var.value);
-		free(var.key);
+		print_error(item);
+		var.export = 1;
 	}
-	return (0);
+	handle_export_value(&var, item, env_copy);
+	if (!var.export)
+		add_update_env(env_copy, var.key, var.value);
+	free(var.key);
+	return (var.export);
+}
+
+int	ft_export(char **arr, t_env **env_copy)
+{
+	int	i;
+	int	status;
+
+	if (!arr[1])
+		return (print_export(env_copy), 0);
+	i = 0;
+	status = 0;
+	while (arr[++i])
+		if (process_export_item(arr[i], env_copy))
+			status = 1;
+	return (status);
 }

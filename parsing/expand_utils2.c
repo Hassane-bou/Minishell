@@ -6,7 +6,7 @@
 /*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/25 13:07:58 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/25 13:13:50 by haboucha         ###   ########.fr       */
+/*   Updated: 2025/09/28 12:20:35 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,11 @@ void	free_splited_token(char **word)
 	int	i;
 
 	i = 0;
-	while (word[i++])
+	while (word[i])
+	{
 		free(word[i]);
+		i++;
+	}
 	free(word);
 }
 

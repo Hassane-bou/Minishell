@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/15 13:09:38 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/09/24 13:28:45 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/28 14:29:05 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,40 @@ void	key_value_alloc(t_help *var, char *str)
 	var->key = ft_substr(str, 0, var->pos);
 }
 
-int	check_exp(char *str, t_env **env_copy)
+int	is_contain_equal(char *str)
 {
-	if (str && str[0] == '\0')
-		return (print_error(str), 1);
-	if (str == NULL)
-		print_export(env_copy);
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '=')
+			return (1);
+		i++;
+	}
 	return (0);
+}
+
+void	add_update_env(t_env **env_copy, char *key, char *value)
+{
+	t_env	*head;
+	t_env	*new_node;
+
+	head = *env_copy;
+	while (head)
+	{
+		if (!ft_strcmp(head->key, key))
+		{
+			free(head->value);
+			head->value = ft_strdup(value);
+			return ;
+		}
+		head = head->next;
+	}
+	new_node = *env_copy;
+	new_node = malloc(sizeof(t_env));
+	new_node->key = ft_strdup(key);
+	new_node->value = ft_strdup(value);
+	new_node->next = NULL;
+	env_add_back(env_copy, new_node);
 }

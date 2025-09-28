@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/10 09:30:31 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/27 12:18:35 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/28 16:30:19 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ typedef struct s_env
 	char			*value;
 	int				status;
 	int				exit_status;
-	char			*prompt;
 	struct s_env	*next;
 }	t_env;
 
@@ -156,6 +155,8 @@ void			expand_helper(char *tmp,
 
 typedef struct s_help
 {
+	char	*prompt;
+	int		export;
 	int		i;
 	int		start;
 	char	*key;
@@ -213,6 +214,8 @@ void			free_args(char **args);
 void			free_red_list(t_redriection *red);
 void			free_cmd_list(t_cmd *cmd);
 void			free_token_list(t_token *token);
+int				is_contain_equal(char *str);
+void			add_update_env(t_env **env_copy, char *key, char *value);
 
 # define ERROR_ARG "minishell: exit: too many arguments\n"
 

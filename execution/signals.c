@@ -39,7 +39,6 @@ void	free_env(t_env *head)
 {
 	t_env	*tmp;
 
-	free(head->prompt);
 	while (head)
 	{
 		tmp = head->next;

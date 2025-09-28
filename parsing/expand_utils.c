@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
+/*   By: haboucha <haboucha@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 09:58:36 by haboucha          #+#    #+#             */
-/*   Updated: 2025/09/27 12:18:58 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/28 09:27:11 by haboucha         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ t_token	*expand_word(t_expand *e, t_token **head, t_token **prev,
 	}
 	else
 		e->tmp->value = expand;
-	if (e->tmp->value[0] == '\0' && e->f == 1)
+	if (e->tmp->value[0] == '\0' && e->f == 1 && (e->tmp->new_quote != '"'))
 		return (remove_empty_token(e, head, prev));
 	*prev = e->tmp;
 	return (e->tmp->next);

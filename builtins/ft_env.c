@@ -6,7 +6,7 @@
 /*   By: rmouafik <rmouafik@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 11:03:59 by rmouafik          #+#    #+#             */
-/*   Updated: 2025/06/26 10:27:41 by rmouafik         ###   ########.fr       */
+/*   Updated: 2025/09/28 10:53:12 by rmouafik         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	ft_env(t_env *env_copy)
 	tmp = env_copy;
 	while (tmp)
 	{
-		if (tmp->value)
+		if (tmp->key)
 			printf("%s=%s\n", tmp->key, tmp->value);
 		tmp = tmp->next;
 	}
