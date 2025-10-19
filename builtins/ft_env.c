@@ -19,7 +19,7 @@ int	ft_env(t_env *env_copy)
 	tmp = env_copy;
 	while (tmp)
 	{
-		if (tmp->key)
+		if (tmp->value)
 			printf("%s=%s\n", tmp->key, tmp->value);
 		tmp = tmp->next;
 	}
